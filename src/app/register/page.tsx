@@ -58,7 +58,17 @@ export default function Register() {
                 })
             }
 
+
             if (!res.ok) {
+                if (res.status === 429) {
+                    const seconds = data.retryAfter || 60 
+
+                    setError(
+                        `Too many registration attempts. Please try again in ${seconds} sec${seconds > 1 ? "s" : ""}.`
+                    )
+
+                    return
+                }
                 if (data.errors && typeof data.errors === "object") {
                     const errors: FieldErrors = {}
 

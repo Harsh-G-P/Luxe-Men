@@ -4,10 +4,26 @@ import { formatZodErrors, userSchema } from "@/app/lib/validations/userSchema"
 import bcrypt from "bcryptjs"
 import { Prisma } from "@/generated/prisma/client";
 import { NextRequest } from "next/server"
+import { signupLimiter } from "@/app/lib/redis/limiters";
 
 export async function POST(req: NextRequest) {
     let body
     try {
+        //rate-limit
+        const limiter = await signupLimiter(req)
+        console.log("rate limit", limiter)
+
+        if (!limiter.allowed) {
+            return Response.json(
+        {
+            success: false,
+            message: "Too many registration attempts",
+            retryAfter: limiter.retryAfter,
+            remaining: limiter.remaining,
+        },
+        { status: 429 }
+    )
+        }
 
         body = await req.json()
         const result = userSchema.safeParse(body)

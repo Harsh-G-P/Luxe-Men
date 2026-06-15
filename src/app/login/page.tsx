@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
-
-
 export default function Login() {
 
     const [email, setEmail] = useState("")
@@ -28,8 +26,55 @@ export default function Login() {
                 redirect: false
             })
 
-            if(!res?.ok){
-                setError("❌" + "Invalid email or password")
+            if (res?.error) {
+                //Rate-limit
+                try {
+                    const err = JSON.parse(res.error)
+
+                    if (err.type === "InvalidCredentials") {
+                        const remaining = err.remainingAttempts;
+
+                        if (remaining > 0) {
+                            setError(
+                                `Invalid credentials. ${remaining} attempts remaining.`
+                            );
+                            return;
+                        }
+
+                        if (remaining === 0) {
+                            setError(
+                                `Invalid credentials. ${remaining} ⚠️ Last login attempt left.`
+                            );
+                            return;
+                        }
+                    }
+
+                    //Rate-Limit
+                    if (err.type === "RateLimit") {
+                        setError(
+                            `Too many attempts. Try again in ${err.retryAfter}s`
+                        )
+                        return
+                    }
+
+                    // Brute force
+                    if (err.type === "BruteForce") {
+                        setError(`Too many failed logins. Try again in ${err.retryAfter}s`
+                        )
+                        return
+                    }
+
+                    // Cooldown
+                    if (err.type === "Cooldown") {
+
+                        setError(
+                            `Please wait ${err.retryAfter}s before trying again`
+                        )
+
+                        return
+                    }
+
+                } catch (e) { }
             }
 
             if (res?.ok) {
@@ -84,7 +129,7 @@ export default function Login() {
                     <button
                         type="submit"
                         className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition"
-                    >loading
+                    >{loading ? "Logging in..." : "Login"}
                     </button>
                 </form>
 
