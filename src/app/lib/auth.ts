@@ -36,7 +36,9 @@ export const authOptions: NextAuthOptions = ({
                 const password = credentials?.password
 
                 if (!email || !password) {
-                    return null
+                    throw new Error(JSON.stringify({
+                        type: "ValidationError"
+                    }));
                 }
 
                 //cooldown
@@ -90,6 +92,15 @@ export const authOptions: NextAuthOptions = ({
                             type: "InvalidCredentials",
                             remainingAttempts:
                                 SECURITY_CONFIG.LOGIN.MAX_ATTEMPTS - attempts
+                        })
+                    )
+                }
+
+                // EMAIL VERIFICATION CHECK
+                if (!user.emailVerified) {
+                    throw new Error(
+                        JSON.stringify({
+                            type: "EmailNotVerified",
                         })
                     )
                 }

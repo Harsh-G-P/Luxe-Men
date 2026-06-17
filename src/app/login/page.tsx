@@ -74,6 +74,22 @@ export default function Login() {
                         return
                     }
 
+                    // Not verified
+                    if (err.type === "EmailNotVerified") {
+                        setError(
+                            "Please verify your email before signing in."
+                        )
+                        return
+                    }
+
+                    //email and password not available
+                    if (err.type === "ValidationError") {
+                        setError(
+                            "Email and password are required"
+                        )
+                        return
+                    }
+
                 } catch (e) { }
             }
 
@@ -89,6 +105,28 @@ export default function Login() {
             setLoading(false)
         }
     }
+
+    const resendVerification = async () => {
+        try {
+            const res = await fetch("/api/auth/resend-verification", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                toast.success(data.message)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (err) {
+            alert("Failed to resend email");
+        }
+    };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
@@ -130,6 +168,14 @@ export default function Login() {
                         type="submit"
                         className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition"
                     >{loading ? "Logging in..." : "Login"}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={resendVerification}
+                        className="w-full mt-3 text-sm text-black hover:underline"
+                    >
+                        Resend Verification Email
                     </button>
                 </form>
 

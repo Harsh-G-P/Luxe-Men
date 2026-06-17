@@ -59,3 +59,30 @@ export function formatZodErrors(issues:any[]){
     return errors
 }
 
+export const forgetPasswordSchema = z.object({
+    email: z.preprocess(
+        sanitizeString,
+        z
+            .string()
+            .email("Invalid email address")
+            .transform((val)=>val.toLowerCase())
+    )
+}).strict()
+
+export const resetPasswordSchema = z.object({
+    token: z.string().min(1,"Invalid reset token"),
+        password: z
+                .string()
+                .min(8,"Password must be at least 8 characters long")
+                .max(100,"Password must be at most 100 character long"),
+            confirmPassword: z.string()
+})
+.strict()
+.refine(
+    (data) => data.password === data.confirmPassword,
+    {
+        path: ["confirmPassword"],
+        message: "Passwords do not match"
+    }
+)
+

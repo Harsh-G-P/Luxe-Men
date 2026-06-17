@@ -19,11 +19,26 @@ model User {
   username String @unique
   password String
   role Role @default(USER)
+  emailVerified DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  verificationToken VerificationToken[]
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid())
+  userId     String
+  tokenHash  String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+
+  @@index([userId])
 }
