@@ -29,14 +29,14 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Delete old tokens
-    await prisma.verificationToken.deleteMany({
+    const del = await prisma.verificationToken.deleteMany({
       where: { userId: user.id },
     });
 
     // 4. Create new token
     const { token, tokenHash } = generateVerificationToken();
 
-    await prisma.verificationToken.create({
+    const create = await prisma.verificationToken.create({
       data: {
         userId: user.id,
         tokenHash,
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     const verificationLink = `${process.env.NEXTAUTH_URL}/verify-email?token=${token}`;
 
     // 6. Send email
-    await sendVerificationEmail(
+    const send = await sendVerificationEmail(
       user.email,
       user.name,
       verificationLink

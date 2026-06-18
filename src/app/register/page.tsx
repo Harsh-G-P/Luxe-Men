@@ -82,6 +82,7 @@ export default function Register() {
                 setError("❌ " + (data.message || "Something went wrong"))
                 return
             }
+            
             toast.success(data.message)
             router.push('/login')
 

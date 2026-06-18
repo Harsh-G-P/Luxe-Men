@@ -20,3 +20,11 @@ export async function signupLimiter(req: NextRequest) {
         SECURITY_CONFIG.LOGIN.RATE_LIMIT_MAX_SIGNUP,
         SECURITY_CONFIG.LOGIN.RATE_LIMIT_WINDOW)
 }
+
+//forget password
+export async function forgotPasswordLimiter(req:NextRequest){
+    return applyRateLimit(
+        req,
+        SECURITY_CONFIG.LOGIN.RATE_LIMIT_MAX_FORGOT_PASSWORD,
+        SECURITY_CONFIG.LOGIN.RATE_LIMIT_WINDOW)
+}

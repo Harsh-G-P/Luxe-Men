@@ -7,5 +7,6 @@ export const SECURITY_CONFIG = {
         RATE_LIMIT_WINDOW: 60 * 1000,//1 minute
         RATE_LIMIT_MAX_LOGIN:15, //15 attempts
         RATE_LIMIT_MAX_SIGNUP:7, //7 attempts
+        RATE_LIMIT_MAX_FORGOT_PASSWORD:3, //3 attempts
     }
 }
