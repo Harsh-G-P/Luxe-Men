@@ -125,6 +125,7 @@ export const authOptions: NextAuthOptions = ({
                     id: user.id,
                     email: user.email,
                     name: user.name,
+                    username: user.username,
                     role: user.role
                 }
 
@@ -138,6 +139,7 @@ export const authOptions: NextAuthOptions = ({
                 token.userId = user.id
                 token.role = user.role
                 token.name = user.name
+                token.username = user.username
                 token.loginTime = Date.now()
             }
             if (typeof token.loginTime === "number" && Date.now() - token.loginTime > Absolute_Expiry) {
@@ -154,6 +156,7 @@ export const authOptions: NextAuthOptions = ({
                 session.user.id = token.userId as string
                 session.user.role = token.role as string
                 session.user.name = token.name as string
+                session.user.username = token.username as string
             }
             return session
         }
