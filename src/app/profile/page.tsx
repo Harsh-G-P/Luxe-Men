@@ -23,6 +23,7 @@ export default async function Profile() {
             name: true,
             username: true,
             email : true,
+            image: true,
             createdAt: true
         }
     })

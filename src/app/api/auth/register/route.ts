@@ -108,6 +108,7 @@ export async function POST(req: NextRequest) {
                 );
             }
         }
-        return errorResponse("Registration failed. Please try again.", 500, error)
+        console.log("Register API Error",error)
+        return errorResponse("Internal Server Error")
     }
 }

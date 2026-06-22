@@ -9,6 +9,7 @@ type UserProps = {
     name: string,
     username: string,
     email: string,
+    image: string | null,
     createdAt: Date
   }
 }
@@ -47,7 +48,7 @@ export default function UserProfile({ user }: UserProps) {
             <div className="-mt-16">
               <div className="relative inline-block">
                 <Image
-                  src="/avatar/camel.png"
+                  src={user.image || "/avatar/camel.png"}
                   alt="avatar"
                   width={128}
                   height={128}

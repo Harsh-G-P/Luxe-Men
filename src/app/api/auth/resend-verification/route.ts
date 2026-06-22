@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     return successResponse("If the account exists, a verification email has been sent.")
 
   } catch (error) {
-        console.error(error)
-        return errorResponse("Verification failed", 500)
+        console.error("Resend Verification API:",error)
+        return errorResponse("Internal Server Error")
   }
 }
