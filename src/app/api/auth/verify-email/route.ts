@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
         return successResponse("Email verified successfully")
 
     } catch (error) {
-        console.error(error)
-        return errorResponse("Verification failed", 500)
+        console.error("Verification API:",error)
+        return errorResponse("Internal Server Error")
     }
 }

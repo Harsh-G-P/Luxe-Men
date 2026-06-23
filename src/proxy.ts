@@ -11,7 +11,7 @@ export async function proxy(req:NextRequest){
         secret:env.NEXTAUTH_SECRET,
     })
 
-    const isDash = path.startsWith('/dash')
+    const isDash = path.startsWith('/profile')
   const isLogin = path === "/login"
   const isRegister = path === "/register"
 

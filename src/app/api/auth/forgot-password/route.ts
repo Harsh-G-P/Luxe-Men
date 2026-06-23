@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
         return successResponse("If the account exists, a verification email has been sent.")
 
     } catch (error) {
-        console.error(error)
-        return errorResponse("Forgot password failed", 500)
+        console.error("Forget Password API Error:", error)
+        return errorResponse("Internal Server Error")
     }
 }
