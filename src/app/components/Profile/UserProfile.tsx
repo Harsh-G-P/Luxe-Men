@@ -18,6 +18,7 @@ export default function UserProfile({ user }: UserProps) {
   return (
     <div className="min-h-[90vh] flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
+
         <div className="mb-8">
           <h1 className="text-4xl font-bold">
             Welcome back, {user.name} 👋
@@ -27,6 +28,7 @@ export default function UserProfile({ user }: UserProps) {
             Manage your account and profile settings.
           </p>
         </div>
+
         <div className="mb-6 h-2 rounded-full bg-linear-to-r from-violet-600 via-indigo-600 to-cyan-500" />
 
         {/* Profile Card */}
@@ -67,11 +69,21 @@ export default function UserProfile({ user }: UserProps) {
                 </h1>
               </div>
 
-              <Link href="/profile/edit"
-                className="text-center px-5 py-2.5 rounded-2xl bg-slate-900 font-medium text-white transition hover:bg-slate-800"
-              >
-                Edit Profile
-              </Link>
+              <div className="flex flex-col gap-3 sm:flex-row">
+
+                <Link
+                  href="/profile/addresses"
+                  className="text-center rounded-2xl bg-slate-200 px-5 py-2.5 font-medium text-black transition hover:bg-slate-300"
+                >
+                  Addresses
+                </Link>
+                <Link
+                  href="/profile/edit"
+                  className="text-center rounded-2xl bg-slate-900 px-5 py-2.5 font-medium text-white transition hover:bg-slate-750"
+                >
+                  Edit Profile
+                </Link>
+              </div>
 
             </div>
 

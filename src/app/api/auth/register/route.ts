@@ -1,6 +1,6 @@
 import { errorResponse, successResponse } from "@/app/lib/apiResponse"
 import prisma from "@/app/lib/prisma"
-import { formatZodErrors, userSchema } from "@/app/lib/validations/userSchema"
+import { formatZodErrors, userSchema } from "@/app/lib/validations/user"
 import bcrypt from "bcryptjs"
 import { Prisma } from "@/generated/prisma/client";
 import { NextRequest } from "next/server"
