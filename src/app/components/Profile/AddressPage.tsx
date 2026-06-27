@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type AddressProps = {
   address: {
@@ -25,6 +27,50 @@ export default function AddressesPage({ address }: AddressProps) {
     (addr) => addr.isDefault
   );
 
+  const router = useRouter()
+
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/address/${id}`, {
+        method: "DELETE"
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        toast.error(data.message)
+        return
+      }
+
+      toast.success(data.message)
+      router.refresh()
+
+    } catch (error) {
+      toast.error("Something went wrong.")
+    } 
+  }
+
+  const handleUpdate = async (id: string) => {
+    try {
+      const res = await fetch(`/api/address/${id}`, {
+        method: "PATCH",
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        toast.error(data.message)
+        return
+      }
+
+      toast.success(data.message)
+      router.refresh()
+
+    } catch (error) {
+      console.log(error)
+      toast.error("Something went wrong")
+    } 
+  }
 
   return (
     <div className="min-h-[90vh] flex items-center justify-center p-4">
@@ -188,12 +234,14 @@ export default function AddressesPage({ address }: AddressProps) {
                       <div className="mt-6 flex flex-wrap gap-2">
                         {!addresses.isDefault && (
                           <button
+                          onClick={() => handleUpdate(addresses.id)} 
                           className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800">
                             Set Default
                           </button>
                         )}
 
                         <button
+                          onClick={() => handleDelete(addresses.id)}
                           className="rounded-xl border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50">
                           Delete
                         </button>
