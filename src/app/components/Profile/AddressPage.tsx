@@ -52,7 +52,7 @@ export default function AddressesPage({ address }: AddressProps) {
           </div>
 
           <Link
-            href="/profile/addresses"
+            href="/profile/addresses/new"
             className="rounded-2xl bg-slate-900 px-5 py-3 text-center font-medium text-white transition hover:bg-slate-800"
           >
             Add Address
@@ -122,7 +122,7 @@ export default function AddressesPage({ address }: AddressProps) {
               </p>
 
               <Link
-                href="/profile/addresses"
+                href="/profile/addresses/new"
                 className="mt-6 inline-block rounded-2xl bg-slate-900 px-5 py-3 font-medium text-white transition hover:bg-slate-800"
               >
                 Add Address
