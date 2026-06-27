@@ -72,6 +72,12 @@ export default function UserProfile({ user }: UserProps) {
               <div className="flex flex-col gap-3 sm:flex-row">
 
                 <Link
+                  href="/profile/addresses"
+                  className="text-center rounded-2xl bg-slate-200 px-5 py-2.5 font-medium text-black transition hover:bg-slate-300"
+                >
+                  Addresses
+                </Link>
+                <Link
                   href="/profile/edit"
                   className="text-center rounded-2xl bg-slate-900 px-5 py-2.5 font-medium text-white transition hover:bg-slate-750"
                 >
