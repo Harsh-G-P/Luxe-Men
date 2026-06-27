@@ -27,6 +27,8 @@ model User {
 
   verificationToken VerificationToken[]
   passwordResetTokens PasswordResetToken[]
+
+  address Address[]
 }
 
 enum Role {
@@ -56,4 +58,24 @@ model PasswordResetToken {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model Address {
+  id String @id @default(cuid())
+  fullname String
+  countryCode String
+  phone String
+
+  addressLine String
+  city String
+  state String
+  country String
+  postalCode String
+  isDefault Boolean @default(false)
+
+  userId String
+  user User @relation(fields:[userId],references: [id],onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

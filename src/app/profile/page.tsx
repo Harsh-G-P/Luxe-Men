@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "../lib/prisma";
-import UserProfile from "../components/UserProfile";
+import UserProfile from "../components/Profile/UserProfile";
 
 
 

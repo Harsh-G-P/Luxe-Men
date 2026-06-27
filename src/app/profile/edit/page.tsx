@@ -1,4 +1,4 @@
-import ProfilePage from "@/app/components/ProfilePage";
+import ProfilePage from "@/app/components/Profile/ProfilePage";
 import { authOptions } from "@/app/lib/auth";
 import prisma from "@/app/lib/prisma";
 import { getServerSession } from "next-auth";

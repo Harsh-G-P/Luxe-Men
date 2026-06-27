@@ -158,8 +158,8 @@ export default function ProfilePage({ user }: UserProps) {
                     className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none"
                   />
                   {fieldErrors.username && (
-                            <p className="text-red-500 text-sm mt-1">{fieldErrors.username}</p>
-                        )}
+                    <p className="text-red-500 text-sm mt-1">{fieldErrors.username}</p>
+                  )}
                 </div>
 
                 <div>
@@ -174,8 +174,8 @@ export default function ProfilePage({ user }: UserProps) {
                     className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none"
                   />
                   {fieldErrors.name && (
-                            <p className="text-red-500 text-sm mt-1">{fieldErrors.name}</p>
-                    )}
+                    <p className="text-red-500 text-sm mt-1">{fieldErrors.name}</p>
+                  )}
                 </div>
 
               </div>
@@ -194,8 +194,9 @@ export default function ProfilePage({ user }: UserProps) {
 
               {showAvatarPicker && (
                 <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                  <p className="mb-3 text-xs text-slate-500">
-                    Scroll to see more avatars ↓
+
+                  <p className="mb-3 text-xs text-slate-500 animate-pulse">
+                    ↓ Scroll down to view more addresses
                   </p>
                   <div className="grid max-h-38 justify-items-center grid-cols-4 gap-3 overflow-y-auto pr-2 scrollbar-thin">
                     {avatars.map((avatar) => (
@@ -300,6 +301,7 @@ export default function ProfilePage({ user }: UserProps) {
             </div>
 
           </div>
+          
         </div>
       </div>
     </div>
