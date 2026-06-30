@@ -11,7 +11,8 @@ export async function proxy(req:NextRequest){
         secret:env.NEXTAUTH_SECRET,
     })
 
-    const isDash = path.startsWith('/profile')
+  const isDash = path.startsWith('/profile')
+  const isAdminPage = path.startsWith('/admin')
   const isLogin = path === "/login"
   const isRegister = path === "/register"
 
@@ -24,6 +25,15 @@ export async function proxy(req:NextRequest){
 
   if (token && isAuth) {
     return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  if(isAdminPage){
+    if(!token){
+      return NextResponse.redirect(new URL("/login",req.url))
+    }
+    if(token.role !== "ADMIN"){
+      return NextResponse.redirect(new URL("/",req.url))
+    }
   }
 
   return NextResponse.next();

@@ -58,7 +58,6 @@ export default function Register() {
                 })
             }
 
-
             if (!res.ok) {
                 if (res.status === 429) {
                     const seconds = data.retryAfter || 60 
