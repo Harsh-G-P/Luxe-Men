@@ -1,7 +1,8 @@
 import { errorResponse, successResponse } from "@/app/lib/apiResponse";
 import { authOptions } from "@/app/lib/auth";
 import prisma from "@/app/lib/prisma";
-import { formatZodErrors, profileSchema } from "@/app/lib/validations/user";
+import { formatZodErrors } from "@/app/lib/validations/formatZod";
+import {  profileSchema } from "@/app/lib/validations/user";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 

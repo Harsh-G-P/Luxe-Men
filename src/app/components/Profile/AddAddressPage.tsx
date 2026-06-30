@@ -110,6 +110,7 @@ export default function AddAddressPage() {
                 setError("❌ " + (data.message || "Something went wrong"))
                 return
             }
+            
             toast.success(data.message)
 
             router.push("/profile/addresses")

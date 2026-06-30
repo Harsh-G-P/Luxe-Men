@@ -52,7 +52,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
             }
         })
 
-        return successResponse("Address Deleted Successfully", 201)
+        return successResponse("Address Deleted Successfully", 200)
 
     } catch (error) {
         console.log("Address Delete API:", error)
@@ -62,7 +62,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
         ) {
             if (error.code === "P2025") {
                 return errorResponse(
-                    "Task not found",
+                    "Address not found",
                     404
                 )
             }
@@ -126,7 +126,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
             }),
         ]);
 
-        return successResponse("Address Updated successfully", 201)
+        return successResponse("Address Updated successfully", 200)
         
     } catch (error) {
         console.log("Address Delete API:", error)
@@ -136,7 +136,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
         ) {
             if (error.code === "P2025") {
                 return errorResponse(
-                    "Task not found",
+                    "Address not found",
                     404
                 )
             }

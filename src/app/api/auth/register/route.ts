@@ -1,12 +1,13 @@
 import { errorResponse, successResponse } from "@/app/lib/apiResponse"
 import prisma from "@/app/lib/prisma"
-import { formatZodErrors, userSchema } from "@/app/lib/validations/user"
+import { userSchema } from "@/app/lib/validations/user"
 import bcrypt from "bcryptjs"
 import { Prisma } from "@/generated/prisma/client";
 import { NextRequest } from "next/server"
 import { signupLimiter } from "@/app/lib/redis/limiters";
 import { generateVerificationToken } from "@/app/lib/tokens";
 import { sendVerificationEmail } from "@/app/lib/email";
+import { formatZodErrors } from "@/app/lib/validations/formatZod";
 
 export async function POST(req: NextRequest) {
     let body
