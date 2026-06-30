@@ -94,11 +94,7 @@ export async function GET() {
             }
         })
 
-        if (!brand || brand.length === 0) {
-            return errorResponse("No Brand Found", 404)
-        }
-
-        return successResponse("Brand fetch successfully", brand, 201)
+        return successResponse("Brand fetch successfully", brand, 200)
 
     } catch (error) {
 

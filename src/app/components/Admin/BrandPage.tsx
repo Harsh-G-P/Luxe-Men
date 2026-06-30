@@ -32,7 +32,7 @@ export default function BrandPage({ brand }: BrandProps) {
     const [error, setError] = useState("")
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
-    const getTask = async () => {
+    const getBrand = async () => {
         setLoading(true)
         try {
             const res = await fetch('/api/brand')
@@ -86,7 +86,7 @@ export default function BrandPage({ brand }: BrandProps) {
                     title: "",
                 })
 
-                getTask()
+                getBrand()
                 toast.success(data.message)
             }
 
@@ -95,6 +95,26 @@ export default function BrandPage({ brand }: BrandProps) {
             setError("❌ Network error. Try again.")
         } finally {
             setLoading(false)
+        }
+    }
+
+    const handleDelete = async (id: string) => {
+        try {
+            const res = await fetch(`/api/brand/${id}`, {
+                method: "DELETE"
+            })
+            const data = await res.json()
+
+            if (!res.ok) {
+                toast.error(data.message)
+                return
+            }
+            getBrand()
+            toast.success(data.message)
+
+        } catch (error) {
+            console.log(error)
+            toast.error("Something went wrong")
         }
     }
 
@@ -125,9 +145,9 @@ export default function BrandPage({ brand }: BrandProps) {
                     </h2>
 
                     {error &&
-                            <div className="text-center">
-                                <p className="text-red-500 ms-3 mb-4">{error}</p>
-                            </div>
+                        <div className="text-center">
+                            <p className="text-red-500 ms-3 mb-4">{error}</p>
+                        </div>
                     }
 
                     <div className="flex flex-col md:flex-row gap-4">
@@ -218,7 +238,9 @@ export default function BrandPage({ brand }: BrandProps) {
                                                         Edit
                                                     </button>
 
-                                                    <button className="px-4 py-2 rounded-lg bg-red-800 hover:bg-red-700 text-white text-sm font-medium">
+                                                    <button type="button"
+                                                    onClick={() => handleDelete(brand.id)}
+                                                        className="px-4 py-2 rounded-lg bg-red-800 hover:bg-red-700 text-white text-sm font-medium">
                                                         Delete
                                                     </button>
                                                 </div>
@@ -232,7 +254,6 @@ export default function BrandPage({ brand }: BrandProps) {
                     </div>
                 )}
 
-            
         </div>
     );
 }
