@@ -32,6 +32,8 @@ export default function BrandPage({ brand }: BrandProps) {
     const [error, setError] = useState("")
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
+    const [editId, setEditId] = useState<string | null>(null);
+
     const getBrand = async () => {
         setLoading(true)
         try {
@@ -57,8 +59,11 @@ export default function BrandPage({ brand }: BrandProps) {
         setFieldErrors({})
         try {
 
-            const res = await fetch("/api/brand", {
-                method: "POST",
+            const url = editId ? `/api/brand/${editId}` : "/api/brand"
+            const method = editId ? "PUT" : "POST"
+
+            const res = await fetch(url, {
+                method,
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -85,6 +90,10 @@ export default function BrandPage({ brand }: BrandProps) {
                 setTitle({
                     title: "",
                 })
+
+                setEditId(null);
+                setFieldErrors({});
+                setError("");
 
                 getBrand()
                 toast.success(data.message)
@@ -141,7 +150,7 @@ export default function BrandPage({ brand }: BrandProps) {
                 {/* Add Brand */}
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-8">
                     <h2 className="text-lg font-semibold text-gray-900 mb-5">
-                        Add Brand
+                        {editId ? "Update Brand" : "Add Brand"}
                     </h2>
 
                     {error &&
@@ -151,10 +160,11 @@ export default function BrandPage({ brand }: BrandProps) {
                     }
 
                     <div className="flex flex-col md:flex-row gap-4">
+
                         <div className="flex-1">
                             <input
                                 type="text"
-                                placeholder="Brand name..."
+                                placeholder={editId ? "Update brand..." : "Brand name..."}
                                 value={title.title}
                                 onChange={(e) => setTitle({ ...title, title: e.target.value })}
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-black"
@@ -168,10 +178,34 @@ export default function BrandPage({ brand }: BrandProps) {
                         </div>
 
                         <div className="self-start">
-                            <button className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium">
-                                {loading ? "ADDING..." : "ADD"}
+                            <button
+                                type="submit"
+                                className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium">
+                                {loading
+                                    ? editId
+                                        ? "UPDATING..."
+                                        : "ADDING..."
+                                    : editId
+                                        ? "UPDATE"
+                                        : "ADD"}
                             </button>
+
+                            {editId && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setEditId(null);
+                                        setTitle({ title: "" });
+                                        setFieldErrors({});
+                                        setError("");
+                                    }}
+                                    className="border border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-xl font-medium"
+                                >
+                                    Cancel
+                                </button>
+                            )}
                         </div>
+
                     </div>
 
                 </div>
@@ -234,12 +268,22 @@ export default function BrandPage({ brand }: BrandProps) {
 
                                             <td className="px-6 py-5">
                                                 <div className="flex justify-end gap-3">
-                                                    <button className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-sm font-medium">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setEditId(brand.id);
+                                                            setTitle({
+                                                                title: brand.title,
+                                                            });
+                                                            setFieldErrors({});
+                                                            setError("");
+                                                        }}
+                                                        className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-sm font-medium">
                                                         Edit
                                                     </button>
 
                                                     <button type="button"
-                                                    onClick={() => handleDelete(brand.id)}
+                                                        onClick={() => handleDelete(brand.id)}
                                                         className="px-4 py-2 rounded-lg bg-red-800 hover:bg-red-700 text-white text-sm font-medium">
                                                         Delete
                                                     </button>
