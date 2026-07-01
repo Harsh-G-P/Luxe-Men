@@ -30,6 +30,8 @@ export default function CategoryPage({ categories }: CategoryProps) {
     const [error, setError] = useState("")
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
+    const [editId, setEditId] = useState<string | null>(null);
+
     const getCategory = async () => {
         setLoading(true)
         try {
@@ -55,8 +57,11 @@ export default function CategoryPage({ categories }: CategoryProps) {
         setFieldErrors({})
         try {
 
-            const res = await fetch('/api/category', {
-                method: "POST",
+            const url = editId ? `/api/category/${editId}` : "/api/category"
+            const method = editId ? "PUT" : "POST"
+
+            const res = await fetch(url, {
+                method,
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -84,6 +89,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
                     title: "",
                 })
 
+                setEditId(null);
                 setFieldErrors({});
                 setError("");
 
@@ -121,6 +127,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
 
     return (
         <div className="max-w-6xl mx-auto p-6">
+            
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Category Management</h1>
@@ -170,13 +177,33 @@ export default function CategoryPage({ categories }: CategoryProps) {
 
                         </div>
 
-                        <div className="self-start">
+                         <div className="self-start">
                             <button
                                 type="submit"
                                 className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium">
-                                {loading ? "ADDING..." : "ADD"}
+                                {loading
+                                    ? editId
+                                        ? "UPDATING..."
+                                        : "ADDING..."
+                                    : editId
+                                        ? "UPDATE"
+                                        : "ADD"}
                             </button>
 
+                            {editId && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setEditId(null);
+                                        setTitle({ title: "" });
+                                        setFieldErrors({});
+                                        setError("");
+                                    }}
+                                    className="border border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-xl font-medium"
+                                >
+                                    Cancel
+                                </button>
+                            )}
                         </div>
 
                     </div>
@@ -243,6 +270,14 @@ export default function CategoryPage({ categories }: CategoryProps) {
                                                 <div className="flex justify-end gap-3">
                                                     <button
                                                         type="button"
+                                                        onClick={() => {
+                                                            setEditId(category.id);
+                                                            setTitle({
+                                                                title: category.title,
+                                                            });
+                                                            setFieldErrors({});
+                                                            setError("");
+                                                        }}
                                                         className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-sm font-medium">
                                                         Edit
                                                     </button>
