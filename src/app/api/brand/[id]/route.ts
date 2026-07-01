@@ -69,7 +69,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
         ) {
             if (error.code === "P2025") {
                 return errorResponse(
-                    "Address not found",
+                    "Brand not found",
                     404
                 )
             }
@@ -137,14 +137,14 @@ export async function PUT(req: NextRequest, { params }: Params) {
         return successResponse("Brand updated successfully", 200)
 
     } catch (error) {
-        console.log("Brand Delete API:", error)
+        console.log("Brand Update API:", error)
 
         if (
             error instanceof Prisma.PrismaClientKnownRequestError
         ) {
             if (error.code === "P2025") {
                 return errorResponse(
-                    "Address not found",
+                    "Brand not found",
                     404
                 )
             }

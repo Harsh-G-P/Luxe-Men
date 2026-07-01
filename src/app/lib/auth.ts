@@ -41,9 +41,13 @@ export const authOptions: NextAuthOptions = ({
                     }));
                 }
 
-                //cooldown
-                const cooldown = await requestCooldown(email)
+                const [cooldown, limiter, blocked] = await Promise.all([
+                    requestCooldown(email),
+                    loginLimiter(email),
+                    isLoginBlocked(email),
+                ]);
 
+                //cooldown
                 if (!cooldown.allowed) {
                     throw new Error(
                         JSON.stringify({
@@ -58,9 +62,6 @@ export const authOptions: NextAuthOptions = ({
                 }
 
                 //rate-limit
-                const limiter = await loginLimiter(email)
-                console.log("rate limit", limiter)
-
                 if (!limiter.allowed) {
                     throw new Error(
                         JSON.stringify({
@@ -72,7 +73,7 @@ export const authOptions: NextAuthOptions = ({
                 }
 
                 //email blocked
-                if (await isLoginBlocked(email)) {
+                if (blocked) {
                     console.log("Blocked user")
                     throw new Error(JSON.stringify({
                         type: "BruteForce",
