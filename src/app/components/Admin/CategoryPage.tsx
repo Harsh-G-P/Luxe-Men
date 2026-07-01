@@ -98,6 +98,27 @@ export default function CategoryPage({ categories }: CategoryProps) {
             setLoading(false)
         }
     }
+
+    const handleDelete = async (id: string) => {
+        try {
+            const res = await fetch(`/api/category/${id}`, {
+                method: "DELETE"
+            })
+            const data = await res.json()
+
+            if (!res.ok) {
+                toast.error(data.message)
+                return
+            }
+            getCategory()
+            toast.success(data.message)
+
+        } catch (error) {
+            console.log(error)
+            toast.error("Something went wrong")
+        }
+    }
+
     return (
         <div className="max-w-6xl mx-auto p-6">
             {/* Header */}
@@ -227,6 +248,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
                                                     </button>
 
                                                     <button type="button"
+                                                    onClick={()=>handleDelete(category.id)}
                                                         className="px-4 py-2 rounded-lg bg-red-800 hover:bg-red-700 text-white text-sm font-medium">
                                                         Delete
                                                     </button>
