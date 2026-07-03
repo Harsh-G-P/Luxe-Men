@@ -97,19 +97,6 @@ export async function GET() {
         return successResponse("Category fetch successfully", category, 200)
 
     } catch (error) {
-
-        if (
-            error instanceof Prisma.PrismaClientKnownRequestError
-        ) {
-            // Unique constraint error
-            if (error.code === "P2025") {
-                return errorResponse(
-                    "Category not found",
-                    404
-                )
-            }
-        }
-
         console.log("Category GET API", error)
         return errorResponse("Internal Server Error")
     }

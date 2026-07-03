@@ -46,7 +46,7 @@ export default function BrandPage({ brand }: BrandProps) {
             setBrands(data.data)
         } catch (error) {
             console.log(error)
-            setError("❌ Failed to fetch tasks. Try again.")
+            setError("❌ Failed to fetch brands. Try again.")
         } finally {
             setLoading(false)
         }
