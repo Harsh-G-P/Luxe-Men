@@ -92,6 +92,21 @@ model Category {
   id String @id @default(cuid())
   title String @unique
 
+  attributes CategoryAttribute[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
+}
+
+model CategoryAttribute {
+  id String @id @default(cuid())
+
+  title String
+  values Json
+
+  categoryId String
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

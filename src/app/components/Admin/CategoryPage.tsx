@@ -44,7 +44,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
             setCategory(data.data)
         } catch (error) {
             console.log(error)
-            setError("❌ Failed to fetch tasks. Try again.")
+            setError("❌ Failed to fetch categories. Try again.")
         } finally {
             setLoading(false)
         }
@@ -127,7 +127,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
 
     return (
         <div className="max-w-6xl mx-auto p-6">
-            
+
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Category Management</h1>
@@ -136,12 +136,19 @@ export default function CategoryPage({ categories }: CategoryProps) {
                 </p>
             </div>
 
-            <div className="flex items-center mb-5">
+            <div className="flex items-center justify-between mb-5">
                 <Link
-                    href="/admin/category"
+                    href="/admin"
                     className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
                 >
                     ← Back to Dashboard
+                </Link>
+
+                <Link
+                    href="/admin/category/categoryAttribute"
+                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
+                >
+                    Manage Categories →
                 </Link>
             </div>
 
@@ -177,7 +184,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
 
                         </div>
 
-                         <div className="self-start">
+                        <div className="self-start">
                             <button
                                 type="submit"
                                 className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium">
@@ -199,7 +206,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
                                         setFieldErrors({});
                                         setError("");
                                     }}
-                                    className="border border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-xl font-medium"
+                                    className="border ms-3 border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-xl font-medium"
                                 >
                                     Cancel
                                 </button>
@@ -283,7 +290,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
                                                     </button>
 
                                                     <button type="button"
-                                                    onClick={()=>handleDelete(category.id)}
+                                                        onClick={() => handleDelete(category.id)}
                                                         className="px-4 py-2 rounded-lg bg-red-800 hover:bg-red-700 text-white text-sm font-medium">
                                                         Delete
                                                     </button>

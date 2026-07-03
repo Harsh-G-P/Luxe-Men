@@ -46,7 +46,7 @@ export default function BrandPage({ brand }: BrandProps) {
             setBrands(data.data)
         } catch (error) {
             console.log(error)
-            setError("❌ Failed to fetch tasks. Try again.")
+            setError("❌ Failed to fetch brands. Try again.")
         } finally {
             setLoading(false)
         }
@@ -199,7 +199,7 @@ export default function BrandPage({ brand }: BrandProps) {
                                         setFieldErrors({});
                                         setError("");
                                     }}
-                                    className="border border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-xl font-medium"
+                                    className="border ms-3 border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-xl font-medium"
                                 >
                                     Cancel
                                 </button>

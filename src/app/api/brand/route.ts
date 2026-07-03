@@ -98,18 +98,6 @@ export async function GET() {
 
     } catch (error) {
 
-        if (
-            error instanceof Prisma.PrismaClientKnownRequestError
-        ) {
-            // Unique constraint error
-            if (error.code === "P2025") {
-                return errorResponse(
-                    "Brand not found",
-                    404
-                )
-            }
-        }
-
         console.log("Brand GET API", error)
         return errorResponse("Internal Server Error")
     }

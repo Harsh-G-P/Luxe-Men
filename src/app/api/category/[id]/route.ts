@@ -20,7 +20,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     const session = await getServerSession(authOptions)
 
     if (!session || !session.user.id) {
-        return errorResponse("unauthorized", 401)
+        return errorResponse("Unauthorized", 401)
     }
 
     try {
@@ -44,7 +44,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
         })
 
         if (!exisitingCategory) {
-            return errorResponse("Brand not found ", 404)
+            return errorResponse("Category not found ", 404)
         }
 
         const isAdmin = session.user.role === "ADMIN"
@@ -83,7 +83,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
     const session = await getServerSession(authOptions)
 
     if (!session || !session.user.id) {
-        return errorResponse("unauthorized", 401)
+        return errorResponse("Unauthorized", 401)
     }
 
     let body
