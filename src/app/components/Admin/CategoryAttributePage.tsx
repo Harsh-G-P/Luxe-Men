@@ -122,6 +122,26 @@ export default function CategoryAttributePage({ attribute, categories }: Categor
         }
     }
 
+    const handleDelete = async (id: string) => {
+        try {
+            const res = await fetch(`/api/category/categoryAttribute/${id}`, {
+                method: "DELETE"
+            })
+            const data = await res.json()
+
+            if (!res.ok) {
+                toast.error(data.message)
+                return
+            }
+            getAttribute()
+            toast.success(data.message)
+
+        } catch (error) {
+            console.log(error)
+            toast.error("Something went wrong")
+        }
+    }
+
     const selectStyles = {
         control: (base: any, state: any) => ({
             ...base,
@@ -291,6 +311,7 @@ export default function CategoryAttributePage({ attribute, categories }: Categor
                     </div>
                 ) : (
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        
                         <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
                             <h2 className="text-lg font-semibold text-gray-900">
                                 Existing Attributes
@@ -361,7 +382,9 @@ export default function CategoryAttributePage({ attribute, categories }: Categor
                                                         Edit
                                                     </button>
 
-                                                    <button className="px-4 py-2 rounded-lg bg-red-800 hover:bg-red-700 text-white text-sm font-medium">
+                                                    <button
+                                                    onClick={()=>handleDelete(attribute.id)}
+                                                     className="px-4 py-2 rounded-lg bg-red-800 hover:bg-red-700 text-white text-sm font-medium">
                                                         Delete
                                                     </button>
                                                 </div>

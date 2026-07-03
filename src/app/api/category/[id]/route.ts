@@ -44,7 +44,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
         })
 
         if (!exisitingCategory) {
-            return errorResponse("Brand not found ", 404)
+            return errorResponse("Category not found ", 404)
         }
 
         const isAdmin = session.user.role === "ADMIN"
