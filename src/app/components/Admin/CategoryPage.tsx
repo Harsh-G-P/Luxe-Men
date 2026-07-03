@@ -206,7 +206,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
                                         setFieldErrors({});
                                         setError("");
                                     }}
-                                    className="border border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-xl font-medium"
+                                    className="border ms-3 border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-xl font-medium"
                                 >
                                     Cancel
                                 </button>
