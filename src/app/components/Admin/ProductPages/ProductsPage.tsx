@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 
 type ProductProps = {
     products: {
@@ -30,10 +32,54 @@ type ProductProps = {
     }[];
 };
 
+
 export default function ProductPage({ products }: ProductProps) {
+
+    const [product, setProduct] = useState(products)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
+
+    const getProducts = async () => {
+        setLoading(true)
+        try {
+            const res = await fetch('/api/products')
+            const data = await res.json()
+            if (!res.ok) {
+                setError("❌ " + data.message)
+                return
+            }
+            setProduct(data.data)
+        } catch (error) {
+            console.log(error)
+            setError("❌ Failed to fetch categories. Try again.")
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleDelete = async (id: string) => {
+        try {
+            const res = await fetch(`/api/products/${id}`, {
+                method: "DELETE"
+            })
+            const data = await res.json()
+
+            if (!res.ok) {
+                toast.error(data.message)
+                return
+            }
+            getProducts()
+            toast.success(data.message)
+
+        } catch (error) {
+            console.log(error)
+            toast.error("Something went wrong")
+        }
+    }
+
     return (
         <div className="max-w-7xl mx-auto p-6">
-            
+
             <div className="flex items-center justify-between mb-5">
                 <Link
                     href="/admin/products"
@@ -71,10 +117,15 @@ export default function ProductPage({ products }: ProductProps) {
                     </h2>
 
                     <span className="text-sm text-gray-500">
-                        {products.length} Products
+                        {product.length} Products
                     </span>
                 </div>
 
+                {error &&
+                    <div className="text-center">
+                        <p className="text-red-500 ms-3 mb-4">{error}</p>
+                    </div>
+                }
                 <table className="w-full table-fixed">
                     <thead className="bg-gray-50">
                         <tr className="text-left">
@@ -113,15 +164,15 @@ export default function ProductPage({ products }: ProductProps) {
                     </thead>
 
                     {/* Products */}
-                    {products.map((product) => (
-                        <tbody key={product.id}>
+                    {product.map((products) => (
+                        <tbody key={products.id}>
 
                             <tr className="border-t border-gray-100 hover:bg-gray-50">
                                 <td className="px-6 py-4">
-                                    {product.images?.length > 0 ? (
+                                    {products.images?.length > 0 ? (
                                         <Image
-                                            src={product.images[0]}
-                                            alt={product.title}
+                                            src={products.images[0]}
+                                            alt={products.title}
                                             width={56}
                                             height={56}
                                             className="h-14 w-14 rounded-xl object-cover border border-gray-200"
@@ -132,43 +183,43 @@ export default function ProductPage({ products }: ProductProps) {
                                 </td>
 
                                 <td className="px-6 py-4 font-medium">
-                                    {product.title}
+                                    {products.title}
                                 </td>
 
                                 <td className="px-6 py-4">
-                                    {product.brand.title}
+                                    {products.brand.title}
                                 </td>
 
                                 <td className="px-6 py-4">
-                                    {product.category.title}
+                                    {products.category.title}
                                 </td>
 
                                 <td className="px-6 py-4">
-                                    ${Number(product.price).toFixed(2)}
+                                    ${Number(products.price).toFixed(2)}
                                 </td>
 
                                 <td className="px-6 py-4">
-                                    {product.variants.reduce((total, variant) => total + variant.stock, 0)}
+                                    {products.variants.reduce((total, variant) => total + variant.stock, 0)}
                                 </td>
 
                                 <td className="px-6 py-4">
                                     <div className="flex gap-2 flex-wrap">
                                         <span
-                                            className={`rounded-full px-3 py-1 text-xs font-medium ${product.isActive
+                                            className={`rounded-full px-3 py-1 text-xs font-medium ${products.isActive
                                                 ? "bg-green-100 text-green-700"
                                                 : "bg-red-100 text-red-700"
                                                 }`}
                                         >
-                                            {product.isActive ? "Active" : "Inactive"}
+                                            {products.isActive ? "Active" : "Inactive"}
                                         </span>
 
-                                        {product.isFeatured && (
+                                        {products.isFeatured && (
                                             <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700">
                                                 Featured
                                             </span>
                                         )}
 
-                                        {product.bestseller && (
+                                        {products.bestseller && (
                                             <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">
                                                 Bestseller
                                             </span>
@@ -182,8 +233,10 @@ export default function ProductPage({ products }: ProductProps) {
                                             Edit
                                         </button>
 
-                                        <button className="rounded-lg bg-red-700 px-4 py-2 text-sm text-white hover:bg-red-600">
-                                            Delete
+                                        <button
+                                            onClick={() => handleDelete(products.id)}
+                                            className="rounded-lg bg-red-700 px-4 py-2 text-sm text-white hover:bg-red-600">
+                                            {loading ? "Deleting..." : "Delete"}
                                         </button>
                                     </div>
                                 </td>
@@ -193,6 +246,7 @@ export default function ProductPage({ products }: ProductProps) {
                     ))}
 
                 </table>
+
             </div>
         </div>
     );
