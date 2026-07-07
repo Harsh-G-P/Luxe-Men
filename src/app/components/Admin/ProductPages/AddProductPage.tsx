@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 import { toast } from "sonner";
 
@@ -29,6 +29,10 @@ type FormProps = {
 };
 
 type ProductFormProps = {
+    product?: FormProps & {
+        id: string;
+    };
+
     brands: {
         id: string;
         title: string;
@@ -46,24 +50,41 @@ type ProductFormProps = {
 
 type FieldErrors = Record<string, string>;
 
-export default function AddProductPage({ brands, categories }: ProductFormProps) {
+export default function AddProductPage({ product, brands, categories }: ProductFormProps) {
 
-    const initialFormData: FormProps = {
-        title: "",
-        description: "",
-        price: "",
+    const initialFormData: FormProps = product
+        ? {
+            title: product.title,
+            description: product.description,
+            price: product.price,
 
-        brandId: "",
-        categoryId: "",
+            brandId: product.brandId,
+            categoryId: product.categoryId,
 
-        images: [],
+            images: product.images,
 
-        isActive: true,
-        isFeatured: false,
-        bestseller: false,
+            isActive: product.isActive,
+            isFeatured: product.isFeatured,
+            bestseller: product.bestseller,
 
-        variants: [],
-    };
+            variants: product.variants,
+        }
+        : {
+            title: "",
+            description: "",
+            price: "",
+
+            brandId: "",
+            categoryId: "",
+
+            images: [],
+
+            isActive: true,
+            isFeatured: false,
+            bestseller: false,
+
+            variants: [],
+        };
 
     const [formData, setFormData] = useState<FormProps>(initialFormData);
 
@@ -76,6 +97,9 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
     const [skuLocked, setSkuLocked] = useState(false);
 
     const [showVariantModal, setShowVariantModal] = useState(false);
+
+    const [editingVariantIndex, setEditingVariantIndex] =
+        useState<number | null>(null);
 
     const [variantForm, setVariantForm] = useState({
         attributes: {} as Record<string, string>,
@@ -91,6 +115,16 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
         }[]
     >([]);
 
+    useEffect(() => {
+        if (!product) return;
+
+        const selectedCategory = categories.find(
+            (category) => category.id === product.categoryId
+        );
+
+        setCategoryAttributes(selectedCategory?.attributes ?? []);
+    }, [product, categories]);
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setLoading(true)
@@ -98,8 +132,14 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
         setFieldErrors({})
 
         try {
-            const res = await fetch("/api/products", {
-                method: "POST",
+            const url = product
+                ? `/api/products/${product.id}`
+                : "/api/products";
+
+            const method = product ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method,
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -107,6 +147,7 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
             })
 
             const data = await res.json()
+
 
             if (!res.ok) {
                 if (data.errors && typeof data.errors === "object") {
@@ -241,7 +282,9 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
         }
 
         // Prevent duplicate attribute combinations
-        const exists = formData.variants.some((variant) => {
+        const exists = formData.variants.some((variant, index) => {
+            if (editingVariantIndex === index) return false;
+
             return (
                 JSON.stringify(
                     Object.entries(variant.attributes).sort()
@@ -259,20 +302,35 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
 
         // Prevent duplicate SKU
         if (
-            formData.variants.some(
-                (variant) =>
+            formData.variants.some((variant, index) => {
+                if (editingVariantIndex === index) return false;
+
+                return (
                     variant.sku.toLowerCase() ===
                     variantForm.sku.toLowerCase()
-            )
+                );
+            })
         ) {
             toast.error("SKU already exists");
             return;
         }
 
-        setFormData((prev) => ({
-            ...prev,
-            variants: [...prev.variants, variantForm],
-        }));
+        if (editingVariantIndex !== null) {
+            const updatedVariants = [...formData.variants];
+            updatedVariants[editingVariantIndex] = variantForm;
+
+            setFormData((prev) => ({
+                ...prev,
+                variants: updatedVariants,
+            }));
+
+            setEditingVariantIndex(null);
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                variants: [...prev.variants, variantForm],
+            }));
+        }
 
         setVariantForm({
             attributes: {},
@@ -359,6 +417,7 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
         setError("");
         setShowVariantModal(false);
         setSkuLocked(false);
+        setEditingVariantIndex(null);
     };
 
     return (
@@ -375,12 +434,14 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
 
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">
-                    Add Product
+                <h1 className="text-3xl font-bold">
+                    {product ? "Edit Product" : "Add Product"}
                 </h1>
 
-                <p className="mt-2 text-gray-500">
-                    Create a new product and its variants.
+                <p>
+                    {product
+                        ? "Update your product."
+                        : "Create a new product and its variants."}
                 </p>
             </div>
 
@@ -490,12 +551,14 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
                                         (category) => category.id === option?.value
                                     );
 
-                                    setCategoryAttributes(selectedCategory?.attributes ?? []);
+                                    const attributes = selectedCategory?.attributes ?? [];
+
+                                    setCategoryAttributes(attributes);
 
                                     setFormData((prev) => ({
                                         ...prev,
                                         categoryId: option?.value || "",
-                                        variants: [],
+                                        variants: attributes.length === 0 ? [] : prev.variants,
                                     }));
                                 }}
                             />
@@ -573,6 +636,12 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
                         </p>
                     </div>
 
+                    {fieldErrors.images && (
+                        <p className="mt-1 text-sm text-red-500">
+                            {fieldErrors.images}
+                        </p>
+                    )}
+
                     {/* Upload Area */}
                     <div className="rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-6 text-center transition hover:border-black">
                         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
@@ -628,7 +697,7 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
                                                 images: prev.images.filter((_, i) => i !== index),
                                             }))
                                         }
-                                        className="absolute right-2 top-2 text-lg font-bold text-white"
+                                        className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-black shadow hover:bg-slate-300"
                                     >
                                         ×
                                     </button>
@@ -683,6 +752,12 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
                             + Add Variant
                         </button>
                     </div>
+
+                    {fieldErrors.variants && (
+                        <p className="mt-1 text-sm text-red-500">
+                            {fieldErrors.variants}
+                        </p>
+                    )}
 
                     <div className="overflow-x-auto rounded-xl border border-gray-200">
                         <table className="w-full">
@@ -757,6 +832,18 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
 
                                             <td className="px-6 py-4">
                                                 <div className="flex justify-end gap-2">
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setEditingVariantIndex(index);
+                                                            setVariantForm(variant);
+                                                            setShowVariantModal(true);
+                                                        }}
+                                                        className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100"
+                                                    >
+                                                        Edit
+                                                    </button>
 
                                                     <button
                                                         type="button"
@@ -893,7 +980,13 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
                         type="submit"
                         className="rounded-xl bg-black px-6 py-3 text-white"
                     >
-                        {loading ? "Creating..." : "Create Product"}
+                        {loading
+                            ? product
+                                ? "Updating..."
+                                : "Creating..."
+                            : product
+                                ? "Update Product"
+                                : "Create Product"}
                     </button>
                 </div>
 
@@ -903,12 +996,17 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
 
                             <div className="mb-6 flex items-center justify-between">
                                 <h2 className="text-xl font-semibold">
-                                    Add Variant
+                                    {editingVariantIndex !== null
+                                        ? "Edit Variant"
+                                        : "Add Variant"}
                                 </h2>
 
                                 <button
                                     type="button"
-                                    onClick={() => setShowVariantModal(false)}
+                                    onClick={() => {
+                                        setEditingVariantIndex(null);
+                                        setShowVariantModal(false);
+                                    }}
                                     className="text-2xl"
                                 >
                                     ×
@@ -1058,7 +1156,10 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
 
                                     <button
                                         type="button"
-                                        onClick={() => setShowVariantModal(false)}
+                                        onClick={() => {
+                                            setEditingVariantIndex(null);
+                                            setShowVariantModal(false);
+                                        }}
                                         className="rounded-xl border px-5 py-2"
                                     >
                                         Cancel
@@ -1069,7 +1170,9 @@ export default function AddProductPage({ brands, categories }: ProductFormProps)
                                         onClick={handleSaveVariant}
                                         className="rounded-xl bg-black px-5 py-2 text-white"
                                     >
-                                        Save Variant
+                                        {editingVariantIndex !== null
+                                            ? "Update Variant"
+                                            : "Save Variant"}
                                     </button>
 
                                 </div>

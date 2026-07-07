@@ -229,9 +229,12 @@ export default function ProductPage({ products }: ProductProps) {
 
                                 <td className="px-6 py-4">
                                     <div className="flex justify-end gap-3">
-                                        <button className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100">
+                                        <Link
+                                            href={`/admin/products/${products.id}/edit`}
+                                            className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100"
+                                        >
                                             Edit
-                                        </button>
+                                        </Link>
 
                                         <button
                                             onClick={() => handleDelete(products.id)}
