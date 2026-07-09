@@ -4,3 +4,7 @@
 body {
     background-color: whitesmoke;
 }
+
+input[type="file"] {
+    display: none;
+}

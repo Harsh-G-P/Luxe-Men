@@ -84,6 +84,8 @@ model Brand {
   id String @id @default(cuid())
   title String @unique
 
+  products Product[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
 }
@@ -91,6 +93,8 @@ model Brand {
 model Category {
   id String @id @default(cuid())
   title String @unique
+
+  products Product[]
 
   attributes CategoryAttribute[]
 
@@ -106,6 +110,47 @@ model CategoryAttribute {
 
   categoryId String
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id String @id @default(cuid())
+  title String
+  slug String @unique
+  description String?
+  
+  price Decimal @db.Decimal(10,2)
+
+  images Json
+
+  isActive   Boolean @default(true)
+  isFeatured Boolean @default(false)
+  bestseller Boolean @default(false)
+
+  categoryId String
+  category Category @relation(fields:[categoryId],references:[id],onDelete: Restrict)
+
+  brandId String
+  brand Brand @relation(fields:[brandId],references:[id],onDelete: Restrict)
+
+  variants ProductVariant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductVariant {
+  id String @id @default(cuid())
+  productId String
+  product Product @relation(fields:[productId],references: [id],onDelete: Cascade)
+
+  attributes Json
+  sku String? @unique
+
+  price Decimal? @db.Decimal(10,2)
+  stock Int @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
