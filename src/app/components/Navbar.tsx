@@ -93,11 +93,11 @@ export default function Navbar() {
                 >
                     <div className="flex items-center">
                         <span className="rounded-l-md bg-black px-3 py-1 font-semibold text-white">
-                            Saiki
+                            LUXE
                         </span>
 
                         <span className="rounded-r-md border border-black bg-white px-3 py-1 font-semibold text-black">
-                            Kusuo
+                            MEN
                         </span>
                     </div>
                 </div>
@@ -193,57 +193,95 @@ export default function Navbar() {
 
             {/* Mobile Menu */}
             {menuOpen && (
-                <div className="mt-5 backdrop-blur-lg md:hidden">
-                    <div className="flex flex-col items-center gap-5 px-6 py-6">
-                        {navItems.map(({ name, path }) => {
-                            const isActive = active === name.toLowerCase();
+                <div className="mt-4 md:hidden">
+                    <div className="rounded-3xl border border-gray-200 bg-white/95 p-6 shadow-2xl backdrop-blur-xl">
+                        <div className="flex flex-col gap-2">
+                            {navItems.map(({ name, path }) => {
+                                const isActive = active === name.toLowerCase();
 
-                            return (
+                                return (
+                                    <Link
+                                        key={name}
+                                        href={path}
+                                        onClick={() => setMenuOpen(false)}
+                                        className={`rounded-2xl px-4 py-3 text-center text-[16px] font-medium transition-all duration-300 ${isActive
+                                            ? "bg-black text-white"
+                                            : "text-gray-700 hover:bg-gray-100 hover:text-black"
+                                            }`}
+                                    >
+                                        {name}
+                                    </Link>
+                                );
+                            })}
+
+                            <div className="my-4 border-t border-gray-200" />
+
+                            {!user ? (
                                 <Link
-                                    key={name}
-                                    href={path}
+                                    href="/login"
                                     onClick={() => setMenuOpen(false)}
-                                    className={`text-[16px] font-medium ${isActive
-                                        ? "rounded-md bg-black px-4 py-1.5 text-white"
-                                        : "text-black hover:text-cyan-600"
-                                        }`}
+                                    className="rounded-2xl border border-black px-4 py-3 text-center font-medium text-black transition hover:bg-black hover:text-white"
                                 >
-                                    {name}
+                                    Login
                                 </Link>
-                            );
-                        })}
+                            ) : (
+                                <>
+                                    {/* User Card */}
+                                    <div className="mb-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black text-sm font-semibold text-white">
+                                                {initials}
+                                            </div>
 
-                        <div className="my-2 w-10 border-t border-gray-300" />
+                                            <div className="min-w-0 flex-1">
+                                                <p className="truncate font-semibold text-gray-900">
+                                                    {user.name}
+                                                </p>
 
-                        {!user ? (
-                            <Link
-                                href="/login"
-                                onClick={() => setMenuOpen(false)}
-                                className="text-[16px] hover:text-cyan-600"
-                            >
-                                Login
-                            </Link>
-                        ) : (
-                            <>
-                                <Link
-                                    href="/profile"
-                                    onClick={() => setMenuOpen(false)}
-                                    className="text-[16px] hover:text-cyan-600"
-                                >
-                                    Profile
-                                </Link>
+                                                <p className="truncate text-xs text-gray-500">
+                                                    {user.email?.replace(/(.{2}).+(@.+)/, "$1****$2")}
+                                                </p>
 
-                                <button
-                                    onClick={() => signOut({ callbackUrl: "/login" })}
-                                    className="text-[16px] hover:text-red-600"
-                                >
-                                    Logout
-                                </button>
-                            </>
-                        )}
+                                                {user.role === "ADMIN" && (
+                                                    <span className="mt-2 inline-flex rounded-full bg-black px-2.5 py-1 text-[10px] font-medium tracking-wider text-white">
+                                                        ADMIN
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <Link
+                                        href="/profile"
+                                        onClick={() => setMenuOpen(false)}
+                                        className="rounded-2xl px-4 py-3 text-center font-medium text-gray-700 transition hover:bg-gray-100 hover:text-black"
+                                    >
+                                        Profile
+                                    </Link>
+
+                                    {user.role === "ADMIN" && (
+                                        <Link
+                                            href="/admin"
+                                            onClick={() => setMenuOpen(false)}
+                                            className="rounded-2xl px-4 py-3 text-center font-medium text-gray-700 transition hover:bg-gray-100 hover:text-black"
+                                        >
+                                            Admin Dashboard
+                                        </Link>
+                                    )}
+
+                                    <button
+                                        onClick={() => signOut({ callbackUrl: "/login" })}
+                                        className="rounded-2xl border border-red-200 px-4 py-3 text-center font-medium text-red-600 transition hover:bg-red-600 hover:text-white"
+                                    >
+                                        Logout
+                                    </button>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
+
         </nav>
     );
 }
