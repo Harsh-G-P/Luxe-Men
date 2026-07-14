@@ -8,6 +8,7 @@ import Newsletter from "./Home/Newsletter";
 
 
 export default async function HomePage() {
+    
     const categories = await prisma.category.findMany({
         orderBy: {
             createdAt: "desc"

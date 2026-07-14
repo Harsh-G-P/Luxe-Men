@@ -1,7 +1,7 @@
 import HomePage from "./components/Shop/HomePage";
 
 
-export default async function Home() {
+export default function Home() {
   
   return (
     <div>
