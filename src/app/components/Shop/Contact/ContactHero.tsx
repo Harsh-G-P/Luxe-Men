@@ -5,6 +5,7 @@ import {
     MapPin,
     Truck,
     Ruler,
+    Shirt,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -40,49 +41,120 @@ const contactMethods = [
         action: "View Size Guide",
         icon: Ruler,
     },
+    {
+        title: "Care Guide",
+        description:
+            "Learn how to properly wash, store, and care for your garments to preserve their quality.",
+        action: "Garment Care",
+        icon: Shirt,
+    },
 ];
 
 const drawerContent = {
     Phone: [
-        "United States — +1 (800) 555-0187",
-        "United Kingdom — +44 20 7946 0832",
-        "France — +33 1 84 88 45 60",
-        "Italy — +39 02 9475 2140",
-        "Japan — +81 3 4578 9210",
-        "United Arab Emirates — +971 4 556 7821",
-        "Singapore — +65 6922 4180",
-        "Australia — +61 2 9056 7140",
-        "Email — clientservices@yourbrand.com",
+        "Monday–Saturday • 09:00–20:00 (Business Hours)",
+        "Sunday • Closed (Business Hours)",
+
+        "+1 (800) 555-0187 (United States)",
+        "+44 20 7946 0832 (United Kingdom)",
+        "+33 1 84 88 4560 (France)",
+        "+39 02 9475 2140 (Italy)",
+        "+81 3 4578 9210 (Japan)",
+
+        "clientservices@luxemen.com (Email)",
+
+        "Personal Shopping Assistance (Services)",
+        "Order Support (Services)",
+        "Product Recommendations (Services)",
+        "Size Consultation (Services)",
+        "Returns & Exchanges (Services)",
+        "Gift Services (Services)",
     ],
 
     "Store Locator": [
-        "New York — Fifth Avenue",
-        "London — Bond Street",
-        "Paris — Avenue Montaigne",
-        "Milan — Via Montenapoleone",
-        "Tokyo — Ginza",
-        "Dubai — Dubai Mall",
-        "Singapore — Marina Bay Sands",
-        "Hong Kong — Canton Road",
-        "Sydney — Martin Place",
+        "New York • Fifth Avenue (United States)",
+        "London • Bond Street (United Kingdom)",
+        "Paris • Avenue Montaigne (France)",
+        "Milan • Via Montenapoleone (Italy)",
+        "Tokyo • Ginza (Japan)",
+        "Dubai • Dubai Mall (UAE)",
+
+        "Private Shopping Appointments (Services)",
+        "Personal Styling Consultations (Services)",
+        "Luxury Gift Wrapping (Services)",
+        "Exclusive Collection Preview (Services)",
+
+        "Find Your Nearest Boutique (Store Locator)",
+        "Boutique Opening Hours Vary by Location (Store Locator)",
     ],
 
     Shipping: [
-        "Complimentary Standard Shipping",
-        "Express Delivery Available",
-        "Worldwide Shipping",
-        "Order Tracking Included",
-        "Easy Returns Within 30 Days",
-        "Customs & Duties Calculated at Checkout",
+        "Complimentary Standard Delivery (Standard)",
+        "Express Delivery • 1–3 Business Days (Express)",
+        "Worldwide Shipping Available (International)",
+
+        "Real-Time Order Tracking (Tracking)",
+        "Signature Required on Delivery (Tracking)",
+
+        "Luxury Gift Packaging Available (Packaging)",
+        "Premium Protective Packaging (Packaging)",
+
+        "Customs & Duties Calculated at Checkout (International)",
+        "Import Fees May Apply by Region (International)",
+
+        "Orders Processed Monday–Friday (Processing)",
+        "Delivery Times May Vary During Holidays (Processing)",
     ],
 
     "Size Guide": [
-        "XS — Chest 34\" • Waist 28\"",
-        "S — Chest 36\" • Waist 30\"",
-        "M — Chest 38\" • Waist 32\"",
-        "L — Chest 40\" • Waist 34\"",
-        "XL — Chest 42\" • Waist 36\"",
-        "XXL — Chest 44\" • Waist 38\"",
+        "XS • Chest 34\" (Tops)",
+        "S • Chest 36\" (Tops)",
+        "M • Chest 38\" (Tops)",
+        "L • Chest 40\" (Tops)",
+        "XL • Chest 42\" (Tops)",
+        "XXL • Chest 44\" (Tops)",
+
+        "28 • Waist 28\" (Bottoms)",
+        "30 • Waist 30\" (Bottoms)",
+        "32 • Waist 32\" (Bottoms)",
+        "34 • Waist 34\" (Bottoms)",
+        "36 • Waist 36\" (Bottoms)",
+        "38 • Waist 38\" (Bottoms)",
+
+        "UK 6 (Footwear)",
+        "UK 7 (Footwear)",
+        "UK 8 (Footwear)",
+        "UK 9 (Footwear)",
+        "UK 10 (Footwear)",
+        "UK 11 (Footwear)",
+
+        "Slim Fit",
+        "Regular Fit",
+        "Relaxed Fit",
+        "Oversized Fit",
+    ],
+
+    "Care Guide": [
+        "Read care label before washing (General)",
+        "Wash similar colours together (General)",
+        "Turn garments inside out (General)",
+
+        "Machine wash cold 30°C (Washing)",
+        "Use mild detergent (Washing)",
+        "Do not bleach (Washing)",
+        "Avoid fabric softener (Washing)",
+
+        "Hang dry whenever possible (Drying)",
+        "Do not tumble dry (Drying)",
+        "Dry away from direct sunlight (Drying)",
+
+        "Iron on low heat (Ironing)",
+        "Steam when necessary (Ironing)",
+        "Do not iron over prints (Ironing)",
+
+        "Store in a cool, dry place (Storage)",
+        "Use quality hangers (Storage)",
+        "Fold knitwear to maintain shape (Storage)",
     ],
 };
 
@@ -102,6 +174,7 @@ export default function ContactHero() {
             phone: "Phone",
             shipping: "Shipping",
             "size-guide": "Size Guide",
+            "care-guide": "Care Guide",
             store: "Store Locator",
         };
 
@@ -231,18 +304,24 @@ export default function ContactHero() {
                                 {openItem.description}
                             </p>
 
-                            <div className="mt-10 border-t">
+                            <div
+                                className={`mt-10 border-t ${openItem.title === "Size Guide" || openItem.title === "Care Guide"
+                                    ? "max-h-197.5 overflow-y-auto no-scrollbar"
+                                    : ""
+                                    }`}
+                            >
                                 {drawerContent[
                                     openItem.title as keyof typeof drawerContent
                                 ].map((item, index) => (
                                     <div
                                         key={index}
-                                        className="border-b px-4 py-5 text-sm cursor-pointer transition-colors hover:bg-black hover:text-white"
+                                        className="border-b px-4 py-5 text-sm transition-colors hover:bg-black hover:text-white"
                                     >
                                         {item}
                                     </div>
                                 ))}
                             </div>
+
                         </motion.div>
                     </>
                 )}
