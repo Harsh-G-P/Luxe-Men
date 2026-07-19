@@ -13,50 +13,54 @@ type Props = {
 export default async function CollectionsPage({ search, category, brand, sort, }: Props) {
 
     let orderBy:
-    | { createdAt: "desc" | "asc" }
-    | { price: "asc" | "desc" };
+        | { createdAt: "desc" | "asc" }
+        | { price: "asc" | "desc" };
 
-switch (sort) {
-    case "price-low":
-        orderBy = {
-            price: "asc",
-        };
-        break;
+    switch (sort) {
+        case "price-low":
+            orderBy = {
+                price: "asc",
+            };
+            break;
 
-    case "price-high":
-        orderBy = {
-            price: "desc",
-        };
-        break;
+        case "price-high":
+            orderBy = {
+                price: "desc",
+            };
+            break;
 
-    default:
-        orderBy = {
-            createdAt: "desc",
-        };
-}
+        default:
+            orderBy = {
+                createdAt: "desc",
+            };
+    }
 
-const where = {
-    isActive: true,
+    const where = {
+        isActive: true,
 
-    ...(search && {
-        title: {
-            contains: search,
-            mode: "insensitive" as const,
-        },
-    }),
+        ...(search && {
+            title: {
+                contains: search,
+                mode: "insensitive" as const,
+            },
+        }),
 
-    ...(category && {
-        categoryId: category,
-    }),
+        ...(category && {
+            categoryId: category,
+        }),
 
-    ...(brand && {
-        brandId: brand,
-    }),
+        ...(brand && {
+            brandId: brand,
+        }),
 
-    ...(sort === "bestseller" && {
-        bestseller: true,
-    }),
-};
+        ...(sort === "bestseller" && {
+            bestseller: true,
+        }),
+
+        ...(sort === "featured" && {
+            isFeatured: true,
+        }),
+    };
 
     const [products, categories, brands] = await Promise.all([
         prisma.product.findMany({

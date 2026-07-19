@@ -7,8 +7,9 @@ import {
     Ruler,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const contactMethods = [
     {
@@ -90,6 +91,31 @@ export default function ContactHero() {
         (typeof contactMethods)[number] | null
     >(null);
 
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const tab = searchParams.get("tab");
+
+        if (!tab) return;
+
+        const mapping = {
+            phone: "Phone",
+            shipping: "Shipping",
+            "size-guide": "Size Guide",
+            store: "Store Locator",
+        };
+
+        const title = mapping[tab as keyof typeof mapping];
+
+        if (!title) return;
+
+        const item = contactMethods.find((method) => method.title === title);
+
+        if (item) {
+            setOpenItem(item);
+        }
+    }, [searchParams]);
+
     return (
         <section className=" px-5 py-10 md:px-20">
 
@@ -123,7 +149,7 @@ export default function ContactHero() {
                     <h1 className="font-serif text-3xl uppercase tracking-wide md:text-5xl">
                         Exceptional Service For
                         <br />
-                         Every Journey
+                        Every Journey
                     </h1>
 
                     <p className="mt-5 max-w-xl text-xs uppercase tracking-[0.25em] text-white/90">
