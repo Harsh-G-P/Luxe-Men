@@ -2,21 +2,24 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type Variant = {
     id: string;
+    productId: string;
     price: number | null;
     attributes: Record<string, string>;
     stock: number;
 };
 
 type Props = {
+    productId: string;
     variants: Variant[];
     onVariantChange: (variant: Variant | null) => void;
 };
 
 
-export default function VariantSelector({ variants, onVariantChange }: Props) {
+export default function VariantSelector({ productId, variants, onVariantChange }: Props) {
 
     const attributes = Object.entries(
         variants.reduce<Record<string, Set<string>>>((acc, variant) => {
@@ -70,6 +73,42 @@ export default function VariantSelector({ variants, onVariantChange }: Props) {
     useEffect(() => {
         onVariantChange(selectedVariant ?? null);
     }, [selectedVariant, onVariantChange]);
+
+    const [loading, setLoading] = useState(false);
+
+    const handleAddToCart = async () => {
+        if (!selectedVariant) return;
+
+        try {
+            setLoading(true);
+
+            const res = await fetch("/api/cart", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    productId,
+                    variantId: selectedVariant.id,
+                    quantity,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.message || "Something went wrong");
+                return;
+            }
+
+            toast.success("Added to cart!");
+        } catch (error) {
+            console.error(error);
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
 
@@ -139,15 +178,18 @@ export default function VariantSelector({ variants, onVariantChange }: Props) {
                             </div>
 
                             <button
-                                disabled={selectedVariant.stock === 0}
+                                onClick={handleAddToCart}
+                                disabled={selectedVariant.stock === 0 || loading}
                                 className={`w-full py-3 text-xs tracking-widest transition ${selectedVariant.stock > 0
                                     ? "bg-black text-white hover:opacity-90"
                                     : "cursor-not-allowed bg-gray-300 text-gray-500"
                                     }`}
                             >
-                                {selectedVariant.stock > 0
-                                    ? "ADD TO CART"
-                                    : "OUT OF STOCK"}
+                                {loading
+                                    ? "ADDING..."
+                                    : selectedVariant.stock > 0
+                                        ? "ADD TO CART"
+                                        : "OUT OF STOCK"}
                             </button>
                         </>
                     )
