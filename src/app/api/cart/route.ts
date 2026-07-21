@@ -120,3 +120,88 @@ export async function POST(req: NextRequest) {
     }
 }
 
+export async function GET() {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+        return errorResponse("Unauthorized", 401);
+    }
+
+    try {
+        const cart = await prisma.cart.findUnique({
+            where: {
+                userId: session.user.id,
+            },
+            include: {
+                items: {
+                    include: {
+                        product: {
+                            select: {
+                                id: true,
+                                title: true,
+                                slug: true,
+                                images: true,
+                                price: true,
+                            },
+                        },
+                        variant: {
+                            select: {
+                                id: true,
+                                attributes: true,
+                                price: true,
+                                stock: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                },
+            },
+        });
+
+        if (!cart) {
+            return successResponse("Cart fetched successfully.", {
+                items: [],
+                subtotal: 0,
+            });
+        }
+
+        const items = cart.items.map((item) => {
+            const price = Number(item.variant?.price ?? item.product.price);
+
+            return {
+                id: item.id,
+                quantity: item.quantity,
+                product: {
+                    id: item.product.id,
+                    title: item.product.title,
+                    slug: item.product.slug,
+                    images: item.product.images,
+                },
+                variant: item.variant
+                    ? {
+                          id: item.variant.id,
+                          attributes: item.variant.attributes,
+                          stock: item.variant.stock,
+                      }
+                    : null,
+                price,
+                total: price * item.quantity,
+            };
+        });
+
+        const subtotal = items.reduce(
+            (sum, item) => sum + item.total,
+            0
+        );
+
+        return successResponse("Cart fetched successfully.", {
+            items,
+            subtotal,
+        });
+    } catch (error) {
+        console.error("Cart GET API:", error);
+        return errorResponse("Internal Server Error");
+    }
+}
