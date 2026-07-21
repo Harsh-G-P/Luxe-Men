@@ -39,7 +39,7 @@ export default function CartDetails() {
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [showDetails, setShowDetails] = useState(false);
 
-    const fetchCart = async () => {
+    const fetchCart = async (notify = false) => {
         try {
             const res = await fetch("/api/cart");
 
@@ -53,6 +53,11 @@ export default function CartDetails() {
                 setCartId(data.data.cartId);
                 setItems(data.data.items);
                 setSubtotal(data.data.subtotal);
+
+                 if (notify) {
+                window.dispatchEvent(new Event("cartUpdated"));
+            }
+
             }
         } catch (error) {
             console.log(error);
@@ -106,7 +111,7 @@ export default function CartDetails() {
 
             toast.success(data.message);
 
-            await fetchCart();
+            await fetchCart(true);
 
             setOpenId(null);
         } catch (error) {
@@ -131,7 +136,7 @@ export default function CartDetails() {
 
             toast.success(data.message);
 
-            await fetchCart();
+            await fetchCart(true);
 
         } catch (error) {
             toast.error("Something went wrong.")
@@ -223,6 +228,7 @@ export default function CartDetails() {
                     </div>
                 ) : (
                     <>
+                    
                         {/* LEFT */}
                         <div>
                             <h2 className="text-xs font-bold tracking-widest mb-3">YOUR SELECTIONS</h2>
@@ -491,8 +497,6 @@ export default function CartDetails() {
                                 })}
                             </div>
                         </div>
-
-
 
                         {/* RIGHT SUMMARY */}
                         <div className="border border-gray-200 p-10 min-h-125 bg-white max-w-md mx-auto">

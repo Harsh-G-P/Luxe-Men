@@ -108,6 +108,8 @@ export default function VariantSelector({ productId, variants, onVariantChange }
             }
 
             toast.success("Added to cart!");
+            window.dispatchEvent(new Event("cartUpdated"));
+            window.dispatchEvent(new Event("openMiniCart"));
         } catch (error) {
             console.error(error);
             toast.error("Something went wrong");
