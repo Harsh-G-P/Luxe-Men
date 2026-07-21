@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type CartItem = {
     id: string;
@@ -32,6 +33,7 @@ export default function CartDetails() {
     const [items, setItems] = useState<CartItem[]>([]);
     const [subtotal, setSubtotal] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [cartId, setCartId] = useState("");
 
     useEffect(() => {
         const fetchCart = async () => {
@@ -45,6 +47,7 @@ export default function CartDetails() {
                 }
 
                 if (data.success) {
+                    setCartId(data.data.cartId);
                     setItems(data.data.items);
                     setSubtotal(data.data.subtotal);
                 }
@@ -81,29 +84,57 @@ export default function CartDetails() {
         setOpenId(null);
     };
 
-    const handleDelete = (id: string) => {
-        setItems((prev) => prev.filter((item) => item.id !== id));
+    const handleDelete = async (id: string) => {
+        try {
+            const res = await fetch(`/api/cart/${id}`, {
+                method: "DELETE",
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.message || "Failed to remove item.");
+                return;
+            }
+
+            toast.success(data.message);
+
+            setItems((prev) => {
+                const updated = prev.filter((item) => item.id !== id);
+
+                const newSubtotal = updated.reduce(
+                    (total, item) => total + item.total,
+                    0
+                );
+
+                setSubtotal(newSubtotal);
+
+                return updated;
+            });
+        } catch (error) {
+            toast.error("Something went wrong.")
+        }
     };
 
     if (loading) {
-    return (
-        <div className="w-full bg-gray-100">
-            <div className="max-w-7xl mx-auto px-6 py-16">
+        return (
+            <div className="w-full bg-gray-100">
+                <div className="max-w-7xl mx-auto px-6 py-16">
 
-                <div className="flex flex-col items-center justify-center py-40">
+                    <div className="flex flex-col items-center justify-center py-40">
 
-                    <div className="w-10 h-10 border border-gray-300 border-t-black rounded-full animate-spin"></div>
+                        <div className="w-10 h-10 border border-gray-300 border-t-black rounded-full animate-spin"></div>
 
-                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-gray-500">
-                        Loading Your Shopping Bag
-                    </p>
+                        <p className="mt-8 text-xs uppercase tracking-[0.35em] text-gray-500">
+                            Loading Your Shopping Bag
+                        </p>
+
+                    </div>
 
                 </div>
-
             </div>
-        </div>
-    );
-}
+        );
+    }
 
     return (
         <div className="w-full bg-gray-100">
@@ -178,145 +209,261 @@ export default function CartDetails() {
                                     return (
                                         <div
                                             key={item.id}
-                                            className="flex flex-col md:flex-row gap-6 md:gap-10 border-b border-gray-200 py-6 md:py-8 first:border-t"
+                                            className="border-b border-gray-200 py-6 md:py-8 first:border-t"
                                         >
 
-                                            {/* IMAGE */}
-                                            <div className="relative w-full md:w-44 h-36 shrink-0">
-                                                <Image
-                                                    src={item.product.images[0]}
-                                                    alt={item.product.title}
-                                                    fill
-                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 176px, 176px"
-                                                    className="object-contain"
-                                                />
-                                            </div>
+                                            {/* Mobile */}
+                                            <div className="md:hidden flex flex-col items-center text-center">
 
-                                            {/* DETAILS */}
-                                            <div className="flex-1 space-y-2 text-sm mt-4 md:mt-0">
-                                                <p className="text-base font-medium">{item.product.title}</p>
-                                                <p className="text-xs text-gray-500">
+                                                <div className="relative w-52 h-44">
+                                                    <Image
+                                                        src={item.product.images[0]}
+                                                        alt={item.product.title}
+                                                        fill
+                                                        sizes="(max-width: 768px) 208px"
+                                                        className="object-contain"
+                                                    />
+
+                                                </div>
+
+                                                <h2 className="mt-6 text-xl font-light">
+                                                    {item.product.title}
+                                                </h2>
+
+                                                <p className="mt-3 text-xs text-gray-500">
                                                     Style #{item.product.slug}
                                                 </p>
 
-                                                <div className="text-xs text-gray-500 space-y-1">
-                                                    {Object.entries(
-                                                        (item.variant?.attributes as Record<string, string>) ?? {}
-                                                    ).map(([key, value]) => (
+                                                <div className="mt-4 text-xs text-gray-500 space-y-1">
+                                                    {Object.entries(item.variant?.attributes ?? {}).map(([key, value]) => (
                                                         <p key={key}>
                                                             {key}: {value}
                                                         </p>
                                                     ))}
                                                 </div>
 
-                                                <p className="text-xs text-gray-600 mt-2">
-                                                    Available for delivery or collect in store
+                                                <p className="mt-6 text-xl font-light">
+                                                    ${item.price.toLocaleString()}
                                                 </p>
 
+                                                <div className="flex justify-center mt-6">
+
+                                                    {/* QTY */}
+                                                    <div
+                                                        ref={(el: HTMLDivElement | null) => {
+                                                            qtyRefs.current[item.id!] = el;
+                                                        }}
+                                                        className="relative w-32 text-xs"
+                                                    >
+                                                        <div
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setOpenId(prev => prev === item.id ? null : item.id!);
+                                                            }}
+                                                            className="flex items-center gap-2 p-3 border border-gray-200 cursor-pointer bg-white"
+                                                        >
+                                                            <span className="text-gray-500 flex-1 font-semibold text-center">
+                                                                QTY: {item.quantity}
+                                                            </span>
+                                                            <svg
+                                                                className={`w-3 h-3 transition-transform text-black ${openId === item.id ? "rotate-180" : ""
+                                                                    }`}
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth={3}
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    d="M19 9l-7 7-7-7"
+                                                                />
+                                                            </svg>
+                                                        </div>
+
+                                                        {openId === item.id && (
+                                                            <div
+                                                                className="absolute w-full bg-white border shadow border-gray-200 z-50 max-h-40 overflow-y-auto"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                {Array.from({ length: 99 }, (_, i) => i + 1).map(q => (
+                                                                    <div
+                                                                        key={q}
+                                                                        onClick={() => handleQtyChange(item.id!, q)}
+                                                                        className={`p-3 text-center cursor-pointer hover:bg-gray-100 ${q === item.quantity ? "bg-gray-200 font-semibold" : ""
+                                                                            }`}
+                                                                    >
+                                                                        {q}
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                </div>
+
+                                                <div className="mt-8">
+                                                    <p className="font-semibold tracking-widest text-xs">
+                                                        AVAILABLE
+                                                    </p>
+
+                                                    <p className="mt-2 text-xs text-gray-500">
+                                                        Enjoy complimentary delivery or
+                                                        <br />
+                                                        Collect In Store.
+                                                    </p>
+                                                </div>
+
                                                 <button
-                                                    onClick={() => setRemoveId(item.id!)}
-                                                    className="relative text-xs mt-3 tracking-widest text-black after:absolute after:-bottom-0.5 after:left-0 after:w-full after:h-px after:bg-black after:origin-left after:scale-x-100 after:transition-transform after:duration-300 hover:after:scale-x-0 after:transform hover:font-bold"
+                                                    onClick={() => setRemoveId(item.id)}
+                                                    className="mt-8 underline text-xs tracking-widest"
                                                 >
                                                     REMOVE
                                                 </button>
-
-
-                                                {removeId && (
-                                                    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                                                        <div className="bg-white w-[90%] max-w-105 p-6 sm:p-10 text-center shadow-2xl animate-fadeIn">
-                                                            <h3 className="text-sm tracking-widest font-semibold uppercase mb-4">
-                                                                Remove Item
-                                                            </h3>
-                                                            <p className="text-xs text-gray-500 mb-8">
-                                                                Are you sure you want to remove this item from your shopping bag?
-                                                            </p>
-                                                            <div className="flex flex-col sm:flex-row gap-4">
-                                                                <button
-                                                                    onClick={() => setRemoveId(null)}
-                                                                    className="flex-1 border border-gray-300 py-3 text-xs tracking-widest hover:bg-gray-100 transition"
-                                                                >
-                                                                    CANCEL
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        handleDelete(removeId!);
-                                                                        setRemoveId(null);
-                                                                    }}
-                                                                    className="flex-1 bg-black text-white py-3 text-xs tracking-widest hover:bg-gray-900 transition"
-                                                                >
-                                                                    REMOVE
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
                                             </div>
 
-                                            {/* RIGHT: QTY & PRICE (unchanged for all screens) */}
-                                            <div className="flex items-center justify-between w-60 gap-4 text-sm mt-4 md:mt-0">
-                                                {/* QTY */}
-                                                <div
-                                                    ref={(el: HTMLDivElement | null) => {
-                                                        qtyRefs.current[item.id!] = el;
-                                                    }}
-                                                    className="relative w-28 h- text-xs"
-                                                >
-                                                    <div
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setOpenId(prev => prev === item.id ? null : item.id!);
-                                                        }}
-                                                        className="flex items-center gap-2 p-3 border border-gray-200 cursor-pointer bg-white"
-                                                    >
-                                                        <span className="text-gray-500 flex-1 font-semibold text-center">
-                                                            QTY: {item.quantity}
-                                                        </span>
-                                                        <svg
-                                                            className={`w-3 h-3 transition-transform text-black ${openId === item.id ? "rotate-180" : ""
-                                                                }`}
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            strokeWidth={3}
-                                                            viewBox="0 0 24 24"
-                                                        >
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                d="M19 9l-7 7-7-7"
-                                                            />
-                                                        </svg>
+                                            {/* Desktop */}
+                                            <div className="hidden md:flex gap-10">
+
+                                                {/* IMAGE */}
+                                                <div className="relative w-full md:w-44 h-36 shrink-0">
+                                                    <Image
+                                                        src={item.product.images[0]}
+                                                        alt={item.product.title}
+                                                        fill
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 176px, 176px"
+                                                        className="object-contain"
+                                                    />
+                                                </div>
+
+                                                {/* DETAILS */}
+                                                <div className="flex-1 space-y-2 text-sm mt-4 md:mt-0">
+                                                    <p className="text-base font-medium">{item.product.title}</p>
+                                                    <p className="text-xs text-gray-500">
+                                                        Style #{item.product.slug}
+                                                    </p>
+
+                                                    <div className="text-xs text-gray-500 space-y-1">
+                                                        {Object.entries(
+                                                            (item.variant?.attributes as Record<string, string>) ?? {}
+                                                        ).map(([key, value]) => (
+                                                            <p key={key}>
+                                                                {key}: {value}
+                                                            </p>
+                                                        ))}
                                                     </div>
 
-                                                    {openId === item.id && (
-                                                        <div
-                                                            className="absolute w-full bg-white border shadow border-gray-200 z-50 max-h-40 overflow-y-auto"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            {Array.from({ length: 99 }, (_, i) => i + 1).map(q => (
-                                                                <div
-                                                                    key={q}
-                                                                    onClick={() => handleQtyChange(item.id!, q)}
-                                                                    className={`p-3 text-center cursor-pointer hover:bg-gray-100 ${q === item.quantity ? "bg-gray-200 font-semibold" : ""
-                                                                        }`}
-                                                                >
-                                                                    {q}
+                                                    <p className="text-xs text-gray-600 mt-2">
+                                                        Available for delivery or collect in store
+                                                    </p>
+
+                                                    <button
+                                                        onClick={() => setRemoveId(item.id!)}
+                                                        className="relative text-xs mt-3 tracking-widest text-black after:absolute after:-bottom-0.5 after:left-0 after:w-full after:h-px after:bg-black after:origin-left after:scale-x-100 after:transition-transform after:duration-300 hover:after:scale-x-0 after:transform hover:font-bold"
+                                                    >
+                                                        REMOVE
+                                                    </button>
+
+
+                                                    {removeId && (
+                                                        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                                                            <div className="bg-white w-[90%] max-w-105 p-6 sm:p-10 text-center shadow-2xl animate-fadeIn">
+                                                                <h3 className="text-sm tracking-widest font-semibold uppercase mb-4">
+                                                                    Remove Item
+                                                                </h3>
+                                                                <p className="text-xs text-gray-500 mb-8">
+                                                                    Are you sure you want to remove this item from your shopping bag?
+                                                                </p>
+                                                                <div className="flex flex-col sm:flex-row gap-4">
+                                                                    <button
+                                                                        onClick={() => setRemoveId(null)}
+                                                                        className="flex-1 border border-gray-300 py-3 text-xs tracking-widest hover:bg-gray-100 transition"
+                                                                    >
+                                                                        CANCEL
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            handleDelete(removeId!);
+                                                                            setRemoveId(null);
+                                                                        }}
+                                                                        className="flex-1 bg-black text-white py-3 text-xs tracking-widest hover:bg-gray-900 transition"
+                                                                    >
+                                                                        REMOVE
+                                                                    </button>
                                                                 </div>
-                                                            ))}
+                                                            </div>
                                                         </div>
                                                     )}
                                                 </div>
 
-                                                {/* PRICE */}
-                                                <p className="whitespace-nowrap">
-                                                    ${item.total.toLocaleString()}
-                                                </p>
-                                            </div>
+                                                {/* RIGHT: QTY & PRICE (unchanged for all screens) */}
+                                                <div className="flex items-center justify-between w-60 gap-4 text-sm mt-4 md:mt-0">
+                                                    {/* QTY */}
+                                                    <div
+                                                        ref={(el: HTMLDivElement | null) => {
+                                                            qtyRefs.current[item.id!] = el;
+                                                        }}
+                                                        className="relative w-28 h- text-xs"
+                                                    >
+                                                        <div
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setOpenId(prev => prev === item.id ? null : item.id!);
+                                                            }}
+                                                            className="flex items-center gap-2 p-3 border border-gray-200 cursor-pointer bg-white"
+                                                        >
+                                                            <span className="text-gray-500 flex-1 font-semibold text-center">
+                                                                QTY: {item.quantity}
+                                                            </span>
+                                                            <svg
+                                                                className={`w-3 h-3 transition-transform text-black ${openId === item.id ? "rotate-180" : ""
+                                                                    }`}
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth={3}
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    d="M19 9l-7 7-7-7"
+                                                                />
+                                                            </svg>
+                                                        </div>
 
+                                                        {openId === item.id && (
+                                                            <div
+                                                                className="absolute w-full bg-white border shadow border-gray-200 z-50 max-h-40 overflow-y-auto"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                {Array.from({ length: 99 }, (_, i) => i + 1).map(q => (
+                                                                    <div
+                                                                        key={q}
+                                                                        onClick={() => handleQtyChange(item.id!, q)}
+                                                                        className={`p-3 text-center cursor-pointer hover:bg-gray-100 ${q === item.quantity ? "bg-gray-200 font-semibold" : ""
+                                                                            }`}
+                                                                    >
+                                                                        {q}
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* PRICE */}
+                                                    <p className="whitespace-nowrap">
+                                                        ${item.price.toLocaleString()}
+                                                    </p>
+                                                </div>
+
+                                            </div>
                                         </div>
                                     );
                                 })}
                             </div>
                         </div>
+
+
 
                         {/* RIGHT SUMMARY */}
                         <div className="border border-gray-200 p-10 h-125 bg-white max-w-md mx-auto">
@@ -325,7 +472,7 @@ export default function CartDetails() {
                                 ORDER SUMMARY
                             </h3>
                             <p className="text-[10px] font-semibold text-gray-400 mb-6 tracking-wide">
-                                USCART420125655
+                                CART-{cartId.slice(-8).toUpperCase()}
                             </p>
                             <div className="h-px w-full bg-gray-300 mb-4"></div>
                             {/* Subtotal */}
@@ -349,7 +496,7 @@ export default function CartDetails() {
                             {/* Divider */}
                             <div className="border-t border-gray-300 pt-4 flex justify-between items-center mb-3">
                                 <span className="uppercase tracking-widest font-bold text-gray-800 text-xs">Estimated Total</span>
-                                <span className="text-xs font-bold text-gray-900">${subtotal.toLocaleString()}</span>
+                                <span className="text-2xl font-light text-gray-900">${subtotal.toLocaleString()}</span>
                             </div>
 
                             {/* View Details */}

@@ -197,6 +197,7 @@ export async function GET() {
         );
 
         return successResponse("Cart fetched successfully.", {
+            cartId: cart.id,
             items,
             subtotal,
         });

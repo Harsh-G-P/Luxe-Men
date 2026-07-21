@@ -287,7 +287,8 @@ export default function ContactHero() {
                             animate={{ x: 0 }}
                             exit={{ x: "100%" }}
                             transition={{ duration: 0.5 }}
-                            className="fixed top-0 right-0 z-50 h-full w-137.5 bg-white p-8 shadow-xl"
+                            className="fixed top-0 right-0 z-50 h-full w-full max-w-137.5 bg-white p-6 md:p-8 shadow-xl overflow-y-auto"
+
                         >
                             <button
                                 onClick={() => setOpenItem(null)}
@@ -305,7 +306,7 @@ export default function ContactHero() {
                             </p>
 
                             <div
-                                className={`mt-10 border-t ${openItem.title === "Size Guide" || openItem.title === "Care Guide"
+                                className={`mt-10 border-t ${openItem.title === "Size Guide" || openItem.title === "Care Guide" || openItem.title === "Phone"
                                     ? "max-h-197.5 overflow-y-auto no-scrollbar"
                                     : ""
                                     }`}
