@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { AnimatePresence, motion } from "framer-motion";
 
 type CartItem = {
     id: string;
@@ -35,29 +36,32 @@ export default function CartDetails() {
     const [loading, setLoading] = useState(true);
     const [cartId, setCartId] = useState("");
 
-    useEffect(() => {
-        const fetchCart = async () => {
-            try {
-                const res = await fetch("/api/cart");
+    const [deletingId, setDeletingId] = useState<string | null>(null);
+    const [showDetails, setShowDetails] = useState(false);
 
-                const data = await res.json();
+    const fetchCart = async () => {
+        try {
+            const res = await fetch("/api/cart");
 
-                if (!res.ok) {
-                    return;
-                }
+            const data = await res.json();
 
-                if (data.success) {
-                    setCartId(data.data.cartId);
-                    setItems(data.data.items);
-                    setSubtotal(data.data.subtotal);
-                }
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
+            if (!res.ok) {
+                return;
             }
-        };
 
+            if (data.success) {
+                setCartId(data.data.cartId);
+                setItems(data.data.items);
+                setSubtotal(data.data.subtotal);
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchCart();
     }, []);
 
@@ -75,16 +79,44 @@ export default function CartDetails() {
         return () => document.removeEventListener("click", handler);
     }, [openId]);
 
-    const handleQtyChange = (id: string, qty: number) => {
-        setItems((prev) =>
-            prev.map((item) =>
-                item.id === id ? { ...item, quantity: qty } : item
-            )
-        );
-        setOpenId(null);
+    const handleQtyChange = async (id: string, qty: number) => {
+        try {
+            const res = await fetch(`/api/cart/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    quantity: qty,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                if (data.errors && typeof data.errors === "object") {
+                    const firstError = Object.values(data.errors)[0] as string;
+                    toast.error(firstError);
+                    return;
+                }
+
+                toast.error(data.message || "Failed to update cart.");
+                return;
+            }
+
+            toast.success(data.message);
+
+            await fetchCart();
+
+            setOpenId(null);
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong.");
+        }
     };
 
     const handleDelete = async (id: string) => {
+        setDeletingId(id)
         try {
             const res = await fetch(`/api/cart/${id}`, {
                 method: "DELETE",
@@ -99,20 +131,12 @@ export default function CartDetails() {
 
             toast.success(data.message);
 
-            setItems((prev) => {
-                const updated = prev.filter((item) => item.id !== id);
+            await fetchCart();
 
-                const newSubtotal = updated.reduce(
-                    (total, item) => total + item.total,
-                    0
-                );
-
-                setSubtotal(newSubtotal);
-
-                return updated;
-            });
         } catch (error) {
             toast.error("Something went wrong.")
+        } finally {
+            setDeletingId(null);
         }
     };
 
@@ -286,7 +310,7 @@ export default function CartDetails() {
                                                                 className="absolute w-full bg-white border shadow border-gray-200 z-50 max-h-40 overflow-y-auto"
                                                                 onClick={(e) => e.stopPropagation()}
                                                             >
-                                                                {Array.from({ length: 99 }, (_, i) => i + 1).map(q => (
+                                                                {Array.from({ length: item.variant?.stock ?? 1 }, (_, i) => i + 1).map(q => (
                                                                     <div
                                                                         key={q}
                                                                         onClick={() => handleQtyChange(item.id!, q)}
@@ -318,7 +342,9 @@ export default function CartDetails() {
                                                     onClick={() => setRemoveId(item.id)}
                                                     className="mt-8 underline text-xs tracking-widest"
                                                 >
-                                                    REMOVE
+                                                    {deletingId === item.id
+                                                        ? "REMOVING..."
+                                                        : "REMOVE"}
                                                 </button>
                                             </div>
 
@@ -361,7 +387,9 @@ export default function CartDetails() {
                                                         onClick={() => setRemoveId(item.id!)}
                                                         className="relative text-xs mt-3 tracking-widest text-black after:absolute after:-bottom-0.5 after:left-0 after:w-full after:h-px after:bg-black after:origin-left after:scale-x-100 after:transition-transform after:duration-300 hover:after:scale-x-0 after:transform hover:font-bold"
                                                     >
-                                                        REMOVE
+                                                        {deletingId === item.id
+                                                            ? "REMOVING..."
+                                                            : "REMOVE"}
                                                     </button>
 
 
@@ -398,6 +426,7 @@ export default function CartDetails() {
 
                                                 {/* RIGHT: QTY & PRICE (unchanged for all screens) */}
                                                 <div className="flex items-center justify-between w-60 gap-4 text-sm mt-4 md:mt-0">
+
                                                     {/* QTY */}
                                                     <div
                                                         ref={(el: HTMLDivElement | null) => {
@@ -436,7 +465,7 @@ export default function CartDetails() {
                                                                 className="absolute w-full bg-white border shadow border-gray-200 z-50 max-h-40 overflow-y-auto"
                                                                 onClick={(e) => e.stopPropagation()}
                                                             >
-                                                                {Array.from({ length: 99 }, (_, i) => i + 1).map(q => (
+                                                                {Array.from({ length: item.variant?.stock ?? 1 }, (_, i) => i + 1).map(q => (
                                                                     <div
                                                                         key={q}
                                                                         onClick={() => handleQtyChange(item.id!, q)}
@@ -466,7 +495,7 @@ export default function CartDetails() {
 
 
                         {/* RIGHT SUMMARY */}
-                        <div className="border border-gray-200 p-10 h-125 bg-white max-w-md mx-auto">
+                        <div className="border border-gray-200 p-10 min-h-125 bg-white max-w-md mx-auto">
                             {/* Header */}
                             <h3 className="text-xs tracking-widest mb-2 font-semibold text-gray-800 uppercase">
                                 ORDER SUMMARY
@@ -478,7 +507,10 @@ export default function CartDetails() {
                             {/* Subtotal */}
                             <div className="flex justify-between mb-3">
                                 <span className="text-gray-500 uppercase tracking-wide text-xs">Subtotal</span>
-                                <span className="text-gray-900 text-xs font-medium">${subtotal.toLocaleString()}</span>
+                                <span className="text-gray-900 text-xs font-medium">${subtotal.toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })}</span>
                             </div>
 
                             {/* Shipping */}
@@ -488,30 +520,102 @@ export default function CartDetails() {
                             </div>
 
                             {/* Estimated Tax */}
-                            <div className="flex justify-between mb-3">
-                                <span className="text-gray-500 uppercase tracking-wide text-xs">Estimated Tax</span>
-                                <button className="text-gray-700 text-xs underline">Calculate</button>
+                            <div className="mb-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs uppercase tracking-wide text-gray-500">
+                                        Taxes & Duties
+                                    </span>
+
+                                    <span className="text-xs text-gray-700">
+                                        At Checkout
+                                    </span>
+                                </div>
+
+                                <p className="mt-2 text-[10px] leading-4 text-gray-400">
+                                    Taxes and duties, if applicable, will be calculated during checkout based on your shipping address.
+                                </p>
                             </div>
 
                             {/* Divider */}
                             <div className="border-t border-gray-300 pt-4 flex justify-between items-center mb-3">
                                 <span className="uppercase tracking-widest font-bold text-gray-800 text-xs">Estimated Total</span>
-                                <span className="text-2xl font-light text-gray-900">${subtotal.toLocaleString()}</span>
+                                <span className="text-2xl font-light text-gray-900">${subtotal.toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })}</span>
                             </div>
 
                             {/* View Details */}
-                            <button className="text-gray-700 text-xs underline mb-4">
-                                VIEW DETAILS
+                            <button
+                                onClick={() => setShowDetails((prev) => !prev)}
+                                className="group relative mb-4 inline-block text-[11px] font-medium uppercase tracking-[0.28em] text-gray-700 transition-colors duration-300 hover:text-black"
+                            >
+                                {showDetails ? "Hide Details" : "View Details"}
+
+                                <span
+                                    className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-black transition-transform duration-500 ease-out group-hover:scale-x-100"
+                                />
                             </button>
 
+                            <AnimatePresence>
+                                {showDetails && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="mb-5 space-y-3 border-t border-gray-200 pt-4">
+
+                                            <div className="flex justify-between text-xs">
+                                                <span className="text-gray-500">Items</span>
+                                                <span>{items.length}</span>
+                                            </div>
+
+                                            <div className="flex justify-between text-xs">
+                                                <span className="text-gray-500">Products Total</span>
+                                                <span>
+                                                    ${subtotal.toLocaleString("en-US", {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2,
+                                                    })}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex justify-between text-xs">
+                                                <span className="text-gray-500">
+                                                    Premium Express Shipping
+                                                </span>
+                                                <span>FREE</span>
+                                            </div>
+
+                                            <div className="flex justify-between text-xs">
+                                                <span className="text-gray-500">
+                                                    Estimated Delivery
+                                                </span>
+                                                <span>2–4 Business Days</span>
+                                            </div>
+
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
                             {/* Info note */}
-                            <p className="text-[10px] text-gray-400 tracking-wide">
-                                You will be charged at the time of shipment. If this is a personalized or made-to-order purchase, you will be charged at the time of purchase.
+                            <p className="text-[10px] leading-5 text-gray-400 tracking-wide">
+                                Every order is carefully prepared, securely packaged, and shipped with complimentary premium delivery.
                             </p>
 
                             {/* Checkout Button */}
                             <Link href="/checkout">
-                                <button className="mt-8 w-full bg-black text-white py-4 text-sm tracking-widest uppercase shadow-lg hover:bg-gray-900 transition-all duration-300">
+                                <button
+                                    disabled={items.length === 0}
+                                    className={`mt-8 w-full py-4 text-sm tracking-widest uppercase shadow-lg transition-all duration-300 ${items.length === 0
+                                        ? "cursor-not-allowed bg-gray-300 text-gray-500"
+                                        : "bg-black text-white hover:bg-gray-900"
+                                        }`}
+                                >
                                     CHECKOUT
                                 </button>
                             </Link>

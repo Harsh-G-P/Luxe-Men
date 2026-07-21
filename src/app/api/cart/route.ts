@@ -13,8 +13,9 @@ export async function POST(req: NextRequest) {
         return errorResponse("Unauthorized", 401);
     }
 
+    let body
     try {
-        const body = await req.json();
+        body = await req.json();
 
         const result = cartSchema.safeParse(body);
 
@@ -181,10 +182,10 @@ export async function GET() {
                 },
                 variant: item.variant
                     ? {
-                          id: item.variant.id,
-                          attributes: item.variant.attributes,
-                          stock: item.variant.stock,
-                      }
+                        id: item.variant.id,
+                        attributes: item.variant.attributes,
+                        stock: item.variant.stock,
+                    }
                     : null,
                 price,
                 total: price * item.quantity,

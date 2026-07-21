@@ -97,6 +97,12 @@ export default function VariantSelector({ productId, variants, onVariantChange }
             const data = await res.json();
 
             if (!res.ok) {
+                if (data.errors && typeof data.errors === "object") {
+                    const firstError = Object.values(data.errors)[0] as string;
+                    toast.error(firstError);
+                    return;
+                }
+
                 toast.error(data.message || "Something went wrong");
                 return;
             }
@@ -282,7 +288,6 @@ export default function VariantSelector({ productId, variants, onVariantChange }
 
 
             </AnimatePresence>
-
 
         </div>
 
