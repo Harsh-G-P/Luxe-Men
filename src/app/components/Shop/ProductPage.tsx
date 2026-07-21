@@ -1,11 +1,7 @@
 
 import prisma from "@/app/lib/prisma";
 import ProductSection from "./Home/ProductSection";
-import ProductAccordion from "./Product/ProductAccordion";
-import ProductActions from "./Product/ProductActions";
 import ProductGallery from "./Product/ProductGallery";
-import ProductInfo from "./Product/ProductInfo";
-import VariantSelector from "./Product/VariantSelector";
 import Link from "next/link";
 import ProductDetails from "./Product/ProductDetails";
 
@@ -90,6 +86,7 @@ export default async function ProductPage({ slug }: Props) {
         images: product.images as string[],
         variants: product.variants.map((variant) => ({
             ...variant,
+            productId: variant.productId,
             price: variant.price ? Number(variant.price) : null,
             attributes: variant.attributes as Record<string, string>,
         })),

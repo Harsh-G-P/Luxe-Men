@@ -9,18 +9,20 @@ import ProductAccordion from "./ProductAccordion";
 type Variant = {
   id: string;
   price: number | null;
+  productId: string;
   stock: number;
   attributes: Record<string, string>;
 };
 
 type Product = {
-  title: string;
-  price: number;
-  description: string | null;
-  brand: {
+    id: string;
     title: string;
-  };
-  variants: Variant[];
+    price: number;
+    description: string | null;
+    brand: {
+        title: string;
+    };
+    variants: Variant[];
 };
 
 type Props = {
@@ -48,9 +50,10 @@ export default function ProductDetails({ product, totalStock }: Props) {
 
       <div>
         <VariantSelector
-          variants={product.variants}
-          onVariantChange={setSelectedVariant}
-        />
+    productId={product.id}
+    variants={product.variants}
+    onVariantChange={setSelectedVariant}
+/>
         <ProductActions />
       </div>
     </div>

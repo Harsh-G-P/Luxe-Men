@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import MiniCart from "./MiniCart";
+import { ShoppingBag } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
@@ -33,6 +36,46 @@ export default function Navbar() {
     }, []);
 
     const [profileOpen, setProfileOpen] = useState(false);
+    const [miniCartOpen, setMiniCartOpen] = useState(false);
+    const [cartCount, setCartCount] = useState(0);
+
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchCart = async () => {
+            try {
+                const res = await fetch("/api/cart");
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    setCartCount(data.data.items.length);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchCart();
+
+        window.addEventListener("cartUpdated", fetchCart);
+
+        return () => {
+            window.removeEventListener("cartUpdated", fetchCart);
+        };
+    }, [user]);
+
+    useEffect(() => {
+        const handleOpenMiniCart = () => {
+            setMiniCartOpen(true);
+        };
+
+        window.addEventListener("openMiniCart", handleOpenMiniCart);
+
+        return () => {
+            window.removeEventListener("openMiniCart", handleOpenMiniCart);
+        };
+    }, []);
 
     useEffect(() => {
         const closeMenu = () => setProfileOpen(false);
@@ -121,72 +164,96 @@ export default function Navbar() {
                             Login
                         </Link>
                     ) : (
-                        <div className="relative">
+                        <>
                             <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setProfileOpen((prev) => !prev);
+                                id="shopping-bag-btn-desktop"
+                                onClick={() => {
+                                    if (cartCount === 0) {
+                                        toast.error("Your shopping bag is empty");
+                                        return;
+                                    }
+
+                                    setMiniCartOpen(true);
                                 }}
-                                className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-sm font-semibold text-white ring-2 ring-transparent transition hover:ring-gray-300"
+                                className="relative p-1 text-black transition-all duration-200 hover:text-gray-600 mt-2"
                             >
-                                {initials}
+                                <ShoppingBag className="h-6 w-6" />
+
+                                {cartCount > 0 && (
+                                    <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1 text-[10px] font-semibold text-white">
+                                        {cartCount}
+                                    </span>
+                                )}
                             </button>
 
-                            {profileOpen && (
-                                <div className="absolute right-0 mt-3 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
-                                    <div className="border-b border-gray-100 px-5 py-4">
-                                        <p className="font-semibold text-gray-900">
-                                            {user.name}
-                                        </p>
+                            <div className="relative">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setProfileOpen((prev) => !prev);
+                                    }}
+                                    className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-sm font-semibold text-white ring-2 ring-transparent transition hover:ring-gray-300"
+                                >
+                                    {initials}
+                                </button>
 
-                                        <p className="mt-1 text-xs text-gray-500">
-                                            {user.email?.replace(/(.{2}).+(@.+)/, "$1****$2")}
-                                        </p>
-                                    </div>
-                                    {user.role === "ADMIN" && (
-                                        <div className="px-5 pt-3">
-                                            <span className="rounded-full bg-black px-3 py-1 text-xs text-white">
-                                                ADMIN
-                                            </span>
+                                {profileOpen && (
+                                    <div className="absolute right-0 mt-3 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+                                        <div className="border-b border-gray-100 px-5 py-4">
+                                            <p className="font-semibold text-gray-900">
+                                                {user.name}
+                                            </p>
+
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                {user.email?.replace(/(.{2}).+(@.+)/, "$1****$2")}
+                                            </p>
                                         </div>
-                                    )}
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            router.push("/profile");
-                                            setProfileOpen(false);
-                                        }}
-                                        className="block w-full px-5 py-3 text-left text-sm transition hover:bg-gray-100"
-                                    >
-                                        Profile
-                                    </button>
-
-                                    {user.role === "ADMIN" && (
+                                        {user.role === "ADMIN" && (
+                                            <div className="px-5 pt-3">
+                                                <span className="rounded-full bg-black px-3 py-1 text-xs text-white">
+                                                    ADMIN
+                                                </span>
+                                            </div>
+                                        )}
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                router.push("/admin");
+                                                router.push("/profile");
                                                 setProfileOpen(false);
                                             }}
                                             className="block w-full px-5 py-3 text-left text-sm transition hover:bg-gray-100"
                                         >
-                                            Admin Dashboard
+                                            Profile
                                         </button>
-                                    )}
 
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setProfileOpen(false);
-                                            signOut({ callbackUrl: "/login" });
-                                        }}
-                                        className="block w-full px-5 py-3 text-left text-sm text-red-600 transition hover:bg-red-50"
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                                        {user.role === "ADMIN" && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    router.push("/admin");
+                                                    setProfileOpen(false);
+                                                }}
+                                                className="block w-full px-5 py-3 text-left text-sm transition hover:bg-gray-100"
+                                            >
+                                                Admin Dashboard
+                                            </button>
+                                        )}
+
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setProfileOpen(false);
+                                                signOut({ callbackUrl: "/login" });
+                                            }}
+                                            className="block w-full px-5 py-3 text-left text-sm text-red-600 transition hover:bg-red-50"
+                                        >
+                                            Logout
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </>
+
                     )}
                 </div>
 
@@ -216,6 +283,27 @@ export default function Navbar() {
                             })}
 
                             <div className="my-4 border-t border-gray-200" />
+                            <button
+                                id="shopping-bag-btn-mobile"
+                                onClick={() => {
+                                    if (cartCount === 0) {
+                                        toast.error("Your shopping bag is empty");
+                                        return;
+                                    }
+
+                                    setMiniCartOpen(true);
+                                    setMenuOpen(false);
+                                }}
+                                className="flex items-center justify-center gap-3 rounded-2xl border border-gray-200 px-4 py-3"
+                            >
+                                <ShoppingBag className="h-5 w-5" />
+
+                                <span>Shopping Bag</span>
+
+                                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1 text-[10px] text-white">
+                                    {cartCount}
+                                </span>
+                            </button>
 
                             {!user ? (
                                 <Link
@@ -282,6 +370,11 @@ export default function Navbar() {
                     </div>
                 </div>
             )}
+
+            <MiniCart
+                open={miniCartOpen}
+                onClose={() => setMiniCartOpen(false)}
+            />
 
         </nav>
     );
