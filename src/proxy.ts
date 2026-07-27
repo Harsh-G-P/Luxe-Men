@@ -13,11 +13,14 @@ export async function proxy(req:NextRequest){
 
   const isDash = path.startsWith('/profile')
   const isAdminPage = path.startsWith('/admin')
+  const isCart = path.startsWith('/cart')
+  const isCheckout = path.startsWith('/checkout')
+
   const isLogin = path === "/login"
   const isRegister = path === "/register"
 
   const isAuth = isLogin || isRegister
-  const isProtected = isDash 
+  const isProtected = isDash || isCart
 
   if((!token || token.expired) && isProtected) {
     return NextResponse.redirect(new URL("/login",req.url))

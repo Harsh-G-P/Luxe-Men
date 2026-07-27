@@ -61,10 +61,33 @@ export async function POST(req: NextRequest) {
             }
         })
 
-        return successResponse("Address created successfully",address, 201)
+        return successResponse("Address created successfully", address, 201)
 
     } catch (error) {
         console.log("Addresses Post API:", error)
         return errorResponse("Internal Server Error");
+    }
+}
+
+export async function GET() {
+    const session = await getServerSession(authOptions)
+
+    if (!session || !session.user.id) {
+        return errorResponse("Unauthorized", 401)
+    }
+    try {
+        const addresses = await prisma.address.findMany({
+            where: {
+                userId: session.user.id
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        })
+
+        return successResponse("Brand fetch successfully", addresses, 200)
+    } catch (error) {
+        console.log("Address GET API", error)
+        return errorResponse("Internal Server Error")
     }
 }

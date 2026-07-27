@@ -19,6 +19,7 @@ type CartItem = {
         images: string[];
     };
     variant: {
+        sku: string | null;
         attributes: Record<string, string>;
     } | null;
 };
@@ -125,7 +126,7 @@ export default function MiniCart({ open, onClose }: Props) {
                         <>
                             {items.map((item) => (
                                 <div key={item.id} className="flex gap-4 p-7 h-46">
-                                    <div className="relative w-28 h-30">
+                                    <div className="relative w-32 h-32">
                                         <Image
                                             src={item.product.images[0]}
                                             alt={item.product.title}
@@ -135,15 +136,25 @@ export default function MiniCart({ open, onClose }: Props) {
                                         />
                                     </div>
 
-                                    <div className="flex-1 space-y-2 text-sm">
+                                    <div className="flex-1 text-sm">
                                         <p className="text-md font-bold">{item.product.title}</p>
-                                        <p className="text-sm font-light">${(item.total / item.quantity).toFixed(2)}</p>
-                                        <p className="text-xs text-gray-500">
-                                            Style #{item.product.slug}
+                                        <p className="mt-2 text-sm font-light">${(item.total / item.quantity).toFixed(2)}</p>
+                                        <p className="mt-4 text-[11px] text-gray-500">
+                                            Style: {item.variant?.sku}
                                         </p>
-                                        <p className="text-xs font-light">
+                                        <p className="mt-1 text-[11px] font-light">
                                             Quantity: {item.quantity}
                                         </p>
+                                        {item.variant?.attributes &&
+                                            Object.entries(item.variant.attributes).map(([key, value]) => (
+                                                <p
+                                                    key={key}
+                                                    className="mt-1 text-[10px]  text-gray-500"
+                                                >
+                                                    {key}: {value}
+                                                </p>
+                                            ))
+                                        }
                                     </div>
                                 </div>
                             ))}
