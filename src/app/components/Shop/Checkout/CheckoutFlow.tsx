@@ -87,6 +87,11 @@ export default function CheckoutFlow() {
                 <PaymentStep
                     paymentMethod={paymentMethod}
                     setPaymentMethod={setPaymentMethod}
+
+                    shippingData={shippingData}
+                    packagingData={packagingData}
+                    removeInvoice={removeInvoice}
+                    giftMessage={giftMessage}
                 />
             )}
 

@@ -1,12 +1,40 @@
 "use client"
 
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+type AddressProps = {
+    id: string;
+};
+
 type Props = {
     paymentMethod: string;
     setPaymentMethod: any;
-}
 
-export default function PaymentStep({ paymentMethod,
-    setPaymentMethod }: Props) {
+    shippingData: AddressProps | null;
+
+    packagingData: {
+        option: string;
+    };
+
+    removeInvoice: boolean;
+    giftMessage: string;
+};
+
+export default function PaymentStep({
+    paymentMethod,
+    setPaymentMethod,
+    shippingData,
+    packagingData,
+    removeInvoice,
+    giftMessage,
+}: Props) {
+
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
+
+   
+
     return (
         <section className="mt-14">
 
@@ -34,7 +62,7 @@ export default function PaymentStep({ paymentMethod,
                     <input
                         type="radio"
                         checked={paymentMethod === "COD"}
-                        onChange={() => setPaymentMethod("Cash")}
+                        onChange={() => setPaymentMethod("COD")}
                         className="h-4 w-4 accent-black"
                     />
 
@@ -49,15 +77,15 @@ export default function PaymentStep({ paymentMethod,
 
                 {/* Online */}
                 <label
-                    className={`flex cursor-pointer items-center gap-5 border p-8 transition ${paymentMethod === "Online"
+                    className={`flex cursor-pointer items-center gap-5 border p-8 transition ${paymentMethod === "STRIPE"
                         ? "border-black"
                         : "border-neutral-300"
                         }`}
                 >
                     <input
                         type="radio"
-                        checked={paymentMethod === "Online"}
-                        onChange={() => setPaymentMethod("Online")}
+                        checked={paymentMethod === "STRIPE"}
+                        onChange={() => setPaymentMethod("STRIPE")}
                         className="h-4 w-4 accent-black"
                     />
 
@@ -65,14 +93,14 @@ export default function PaymentStep({ paymentMethod,
                         <h3 className="text-sm">Online Payment</h3>
 
                         <p className="text-xs text-neutral-500">
-                            Pay securely using PayPal, Credit Card, Debit Card, or UPI.
-                        </p>
+    Pay securely using your preferred payment method through Stripe.
+</p>
                     </div>
                 </label>
             </div>
 
             {/* Online Details */}
-            {paymentMethod === "Online" && (
+            {paymentMethod === "STRIPE" && (
                 <div className="mt-8 border border-neutral-300 p-8">
                     <p className="text-sm text-neutral-600">
                         You will be redirected to the secure payment gateway after clicking
@@ -83,9 +111,10 @@ export default function PaymentStep({ paymentMethod,
 
             <button
                 type="button"
+                disabled={loading}
                 className="mt-10 h-13 bg-black px-10 text-[13px] uppercase tracking-[0.08em] text-white transition hover:bg-neutral-800"
             >
-                Place Order
+                {loading ? "Placing Order..." : "Place Order"}
             </button>
 
 

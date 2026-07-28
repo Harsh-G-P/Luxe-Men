@@ -13,24 +13,24 @@ datasource db {
 }
 
 model User {
-  id String @id @default(cuid())
-  email String @unique
-  name String
-  username String @unique
-  password String
-  image String?
-  role Role @default(USER)
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  username  String   @unique
+  password  String
+  image     String?
+  role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   emailVerified DateTime?
 
-  verificationToken VerificationToken[]
+  verificationToken   VerificationToken[]
   passwordResetTokens PasswordResetToken[]
 
   address Address[]
-  cart Cart?
-  orders Order[]
+  cart    Cart?
+  orders  Order[]
 }
 
 enum Role {
@@ -39,13 +39,13 @@ enum Role {
 }
 
 model VerificationToken {
-  id         String   @id @default(cuid())
-  userId     String
-  tokenHash  String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -63,20 +63,20 @@ model PasswordResetToken {
 }
 
 model Address {
-  id String @id @default(cuid())
-  fullname String
+  id          String @id @default(cuid())
+  fullname    String
   countryCode String
-  phone String
+  phone       String
 
   addressLine String
-  city String
-  state String
-  country String
-  postalCode String
-  isDefault Boolean @default(false)
+  city        String
+  state       String
+  country     String
+  postalCode  String
+  isDefault   Boolean @default(false)
 
   userId String
-  user User @relation(fields:[userId],references: [id],onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   orders Order[]
 
@@ -85,17 +85,17 @@ model Address {
 }
 
 model Brand {
-  id String @id @default(cuid())
+  id    String @id @default(cuid())
   title String @unique
 
   products Product[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
+  updatedAt DateTime @updatedAt
 }
 
 model Category {
-  id String @id @default(cuid())
+  id    String @id @default(cuid())
   title String @unique
 
   products Product[]
@@ -103,29 +103,29 @@ model Category {
   attributes CategoryAttribute[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
+  updatedAt DateTime @updatedAt
 }
 
 model CategoryAttribute {
   id String @id @default(cuid())
 
-  title String
+  title  String
   values Json
 
   categoryId String
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Product {
-  id String @id @default(cuid())
-  title String
-  slug String @unique
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
   description String?
-  
-  price Decimal @db.Decimal(10,2)
+
+  price Decimal @db.Decimal(10, 2)
 
   images Json
 
@@ -134,13 +134,13 @@ model Product {
   bestseller Boolean @default(false)
 
   categoryId String
-  category Category @relation(fields:[categoryId],references:[id],onDelete: Restrict)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 
   brandId String
-  brand Brand @relation(fields:[brandId],references:[id],onDelete: Restrict)
+  brand   Brand  @relation(fields: [brandId], references: [id], onDelete: Restrict)
 
-  variants ProductVariant[]
-  cartItems CartItem[]
+  variants   ProductVariant[]
+  cartItems  CartItem[]
   orderItems OrderItem[]
 
   createdAt DateTime @default(now())
@@ -148,17 +148,17 @@ model Product {
 }
 
 model ProductVariant {
-  id String @id @default(cuid())
+  id        String  @id @default(cuid())
   productId String
-  product Product @relation(fields:[productId],references: [id],onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   attributes Json
-  sku String? @unique
+  sku        String? @unique
 
-  price Decimal? @db.Decimal(10,2)
-  stock Int @default(0)
+  price Decimal? @db.Decimal(10, 2)
+  stock Int      @default(0)
 
-  cartItems CartItem[]
+  cartItems  CartItem[]
   orderItems OrderItem[]
 
   createdAt DateTime @default(now())
@@ -169,7 +169,7 @@ model Cart {
   id String @id @default(cuid())
 
   userId String @unique
-  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   items CartItem[]
 
@@ -181,13 +181,13 @@ model CartItem {
   id String @id @default(cuid())
 
   cartId String
-  cart Cart @relation(fields: [cartId],references: [id],onDelete: Cascade)
+  cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
 
   productId String
-  product Product @relation(fields: [productId],references: [id],onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   variantId String?
-  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
 
   quantity Int @default(1)
 
@@ -201,16 +201,16 @@ model Order {
   id String @id @default(cuid())
 
   userId String
-  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   addressId String
-  address Address @relation(fields: [addressId],references: [id])
+  address   Address @relation(fields: [addressId], references: [id])
 
   orderNumber String @unique
 
-  subtotal Decimal @db.Decimal(10,2)
-  shipping Decimal @db.Decimal(10,2) @default(0)
-  total Decimal @db.Decimal(10,2)
+  subtotal Decimal @db.Decimal(10, 2)
+  shipping Decimal @default(0) @db.Decimal(10, 2)
+  total    Decimal @db.Decimal(10, 2)
 
   status OrderStatus @default(PENDING)
 
@@ -221,22 +221,25 @@ model Order {
 
   notes String?
 
+  packagingOption String?
+  giftMessage     String?
+  removeInvoice   Boolean @default(false)
+
   items OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@index([userId])
   @@index([status])
   @@index([paymentStatus])
-
 }
 
 model OrderItem {
   id String @id @default(cuid())
 
   orderId String
-  order Order @relation(fields: [orderId],references: [id],onDelete: Cascade)
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   productId String
   product   Product @relation(fields: [productId], references: [id])
@@ -244,16 +247,16 @@ model OrderItem {
   variantId String?
   variant   ProductVariant? @relation(fields: [variantId], references: [id])
 
-  title String
-  image String?
+  title      String
+  image      String?
   attributes Json?
-  quantity Int
-  price Decimal @db.Decimal(10,2)
-  total Decimal @db.Decimal(10,2)
+  quantity   Int
+  price      Decimal @db.Decimal(10, 2)
+  total      Decimal @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())
 
-   @@index([orderId])
+  @@index([orderId])
 }
 
 enum OrderStatus {
@@ -276,3 +279,4 @@ enum PaymentStatus {
   FAILED
   REFUNDED
 }
+
