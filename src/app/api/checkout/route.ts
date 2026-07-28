@@ -1,6 +1,7 @@
 import { errorResponse, successResponse } from "@/app/lib/apiResponse";
 import { authOptions } from "@/app/lib/auth";
 import prisma from "@/app/lib/prisma";
+import { stripe } from "@/app/lib/stripe";
 import { checkoutSchema } from "@/app/lib/validations/checkout";
 import { formatZodErrors } from "@/app/lib/validations/formatZod";
 import { getServerSession } from "next-auth";
@@ -180,6 +181,78 @@ export async function POST(req: NextRequest) {
             });
         }
 
+        else if (validated.paymentMethod === "STRIPE") {
+
+            const stripeSession = await stripe.checkout.sessions.create({
+                mode: "payment",
+
+                payment_method_types: ["card"],
+
+                line_items: cart.items.map((item) => {
+                    const price = Number(
+                        item.variant?.price ?? item.product.price
+                    );
+
+                    const image =
+                        Array.isArray(item.product.images) &&
+                            typeof item.product.images[0] === "string"
+                            ? item.product.images[0]
+                            : undefined;
+
+                    return {
+                        quantity: item.quantity,
+
+                        price_data: {
+                            currency: "usd",
+
+                            unit_amount: Math.round(price * 100),
+
+                            product_data: {
+                                name: item.product.title,
+                                images: image ? [image] : [],
+                            },
+                        },
+                    };
+                }),
+
+                metadata: {
+                    userId: session.user.id,
+                    addressId: address.id,
+
+                    subtotal: String(subtotal),
+                    shipping: String(shipping),
+                    total: String(total),
+
+                    orderNumber,
+
+                    packagingOption:
+                        validated.packagingOption ?? "",
+
+                    giftMessage:
+                        validated.giftMessage ?? "",
+
+                    removeInvoice:
+                        String(validated.removeInvoice),
+
+                    notes:
+                        validated.notes ?? "",
+                },
+
+                success_url:
+                    `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+
+                cancel_url:
+                    `${process.env.NEXT_PUBLIC_APP_URL}/checkout`,
+            });
+
+
+            return successResponse(
+                "Stripe session created.",
+                {
+                    url: stripeSession.url,
+                }
+            );
+        }
 
         else {
             return errorResponse("Invalid payment method", 400)

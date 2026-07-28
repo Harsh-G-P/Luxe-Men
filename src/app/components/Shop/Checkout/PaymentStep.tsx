@@ -61,6 +61,11 @@ export default function PaymentStep({
                 return;
             }
 
+            if (paymentMethod === "STRIPE") {
+                window.location.href = data.data.url;
+                return;
+            }
+
             window.dispatchEvent(new Event("cartUpdated"));
 
             router.push(`/checkout/success?order=${data.data.orderNumber}`);

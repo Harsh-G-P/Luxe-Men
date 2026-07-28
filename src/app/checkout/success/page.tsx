@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import prisma from "@/app/lib/prisma";
+import { stripe } from "@/app/lib/stripe";
 import CartRefresh from "@/app/components/Shop/CartRefresh";
 
 type Props = {
@@ -35,6 +36,228 @@ export default async function CheckoutSuccess({ searchParams }: Props) {
 
     }
 
+    // =========================
+    // STRIPE SUCCESS
+    // =========================
+    else if (params.session_id) {
+
+        const stripeSession = await stripe.checkout.sessions.retrieve(
+            params.session_id
+        );
+
+
+        if (stripeSession.payment_status !== "paid") {
+            notFound();
+        }
+
+
+        order = await prisma.order.findFirst({
+            where: {
+                paymentId: stripeSession.id,
+            },
+            include: {
+                items: true,
+            },
+        });
+
+
+
+        // Create order after successful payment
+        if (!order) {
+
+            const metadata = stripeSession.metadata;
+
+
+            if (
+                !metadata?.userId ||
+                !metadata?.addressId ||
+                !metadata?.orderNumber
+            ) {
+                notFound();
+            }
+
+
+
+            const cart = await prisma.cart.findUnique({
+                where: {
+                    userId: metadata.userId,
+                },
+                include: {
+                    items: {
+                        include: {
+                            product: true,
+                            variant: true,
+                        },
+                    },
+                },
+            });
+
+
+
+            if (!cart || cart.items.length === 0) {
+                notFound();
+            }
+
+
+
+            order = await prisma.$transaction(async (tx) => {
+
+
+                const newOrder = await tx.order.create({
+                    data: {
+
+                        userId: metadata.userId,
+
+                        addressId: metadata.addressId,
+
+                        orderNumber: metadata.orderNumber,
+
+
+                        subtotal: Number(metadata.subtotal),
+
+                        shipping: Number(metadata.shipping),
+
+                        total: Number(metadata.total),
+
+
+                        paymentMethod: "STRIPE",
+
+                        paymentStatus: "PAID",
+
+                        paymentId: stripeSession.id,
+
+                        status: "CONFIRMED",
+
+
+                        notes:
+                            metadata.notes || null,
+
+
+                        packagingOption:
+                            metadata.packagingOption || null,
+
+
+                        giftMessage:
+                            metadata.giftMessage || null,
+
+
+                        removeInvoice:
+                            metadata.removeInvoice === "true",
+                    },
+                });
+
+
+
+                await tx.orderItem.createMany({
+                    data: cart.items.map((item) => {
+
+                        const price = Number(
+                            item.variant?.price ??
+                            item.product.price
+                        );
+
+
+                        const image =
+                            Array.isArray(item.product.images) &&
+                                typeof item.product.images[0] === "string"
+                                ? item.product.images[0]
+                                : null;
+
+
+                        return {
+
+                            orderId: newOrder.id,
+
+
+                            productId:
+                                item.product.id,
+
+
+                            variantId:
+                                item.variant?.id ?? null,
+
+
+                            title:
+                                item.product.title,
+
+
+                            image,
+
+
+                            attributes:
+                                item.variant?.attributes &&
+                                    typeof item.variant.attributes === "object"
+                                    ? item.variant.attributes
+                                    : undefined,
+
+
+                            quantity:
+                                item.quantity,
+
+
+                            price,
+
+
+                            total:
+                                price * item.quantity,
+                        };
+                    }),
+                });
+
+
+
+                for (const item of cart.items) {
+
+                    if (!item.variant) continue;
+
+
+                    await tx.productVariant.update({
+
+                        where: {
+                            id: item.variant.id,
+                        },
+
+                        data: {
+
+                            stock: {
+                                decrement: item.quantity,
+                            },
+
+                        },
+
+                    });
+
+                }
+
+
+
+                await tx.cartItem.deleteMany({
+
+                    where: {
+                        cartId: cart.id,
+                    },
+
+                });
+
+
+
+                return tx.order.findUniqueOrThrow({
+
+                    where: {
+                        id: newOrder.id,
+                    },
+
+                    include: {
+                        items: true,
+                    },
+
+                });
+
+            });
+
+        }
+
+    }
 
     else {
         notFound();
