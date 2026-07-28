@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 type AddressProps = {
     id: string;
@@ -33,7 +34,42 @@ export default function PaymentStep({
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
-   
+    const handlePlaceOrder = async () => {
+        if (!shippingData) return;
+
+        try {
+            setLoading(true);
+
+            const res = await fetch("/api/checkout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    addressId: shippingData.id,
+                    paymentMethod,
+                    packagingOption: packagingData.option,
+                    giftMessage,
+                    removeInvoice,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.message);
+                return;
+            }
+
+            window.dispatchEvent(new Event("cartUpdated"));
+
+            router.push(`/checkout/success?order=${data.data.orderNumber}`);
+        } catch (err) {
+            toast.error("Something went wrong.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <section className="mt-14">
@@ -112,6 +148,7 @@ export default function PaymentStep({
             <button
                 type="button"
                 disabled={loading}
+                onClick={handlePlaceOrder}
                 className="mt-10 h-13 bg-black px-10 text-[13px] uppercase tracking-[0.08em] text-white transition hover:bg-neutral-800"
             >
                 {loading ? "Placing Order..." : "Place Order"}
