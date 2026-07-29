@@ -1,6 +1,7 @@
 import { errorResponse, successResponse } from "@/app/lib/apiResponse";
 import { authOptions } from "@/app/lib/auth";
 import prisma from "@/app/lib/prisma";
+import { sendOrderConfirmationEmail } from "@/app/lib/sendOrderConfirmationEmail";
 import { stripe } from "@/app/lib/stripe";
 import { checkoutSchema } from "@/app/lib/validations/checkout";
 import { formatZodErrors } from "@/app/lib/validations/formatZod";
@@ -173,6 +174,26 @@ export async function POST(req: NextRequest) {
                 return order
 
             });
+
+            const user = await prisma.user.findUnique({
+                    where:{
+                        id:session.user.id
+                    },
+                    select:{
+                        email:true,
+                        name:true,
+                    }
+                })
+
+                if(user){
+                    await sendOrderConfirmationEmail({
+                        email:user.email,
+                        name:user.name ?? "Customer",
+                        orderNumber:order.orderNumber,
+                        total:Number(order.total),
+                        paymentMethod:order.paymentMethod
+                    })
+                }
 
             return successResponse("Order placed successfully.", {
                 id: order.id,

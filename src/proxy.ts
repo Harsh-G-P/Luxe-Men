@@ -20,7 +20,7 @@ export async function proxy(req:NextRequest){
   const isRegister = path === "/register"
 
   const isAuth = isLogin || isRegister
-  const isProtected = isDash || isCart
+  const isProtected = isDash || isCart || isCheckout
 
   if((!token || token.expired) && isProtected) {
     return NextResponse.redirect(new URL("/login",req.url))
