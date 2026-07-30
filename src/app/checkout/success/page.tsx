@@ -42,9 +42,19 @@ export default async function CheckoutSuccess({ searchParams }: Props) {
     // =========================
     else if (params.session_id) {
 
-        const stripeSession = await stripe.checkout.sessions.retrieve(
-            params.session_id
-        );
+        if (!params.session_id.startsWith("cs_")) {
+            notFound();
+        }
+
+        let stripeSession;
+
+        try {
+            stripeSession = await stripe.checkout.sessions.retrieve(
+                params.session_id
+            );
+        } catch {
+            notFound();
+        }
 
 
         if (stripeSession.payment_status !== "paid") {

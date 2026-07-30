@@ -4,12 +4,31 @@ import CheckoutFlow from "./Checkout/CheckoutFlow";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
 import { redirect } from "next/navigation";
+import prisma from "@/app/lib/prisma";
 
 export default async function CheckoutPage() {
     const session = await getServerSession(authOptions)
 
     if (!session) {
         redirect("/login")
+    }
+
+    const cart = await prisma.cart.findUnique({
+        where: {
+            userId: session.user.id,
+        },
+        select: {
+            id: true,
+            items: {
+                select: {
+                    id: true,
+                },
+            },
+        },
+    });
+
+    if (!cart || cart.items.length === 0) {
+        redirect("/cart");
     }
     
     return (

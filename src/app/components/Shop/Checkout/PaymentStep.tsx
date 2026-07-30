@@ -57,7 +57,10 @@ export default function PaymentStep({
             const data = await res.json();
 
             if (!res.ok) {
-                toast.error(data.message);
+                toast.error(
+                    data.message ||
+                    "Unable to complete checkout."
+                );
                 return;
             }
 
@@ -70,7 +73,11 @@ export default function PaymentStep({
 
             router.push(`/checkout/success?order=${data.data.orderNumber}`);
         } catch (err) {
-            toast.error("Something went wrong.");
+            console.error(err);
+
+            toast.error(
+                "Checkout failed. Please try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -95,7 +102,7 @@ export default function PaymentStep({
             <div className="space-y-6">
                 {/* Cash */}
                 <label
-                    className={`flex cursor-pointer items-center gap-5 border p-8 transition ${paymentMethod === "Cash"
+                    className={`flex cursor-pointer items-center gap-5 border p-8 transition ${paymentMethod === "COD"
                         ? "border-black"
                         : "border-neutral-300"
                         }`}
@@ -134,8 +141,8 @@ export default function PaymentStep({
                         <h3 className="text-sm">Online Payment</h3>
 
                         <p className="text-xs text-neutral-500">
-    Pay securely using your preferred payment method through Stripe.
-</p>
+                            Pay securely using your preferred payment method through Stripe.
+                        </p>
                     </div>
                 </label>
             </div>
@@ -152,11 +159,21 @@ export default function PaymentStep({
 
             <button
                 type="button"
-                disabled={loading}
+                disabled={loading || !shippingData}
                 onClick={handlePlaceOrder}
-                className="mt-10 h-13 bg-black px-10 text-[13px] uppercase tracking-[0.08em] text-white transition hover:bg-neutral-800"
+                className={`mt-10 h-13 px-10 text-[13px] uppercase tracking-[0.08em] text-white transition
+${loading
+                        ? "cursor-not-allowed bg-neutral-500"
+                        : "bg-black hover:bg-neutral-800"
+                    }`}
             >
-                {loading ? "Placing Order..." : "Place Order"}
+                {
+                    loading
+                        ? paymentMethod === "STRIPE"
+                            ? "Redirecting to Stripe..."
+                            : "Placing Order..."
+                        : "Place Order"
+                }
             </button>
 
 
