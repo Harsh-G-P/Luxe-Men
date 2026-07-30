@@ -21,6 +21,7 @@ type CartItem = {
 
     variant: {
         id: string;
+        sku: string | null
         attributes: Record<string, string>;
         stock: number;
     } | null;
@@ -261,7 +262,7 @@ export default function CartDetails() {
                                                 </h2>
 
                                                 <p className="mt-3 text-xs text-gray-500">
-                                                    Style #{item.product.slug}
+                                                    Style: {item.variant?.sku}
                                                 </p>
 
                                                 <div className="mt-4 text-xs text-gray-500 space-y-1">
@@ -372,7 +373,7 @@ export default function CartDetails() {
                                                 <div className="flex-1 space-y-2 text-sm mt-4 md:mt-0">
                                                     <p className="text-base font-medium">{item.product.title}</p>
                                                     <p className="text-xs text-gray-500">
-                                                        Style #{item.product.slug}
+                                                        Style: {item.variant?.sku}
                                                     </p>
 
                                                     <div className="text-xs text-gray-500 space-y-1">

@@ -148,6 +148,7 @@ export async function GET() {
                         variant: {
                             select: {
                                 id: true,
+                                sku: true,
                                 attributes: true,
                                 price: true,
                                 stock: true,
@@ -183,6 +184,7 @@ export async function GET() {
                 variant: item.variant
                     ? {
                         id: item.variant.id,
+                        sku: item.variant.sku,
                         attributes: item.variant.attributes,
                         stock: item.variant.stock,
                     }
