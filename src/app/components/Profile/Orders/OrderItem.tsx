@@ -5,10 +5,10 @@ import Image from "next/image";
 type Item = {
     id: string;
     title: string;
-    variant: string;
     quantity: number;
     price: number;
-    image: string;
+    image: string | null;
+    attributes: Record<string, string> | null;
 };
 
 type Props = {
@@ -23,7 +23,7 @@ export default function OrderItem({ item }: Props) {
                 <div className="shrink-0 overflow-hidden border border-neutral-200 bg-neutral-100">
 
                     <Image
-                        src={item.image}
+                        src={item.image || "/images/NoImage.jpg"}
                         alt={item.title}
                         width={96}
                         height={96}
@@ -40,7 +40,11 @@ export default function OrderItem({ item }: Props) {
                         </h3>
 
                         <p className="mt-2 text-xs text-neutral-500">
-                            {item.variant}
+                            {item.attributes
+                                ? Object.entries(item.attributes)
+                                    .map(([key, value]) => `${key}: ${value}`)
+                                    .join(" • ")
+                                : "-"}
                         </p>
                     </div>
 
@@ -54,7 +58,10 @@ export default function OrderItem({ item }: Props) {
                         </div>
 
                         <div className="font-light">
-                            ${item.price.toFixed(2)}
+                            {new Intl.NumberFormat("en-US", {
+                                style: "currency",
+                                currency: "USD",
+                            }).format(item.price)}
                         </div>
 
                     </div>

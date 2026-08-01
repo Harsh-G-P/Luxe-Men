@@ -2,34 +2,20 @@
 
 import Image from "next/image";
 
-const products = [
-  {
-    id: "1",
-    title: "Gucci Oversized Hoodie",
-    variant: "Black • Size L",
-    quantity: 2,
-    price: 149,
-    image: "/products/p1.webp",
-  },
-  {
-    id: "2",
-    title: "Wide Leg Denim Jeans",
-    variant: "Blue • Size 32",
-    quantity: 1,
-    price: 119,
-    image: "/products/p2.webp",
-  },
-  {
-    id: "3",
-    title: "Leather Sneakers",
-    variant: "White • Size 9",
-    quantity: 1,
-    price: 229,
-    image: "/products/p3.webp",
-  },
-];
+type Item = {
+  id: string;
+  title: string;
+  image: string | null;
+  attributes: Record<string, string> | null;
+  quantity: number;
+  price: number;
+};
 
-export default function OrderProducts() {
+type Props = {
+  items: Item[];
+};
+
+export default function OrderProducts({ items }: Props) {
   return (
     <div className="border border-neutral-200 bg-white">
 
@@ -43,7 +29,7 @@ export default function OrderProducts() {
 
       <div className="divide-y divide-neutral-200">
 
-        {products.map((product) => (
+        {items.map((product) => (
           <div
             key={product.id}
             className="flex gap-6 px-8 py-6 hover:bg-neutral-50 transition-colors"
@@ -52,12 +38,13 @@ export default function OrderProducts() {
             <div className="shrink-0 overflow-hidden border border-neutral-200 bg-neutral-100">
 
               <Image
-                src={product.image}
+                src={product.image || "/images/NoImage.jpg"}
                 alt={product.title}
                 width={96}
                 height={96}
                 className="h-24 w-24 object-cover"
               />
+
 
             </div>
 
@@ -70,7 +57,11 @@ export default function OrderProducts() {
                 </h3>
 
                 <p className="mt-2 text-xs text-neutral-500">
-                  {product.variant}
+                  {product.attributes
+                    ? Object.entries(product.attributes)
+                      .map(([key, value]) => `${key}: ${value}`)
+                      .join(" • ")
+                    : "-"}
                 </p>
 
               </div>
@@ -82,7 +73,10 @@ export default function OrderProducts() {
                 </span>
 
                 <span className="font-light">
-                  ${product.price.toFixed(2)}
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  }).format(product.price)}
                 </span>
 
               </div>

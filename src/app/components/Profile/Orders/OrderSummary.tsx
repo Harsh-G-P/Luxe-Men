@@ -2,7 +2,20 @@
 
 import Link from "next/link";
 
-export default function OrderSummary() {
+
+type Order = {
+  subtotal: number;
+  shipping: number;
+  total: number;
+  paymentMethod: string;
+  paymentStatus: string;
+};
+
+type Props = {
+  order: Order;
+};
+
+export default function OrderSummary({ order }: Props) {
   return (
     <div className="border border-neutral-200 bg-white">
 
@@ -20,7 +33,10 @@ export default function OrderSummary() {
           </span>
 
           <span className="text-xs font-medium">
-            $527.00
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+            }).format(order.subtotal)}
           </span>
         </div>
 
@@ -30,7 +46,12 @@ export default function OrderSummary() {
           </span>
 
           <span className="text-xs font-medium">
-            FREE
+            {order.shipping === 0
+              ? "FREE"
+              : `${new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(order.shipping)}`}
           </span>
         </div>
 
@@ -43,7 +64,10 @@ export default function OrderSummary() {
             </span>
 
             <span className="text-sm font-semibold">
-              $527.00
+              {new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(order.total)}
             </span>
 
           </div>
@@ -59,7 +83,7 @@ export default function OrderSummary() {
             </span>
 
             <span className="text-xs font-medium">
-              Stripe
+              {order.paymentMethod}
             </span>
 
           </div>
@@ -70,8 +94,15 @@ export default function OrderSummary() {
               Payment Status
             </span>
 
-            <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium uppercase tracking-[0.08em] text-green-700">
-              Paid
+            <span className={`rounded-full px-3 py-1 text-xs font-medium uppercase tracking-[0.08em] ${order.paymentStatus === "PAID"
+              ? "bg-green-100 text-green-700"
+              : order.paymentStatus === "PENDING"
+                ? "bg-yellow-100 text-yellow-700"
+                : order.paymentStatus === "FAILED"
+                  ? "bg-red-100 text-red-700"
+                  : "bg-blue-100 text-blue-700"
+              }`}>
+              {order.paymentStatus}
             </span>
 
           </div>

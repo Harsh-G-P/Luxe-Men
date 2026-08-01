@@ -32,6 +32,7 @@ export default function CheckoutFlow() {
     const [packagingData, setPackagingData] = useState({
         option: "Signature Box",
         giftMessage: "",
+        notes:"",
     });
 
     const [removeInvoice, setRemoveInvoice] = useState(false);

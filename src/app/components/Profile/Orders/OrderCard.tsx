@@ -6,17 +6,17 @@ import OrderItem from "./OrderItem";
 type Order = {
   id: string;
   orderNumber: string;
-  date: string;
   status: string;
   total: number;
+  createdAt: string;
 
   items: {
     id: string;
     title: string;
-    variant: string;
     quantity: number;
     price: number;
-    image: string;
+    image: string | null;
+    attributes: Record<string, string> | null;
   }[];
 };
 
@@ -26,10 +26,12 @@ type Props = {
 
 export default function OrderCard({ order }: Props) {
   const statusColor = {
-    Delivered: "bg-green-500",
-    Processing: "bg-blue-500",
-    Pending: "bg-yellow-500",
-    Cancelled: "bg-red-500",
+    PENDING: "bg-yellow-500",
+    CONFIRMED: "bg-indigo-500",
+    PROCESSING: "bg-blue-500",
+    SHIPPED: "bg-orange-500",
+    DELIVERED: "bg-green-500",
+    CANCELLED: "bg-red-500",
   } as const;
 
   return (
@@ -49,7 +51,12 @@ export default function OrderCard({ order }: Props) {
           </h2>
 
           <p className="mt-3 text-xs text-neutral-500">
-            Placed on {order.date}
+            Placed on{" "}
+            {new Date(order.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
 
         </div>
@@ -59,11 +66,10 @@ export default function OrderCard({ order }: Props) {
           <div className="inline-flex items-center gap-3">
 
             <span
-              className={`h-2.5 w-2.5 rounded-full ${
-                statusColor[
-                  order.status as keyof typeof statusColor
-                ] ?? "bg-neutral-400"
-              }`}
+              className={`h-2.5 w-2.5 rounded-full ${statusColor[
+                order.status as keyof typeof statusColor
+              ] ?? "bg-neutral-400"
+                }`}
             />
 
             <span className="text-xs uppercase tracking-[0.12em]">
@@ -98,7 +104,10 @@ export default function OrderCard({ order }: Props) {
           </p>
 
           <p className="mt-2 text-sm font-semibold">
-            ${order.total.toFixed(2)}
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+            }).format(order.total)}
           </p>
 
         </div>

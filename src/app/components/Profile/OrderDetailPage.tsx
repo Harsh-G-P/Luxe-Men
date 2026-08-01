@@ -4,15 +4,99 @@ import Link from "next/link";
 import OrderProducts from "./Orders/OrderProducts";
 import ShippingAddress from "./Orders/ShippingAddress";
 import OrderSummary from "./Orders/OrderSummary";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import OrderPreferences from "./Orders/OrderPreferences";
 
-const order = {
-    orderNumber: "ORD-20260731-4AF2",
-    date: "31 July 2026",
-    status: "Confirmed",
-    paymentStatus: "Paid",
-};
+type Props = {
+    id: string
+}
 
-export default function OrderDetailPage() {
+export default function OrderDetailPage({ id }: Props) {
+    const [order, setOrder] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchOrderDetail = async () => {
+        try {
+            const res = await fetch(`/api/order/${id}`);
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.message);
+                return;
+            }
+
+            setOrder(data.data);
+        } catch {
+            toast.error("Failed to load order");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchOrderDetail();
+    }, [id]);
+
+    if (loading) {
+        return (
+            <section className="mx-auto max-w-7xl px-6 py-20">
+                <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
+
+                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-neutral-200 border-t-black" />
+
+                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-neutral-500">
+                        Loading Order
+                    </p>
+
+                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em]">
+                        Please Wait
+                    </h2>
+
+                    <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
+                        We're retrieving your order details.
+                    </p>
+
+                </div>
+            </section>
+        );
+    }
+
+    if (!order) {
+        return (
+            <section className="mx-auto max-w-7xl px-6 py-20">
+                <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
+
+                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-neutral-200 text-3xl">
+                        !
+                    </div>
+
+                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-neutral-500">
+                        Order
+                    </p>
+
+                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em]">
+                        Order Not Found
+                    </h2>
+
+                    <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
+                        The order you're looking for doesn't exist or you don't have
+                        permission to view it.
+                    </p>
+
+                    <Link
+                        href="/profile/orders"
+                        className="mt-10 inline-flex border border-black px-8 py-3 text-xs uppercase tracking-[0.12em] transition hover:bg-black hover:text-white"
+                    >
+                        Back to Orders
+                    </Link>
+
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className="mx-auto max-w-7xl px-6 py-14">
 
@@ -36,7 +120,12 @@ export default function OrderDetailPage() {
                     </h1>
 
                     <p className="mt-1 text-xs text-neutral-500">
-                        Placed on {order.date}
+                        Placed on{" "}
+                        {new Date(order.createdAt).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
                     </p>
 
                 </div>
@@ -59,15 +148,22 @@ export default function OrderDetailPage() {
 
                 <div>
 
-                    <OrderProducts />
+                    <OrderProducts items={order.items} />
 
                 </div>
 
                 <div className="space-y-8">
 
-                    <ShippingAddress />
+                    <ShippingAddress address={order.address} />
 
-                    <OrderSummary />
+                    <OrderPreferences
+                        packagingOption={order.packagingOption}
+                        giftMessage={order.giftMessage}
+                        notes={order.notes}
+                        removeInvoice={order.removeInvoice}
+                    />
+
+                    <OrderSummary order={order} />
 
                 </div>
 

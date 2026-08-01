@@ -1,6 +1,21 @@
 "use client";
 
-export default function ShippingAddress() {
+type Address = {
+  fullname: string;
+  phone: string;
+  addressLine: string;
+  countryCode: string
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+};
+
+type Props = {
+  address: Address;
+};
+
+export default function ShippingAddress({ address }: Props) {
   return (
     <div className="border border-neutral-200 bg-white">
 
@@ -17,36 +32,26 @@ export default function ShippingAddress() {
         <div>
 
           <p className=" font-medium">
-            Saiki Kusuo
+            {address.fullname}
           </p>
 
           <p className="mt-1 text-xs text-neutral-500">
-            +91 98765 43210
+            {address.countryCode} {address.phone}
           </p>
 
         </div>
 
         <div className="space-y-1 text-xs leading-5 text-neutral-600">
 
-          <p>
-            302, Shree Residency
-          </p>
+          <p>{address.addressLine}</p>
 
           <p>
-            Satellite Road
+            {address.city}, {address.state}
           </p>
 
-          <p>
-            Ahmedabad, Gujarat
-          </p>
+          <p>{address.postalCode}</p>
 
-          <p>
-            380015
-          </p>
-
-          <p>
-            India
-          </p>
+          <p>{address.country}</p>
 
         </div>
 

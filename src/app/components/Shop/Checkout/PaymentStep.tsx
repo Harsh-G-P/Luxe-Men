@@ -16,6 +16,7 @@ type Props = {
 
     packagingData: {
         option: string;
+        notes: string;
     };
 
     removeInvoice: boolean;
@@ -51,6 +52,7 @@ export default function PaymentStep({
                     packagingOption: packagingData.option,
                     giftMessage,
                     removeInvoice,
+                    notes: packagingData.notes,
                 }),
             });
 
@@ -161,8 +163,7 @@ export default function PaymentStep({
                 type="button"
                 disabled={loading || !shippingData}
                 onClick={handlePlaceOrder}
-                className={`mt-10 h-13 px-10 text-[13px] uppercase tracking-[0.08em] text-white transition
-${loading
+                className={`mt-10 h-13 px-10 text-[13px] uppercase tracking-[0.08em] text-white transition ${loading
                         ? "cursor-not-allowed bg-neutral-500"
                         : "bg-black hover:bg-neutral-800"
                     }`}

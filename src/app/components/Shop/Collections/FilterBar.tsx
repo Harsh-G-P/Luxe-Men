@@ -73,7 +73,7 @@ export default function FilterBar({ categories, brands }: Props) {
     const [category, setCategory] = useState(searchParams.get("category") || "")
     const [brand, setBrand] = useState(searchParams.get("brand") || "")
     const [sort, setSort] = useState(searchParams.get("sort") || "");
-    
+
     useEffect(() => {
         setSearch(searchParams.get("search") || "");
         setCategory(searchParams.get("category") || "");
