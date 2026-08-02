@@ -4,6 +4,7 @@ import Link from "next/link";
 
 
 type Order = {
+  id: string
   subtotal: number;
   shipping: number;
   total: number;
@@ -111,12 +112,13 @@ export default function OrderSummary({ order }: Props) {
 
         <div className="border-t border-neutral-200 pt-6 space-y-3">
 
-          <button
-            type="button"
+          <Link
+            href={`/api/order/${order.id}/invoice`}
+            target="_blank"
             className="block w-full border border-black px-6 py-3 text-center text-xs uppercase tracking-[0.12em] transition hover:bg-gray-700 hover:text-white"
           >
             Download Invoice
-          </button>
+          </Link>
 
           <Link
             href="/"
