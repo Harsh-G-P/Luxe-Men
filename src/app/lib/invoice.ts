@@ -86,7 +86,8 @@ export async function generateInvoice(order: any) {
             color: LIGHT
         });
     };
-    
+
+
 
 
     // =========================
@@ -134,27 +135,27 @@ export async function generateInvoice(order: any) {
     line(660);
 
 
-   // =========================
-   // INVOICE INFO 
-   // =========================
+    // =========================
+    // INVOICE INFO 
+    // =========================
 
-text(
-    `Invoice No: ${order.orderNumber}`,
-    380,
-    625,
-    10,
-    semiBold
-);
+    text(
+        `Invoice No: ${order.orderNumber}`,
+        380,
+        625,
+        10,
+        semiBold
+    );
 
 
-text(
-    `Date: ${new Date(order.createdAt).toLocaleDateString()}`,
-    380,
-    608,
-    9,
-    regular,
-    GRAY
-);
+    text(
+        `Date: ${new Date(order.createdAt).toLocaleDateString()}`,
+        380,
+        608,
+        9,
+        regular,
+        GRAY
+    );
 
 
     // =========================
@@ -163,16 +164,16 @@ text(
 
 
     text(
-    "BILL TO",
-    50,
-    625,
-    10,
-    bold,
-    GRAY
-);
+        "BILL TO",
+        50,
+        625,
+        10,
+        bold,
+        GRAY
+    );
 
 
-let customerY = 603;
+    let customerY = 603;
 
 
     [
@@ -200,25 +201,25 @@ let customerY = 603;
     const itemsHeaderY = customerY - 35;
 
 
-page.drawRectangle({
-    x: 50,
-    y: itemsHeaderY,
-    width: 495,
-    height: 25,
-    color: LIGHT
-});
+    page.drawRectangle({
+        x: 50,
+        y: itemsHeaderY,
+        width: 495,
+        height: 25,
+        color: LIGHT
+    });
 
 
-let itemY = itemsHeaderY - 25;
+    let itemY = itemsHeaderY - 30;
 
 
-   text("PRODUCT", 60, itemsHeaderY + 9, 9, bold);
+    text("PRODUCT", 60, itemsHeaderY + 9, 9, bold);
 
-text("QTY", 350, itemsHeaderY + 9, 9, bold);
+    text("QTY", 350, itemsHeaderY + 9, 9, bold);
 
-text("PRICE", 410, itemsHeaderY + 9, 9, bold);
+    text("PRICE", 410, itemsHeaderY + 9, 9, bold);
 
-text("TOTAL", 485, itemsHeaderY + 9, 9, bold);
+    text("TOTAL", 485, itemsHeaderY + 9, 9, bold);
 
 
     order.items.forEach((item: any) => {
@@ -227,30 +228,36 @@ text("TOTAL", 485, itemsHeaderY + 9, 9, bold);
             return;
         }
 
+        const title = sanitize(item.title);
+
+        // Product title
         text(
-            item.title,
+            title,
             60,
             itemY,
-            11,
+            10,
             semiBold
         );
 
 
-        if (item.attributes) {
+        // Attributes
+        let rowHeight = 20;
 
+        if (item.attributes) {
             text(
                 Object.values(item.attributes).join(" / "),
                 60,
-                itemY - 15,
+                itemY - 14,
                 8,
                 regular,
                 GRAY
             );
 
-            itemY -= 15;
+            rowHeight = 35;
         }
 
 
+        // Keep values aligned to first line
         text(
             item.quantity,
             355,
@@ -258,14 +265,12 @@ text("TOTAL", 485, itemsHeaderY + 9, 9, bold);
             9
         );
 
-
         text(
             `$${Number(item.price).toFixed(2)}`,
             405,
             itemY,
             9
         );
-
 
         text(
             `$${Number(item.total).toFixed(2)}`,
@@ -275,9 +280,9 @@ text("TOTAL", 485, itemsHeaderY + 9, 9, bold);
         );
 
 
-        itemY -= 30;
+        itemY -= rowHeight;
 
-        line(itemY + 15);
+        line(itemY + 10);
 
     });
 

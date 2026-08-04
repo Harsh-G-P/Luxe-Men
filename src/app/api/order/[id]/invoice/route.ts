@@ -47,19 +47,19 @@ export async function GET(rea: NextRequest, { params }: Params) {
             return errorResponse("Order not found", 404)
         }
 
-const pdfBytes = await generateInvoice(order);
+        const pdfBytes = await generateInvoice(order);
 
-const buffer = new ArrayBuffer(pdfBytes.length);
-const view = new Uint8Array(buffer);
+        const buffer = new ArrayBuffer(pdfBytes.length);
+        const view = new Uint8Array(buffer);
 
-view.set(pdfBytes);
+        view.set(pdfBytes);
 
-return new Response(buffer, {
-  headers: {
-    "Content-Type": "application/pdf",
-    "Content-Disposition": `attachment; filename=Invoice-${order.orderNumber}.pdf`,
-  },
-});
+        return new Response(buffer, {
+            headers: {
+                "Content-Type": "application/pdf",
+                "Content-Disposition": `attachment; filename=Invoice-${order.orderNumber}.pdf`,
+            },
+        });
 
     } catch (error) {
         console.error("Order Invoice GET API:", error);
