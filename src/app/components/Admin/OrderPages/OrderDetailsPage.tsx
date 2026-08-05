@@ -109,6 +109,21 @@ export default function AdminOrderDetail({ id }: Props) {
         fetchOrderDetail();
     }, [id]);
 
+    const handleOrderUpdate = (data: {
+    status: string;
+    paymentStatus: string;
+}) => {
+    setOrder((prev) =>
+        prev
+            ? {
+                ...prev,
+                status: data.status,
+                paymentStatus: data.paymentStatus,
+            }
+            : prev
+    );
+};
+
     if (loading) {
         return (
             <section className="mx-auto max-w-7xl px-6 py-20">
@@ -280,7 +295,12 @@ export default function AdminOrderDetail({ id }: Props) {
 
                     <OrderSummary order={order} />
 
-                    <AdminActions />
+                    <AdminActions
+    orderId={order.id}
+    status={order.status}
+    paymentStatus={order.paymentStatus}
+    onUpdated={handleOrderUpdate}
+/>
 
                 </div>
 
