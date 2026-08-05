@@ -10,6 +10,15 @@ type Order = {
   total: number;
   paymentMethod: string;
   paymentStatus: string;
+  items: {
+    id: string;
+    title: string;
+    image: string | null;
+    attributes: Record<string, string> | null;
+    quantity: number;
+    price: number;
+    total: number;
+  }[];
 };
 
 type Props = {
@@ -17,6 +26,12 @@ type Props = {
 };
 
 export default function OrderSummary({ order }: Props) {
+
+  const totalQuantity = order.items.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
   return (
     <div className="border border-neutral-200 bg-white">
 
@@ -47,12 +62,16 @@ export default function OrderSummary({ order }: Props) {
           </span>
 
           <span className="text-xs font-medium">
-            {order.shipping === 0
-              ? "FREE"
-              : `${new Intl.NumberFormat("en-US", {
+            {order.shipping === 0 ? (
+              <span className="rounded-full bg-green-100 px-2 py-1 text-[11px] font-medium uppercase text-green-700">
+                FREE
+              </span>
+            ) : (
+              new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
-              }).format(order.shipping)}`}
+              }).format(order.shipping)
+            )}
           </span>
         </div>
 
@@ -76,6 +95,16 @@ export default function OrderSummary({ order }: Props) {
         </div>
 
         <div className="border-t border-neutral-200 pt-5 space-y-4">
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-neutral-500">
+              Total Quantity
+            </span>
+
+            <span className="text-xs font-medium">
+              {totalQuantity}
+            </span>
+          </div>
 
           <div className="flex items-center justify-between">
 
@@ -117,7 +146,7 @@ export default function OrderSummary({ order }: Props) {
             target="_blank"
             className="block w-full border border-black px-6 py-3 text-center text-xs uppercase tracking-[0.12em] transition hover:bg-gray-700 hover:text-white"
           >
-            Download Invoice
+            ↓ Download Invoice
           </Link>
 
           <Link

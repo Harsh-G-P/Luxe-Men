@@ -38,6 +38,9 @@ export default function OrderItem({ item }: Props) {
                         <h3 className="font-medium tracking-[0.04em]">
                             {item.title}
                         </h3>
+                        <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-neutral-400">
+                            #{item.id.slice(-8)}
+                        </p>
 
                         <p className="mt-2 text-xs text-neutral-500">
                             {item.attributes

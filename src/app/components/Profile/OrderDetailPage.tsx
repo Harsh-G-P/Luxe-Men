@@ -7,13 +7,55 @@ import OrderSummary from "./Orders/OrderSummary";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import OrderPreferences from "./Orders/OrderPreferences";
+import OrderTimeline from "./Orders/OrderTimeline";
 
 type Props = {
     id: string
 }
 
+type Order = {
+    id: string;
+    orderNumber: string;
+
+    subtotal: number;
+    shipping: number;
+    total: number;
+
+    status: string;
+    paymentMethod: string;
+    paymentStatus: string;
+
+    notes: string | null;
+    packagingOption: string | null;
+    giftMessage: string | null;
+    removeInvoice: boolean;
+
+    createdAt: string;
+
+    address: {
+        fullname: string;
+        phone: string;
+        addressLine: string;
+        countryCode: string;
+        city: string;
+        state: string;
+        postalCode: string;
+        country: string;
+    };
+
+    items: {
+        id: string;
+        title: string;
+        image: string | null;
+        attributes: Record<string, string> | null;
+        quantity: number;
+        price: number;
+        total: number;
+    }[];
+};
+
 export default function OrderDetailPage({ id }: Props) {
-    const [order, setOrder] = useState<any>(null);
+    const [order, setOrder] = useState<Order | null>(null);
     const [loading, setLoading] = useState(true);
 
     const fetchOrderDetail = async () => {
@@ -149,6 +191,10 @@ export default function OrderDetailPage({ id }: Props) {
                 <div>
 
                     <OrderProducts items={order.items} />
+
+                    <div className="mt-8">
+                        <OrderTimeline status={order.status} />
+                    </div>
 
                 </div>
 
