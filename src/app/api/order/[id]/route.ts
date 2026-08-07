@@ -51,6 +51,9 @@ export async function GET(req: NextRequest, { params }: Params) {
                 paymentMethod: true,
                 paymentStatus: true,
 
+                cancellationStatus: true,
+                cancellationReason: true,
+
                 notes: true,
                 packagingOption: true,
                 giftMessage: true,
@@ -63,7 +66,7 @@ export async function GET(req: NextRequest, { params }: Params) {
                         fullname: true,
                         phone: true,
                         addressLine: true,
-                        countryCode:true,
+                        countryCode: true,
                         city: true,
                         state: true,
                         postalCode: true,
@@ -113,3 +116,4 @@ export async function GET(req: NextRequest, { params }: Params) {
         return errorResponse("Internal Server Error");
     }
 }
+

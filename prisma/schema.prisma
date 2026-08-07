@@ -219,6 +219,9 @@ model Order {
   paymentMethod PaymentMethod
   paymentStatus PaymentStatus @default(PENDING)
 
+  cancellationStatus CancellationStatus @default(NONE)
+  cancellationReason String?
+
   notes String?
 
   packagingOption String?
@@ -233,6 +236,8 @@ model Order {
   @@index([userId])
   @@index([status])
   @@index([paymentStatus])
+  @@index([cancellationStatus])
+
 }
 
 model OrderItem {
@@ -278,5 +283,11 @@ enum PaymentStatus {
   PAID
   FAILED
   REFUNDED
+}
+
+enum CancellationStatus {
+  NONE
+  REQUESTED
+  REJECTED
 }
 

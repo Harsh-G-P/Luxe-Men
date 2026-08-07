@@ -21,10 +21,21 @@ export const updateOrderSchema = z
         "REFUNDED",
       ])
       .optional(),
+
+    cancellationStatus: z
+      .enum([
+        "NONE",
+        "REQUESTED",
+        "REJECTED",
+      ])
+      .optional(),
   })
   .strict()
   .refine(
-    (data) => data.status || data.paymentStatus,
+    (data) =>
+      data.status !== undefined ||
+      data.paymentStatus !== undefined ||
+      data.cancellationStatus !== undefined,
     {
       message: "Nothing to update",
     }

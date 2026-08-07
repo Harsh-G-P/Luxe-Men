@@ -59,6 +59,9 @@ export async function GET(req: NextRequest, { params }: Params) {
                 paymentMethod: true,
                 paymentStatus: true,
 
+                cancellationStatus: true,
+                cancellationReason: true,
+
                 notes: true,
                 packagingOption: true,
                 giftMessage: true,
@@ -176,7 +179,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
             select: {
                 id: true,
                 status: true,
-                paymentStatus: true
+                paymentStatus: true,
+                cancellationStatus: true,
             }
         })
 
@@ -192,21 +196,25 @@ export async function PUT(req: NextRequest, { params }: Params) {
             validate.paymentStatus &&
             validate.paymentStatus !== order.paymentStatus;
 
+        const hasCancellationChange =
+            validate.cancellationStatus !== undefined &&
+            validate.cancellationStatus !== order.cancellationStatus;
 
-        if (!hasStatusChange && !hasPaymentChange) {
-            return errorResponse(
-                "Nothing to update",
-                400
-            );
+
+        if (
+            !hasStatusChange &&
+            !hasPaymentChange &&
+            !hasCancellationChange
+        ) {
+            return errorResponse("Nothing to update", 400);
         }
-
 
         const currentStatus = order.status;
         const newStatus = validate.status;
 
 
         if (
-            newStatus &&
+            newStatus !== undefined &&
             newStatus !== currentStatus
         ) {
             const allowedNextStatuses =
@@ -231,7 +239,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
         if (
             order.paymentStatus === "PAID" &&
-            validate.paymentStatus &&
+            validate.paymentStatus !== undefined &&
             validate.paymentStatus !== "PAID" &&
             validate.paymentStatus !== "REFUNDED"
         ) {
@@ -243,7 +251,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
         if (
             order.paymentStatus === "REFUNDED" &&
-            validate.paymentStatus &&
+            validate.paymentStatus !== undefined &&
             validate.paymentStatus !== "REFUNDED"
         ) {
             return errorResponse(
@@ -252,27 +260,85 @@ export async function PUT(req: NextRequest, { params }: Params) {
             );
         }
 
+        /* Cancellation request validation */
+
+        if (
+            validate.cancellationStatus !== undefined &&
+            validate.cancellationStatus !== order.cancellationStatus
+        ) {
+            if (
+                order.cancellationStatus !== "REQUESTED"
+            ) {
+                return errorResponse(
+                    "There is no pending cancellation request",
+                    400
+                );
+            }
+
+            if (
+                validate.cancellationStatus === "NONE" &&
+                validate.status !== "CANCELLED"
+            ) {
+                return errorResponse(
+                    "Approved cancellation must set order status to CANCELLED",
+                    400
+                );
+            }
+
+            if (
+                validate.cancellationStatus === "REJECTED" &&
+                validate.status === "CANCELLED"
+            ) {
+                return errorResponse(
+                    "Rejected cancellation cannot cancel the order",
+                    400
+                );
+            }
+        }
+
+        /* Cancellation approval */
+
+        if (
+            validate.status === "CANCELLED" &&
+            order.cancellationStatus === "REQUESTED" &&
+            validate.cancellationStatus !== "NONE"
+        ) {
+            return errorResponse(
+                "Cancellation approval must clear the cancellation request",
+                400
+            );
+        }
+
+
         const updatedOrder = await prisma.order.update({
             where: {
-                id
+                id,
             },
+
             data: {
-                ...(validate.status && {
+                ...(validate.status !== undefined && {
                     status: validate.status,
                 }),
 
-                ...(validate.paymentStatus && {
+                ...(validate.paymentStatus !== undefined && {
                     paymentStatus: validate.paymentStatus,
                 }),
+
+                ...(validate.cancellationStatus !== undefined && {
+                    cancellationStatus: validate.cancellationStatus,
+                }),
             },
+
             select: {
                 id: true,
                 orderNumber: true,
                 status: true,
                 paymentStatus: true,
+                cancellationStatus: true,
+                cancellationReason: true,
                 updatedAt: true,
             },
-        })
+        });
 
         return successResponse(
             "Order updated successfully",
@@ -289,7 +355,7 @@ const allowedStatusTransitions = {
     PENDING: ["CONFIRMED", "CANCELLED"],
     CONFIRMED: ["PROCESSING", "CANCELLED"],
     PROCESSING: ["SHIPPED", "CANCELLED"],
-    SHIPPED: ["DELIVERED", "CANCELLED"],
+    SHIPPED: ["DELIVERED"],
     DELIVERED: [],
     CANCELLED: [],
 } as const;

@@ -3,6 +3,8 @@ import path from "path";
 import fs from "fs";
 
 export async function generateInvoice(order: any) {
+    const hidePrices = order.removeInvoice;
+
     const pdfDoc = await PDFDocument.create();
 
     const page = pdfDoc.addPage([595, 842]);
@@ -215,11 +217,18 @@ export async function generateInvoice(order: any) {
 
     text("PRODUCT", 60, itemsHeaderY + 9, 9, bold);
 
-    text("QTY", 350, itemsHeaderY + 9, 9, bold);
+text(
+    "QTY",
+    hidePrices ? 450 : 350,
+    itemsHeaderY + 9,
+    9,
+    bold
+);
 
+if (!hidePrices) {
     text("PRICE", 410, itemsHeaderY + 9, 9, bold);
-
     text("TOTAL", 485, itemsHeaderY + 9, 9, bold);
+}
 
 
     order.items.forEach((item: any) => {
@@ -259,25 +268,27 @@ export async function generateInvoice(order: any) {
 
         // Keep values aligned to first line
         text(
-            item.quantity,
-            355,
-            itemY,
-            9
-        );
+    item.quantity,
+    hidePrices ? 450 : 355,
+    itemY,
+    9
+);
 
-        text(
-            `$${Number(item.price).toFixed(2)}`,
-            405,
-            itemY,
-            9
-        );
+if (!hidePrices) {
+    text(
+        `$${Number(item.price).toFixed(2)}`,
+        405,
+        itemY,
+        9
+    );
 
-        text(
-            `$${Number(item.total).toFixed(2)}`,
-            480,
-            itemY,
-            9
-        );
+    text(
+        `$${Number(item.total).toFixed(2)}`,
+        480,
+        itemY,
+        9
+    );
+}
 
 
         itemY -= rowHeight;
@@ -293,6 +304,8 @@ export async function generateInvoice(order: any) {
     // =========================
 
     let summaryY = itemY - 50;
+
+    if (!hidePrices) {
 
     if (summaryY < 260) {
         summaryY = 260;
@@ -362,6 +375,7 @@ export async function generateInvoice(order: any) {
         10,
         bold
     );
+}
 
     // =========================
     // PAYMENT DETAILS

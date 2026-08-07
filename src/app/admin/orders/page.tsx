@@ -162,6 +162,7 @@ export default async function Orders({ searchParams }: Props) {
             total: true,
             status: true,
             paymentStatus: true,
+            cancellationStatus: true,
             createdAt: true,
 
 
@@ -185,8 +186,6 @@ export default async function Orders({ searchParams }: Props) {
         }
 
     });
-
-
 
     const formattedOrders = orders.map((order) => ({
 

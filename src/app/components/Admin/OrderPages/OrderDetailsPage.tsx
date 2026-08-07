@@ -29,6 +29,9 @@ type Order = {
     paymentStatus: string;
     paymentId: string | null;
 
+    cancellationStatus: "NONE" | "REQUESTED" | "REJECTED";
+    cancellationReason: string | null;
+
     notes: string | null;
     packagingOption: string | null;
     giftMessage: string | null;
@@ -110,19 +113,21 @@ export default function AdminOrderDetail({ id }: Props) {
     }, [id]);
 
     const handleOrderUpdate = (data: {
-    status: string;
-    paymentStatus: string;
-}) => {
-    setOrder((prev) =>
-        prev
-            ? {
-                ...prev,
-                status: data.status,
-                paymentStatus: data.paymentStatus,
-            }
-            : prev
-    );
-};
+        status: string;
+        paymentStatus: string;
+        cancellationStatus: "NONE" | "REQUESTED" | "REJECTED";
+    }) => {
+        setOrder((prev) =>
+            prev
+                ? {
+                    ...prev,
+                    status: data.status,
+                    paymentStatus: data.paymentStatus,
+                    cancellationStatus: data.cancellationStatus,
+                }
+                : prev
+        );
+    };
 
     if (loading) {
         return (
@@ -296,11 +301,13 @@ export default function AdminOrderDetail({ id }: Props) {
                     <OrderSummary order={order} />
 
                     <AdminActions
-    orderId={order.id}
-    status={order.status}
-    paymentStatus={order.paymentStatus}
-    onUpdated={handleOrderUpdate}
-/>
+                        orderId={order.id}
+                        status={order.status}
+                        paymentStatus={order.paymentStatus}
+                        cancellationStatus={order.cancellationStatus}
+                        cancellationReason={order.cancellationReason}
+                        onUpdated={handleOrderUpdate}
+                    />
 
                 </div>
 

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import OrderPreferences from "./Orders/OrderPreferences";
 import OrderTimeline from "./Orders/OrderTimeline";
+import RequestCancellation from "./Orders/RequestCancellation";
 
 type Props = {
     id: string
@@ -24,6 +25,9 @@ type Order = {
     status: string;
     paymentMethod: string;
     paymentStatus: string;
+
+    cancellationStatus: string;
+    cancellationReason: string | null;
 
     notes: string | null;
     packagingOption: string | null;
@@ -210,6 +214,12 @@ export default function OrderDetailPage({ id }: Props) {
                     />
 
                     <OrderSummary order={order} />
+
+                    <RequestCancellation
+                        orderId={order.id}
+                        status={order.status}
+                        cancellationStatus={order.cancellationStatus}
+                    />
 
                 </div>
 
