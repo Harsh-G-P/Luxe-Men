@@ -16,6 +16,8 @@ type Props = {
     orderNumber: string;
     total: number;
     paymentMethod: string;
+    type: "APPROVED" | "REJECTED";
+    reason?: string | null;
 };
 
 export async function sendOrderCancellationEmail({
@@ -24,11 +26,17 @@ export async function sendOrderCancellationEmail({
     orderNumber,
     total,
     paymentMethod,
+    type,
+    reason,
 }: Props) {
+    const isRejected = type === "REJECTED";
+
     const info = await transporter.sendMail({
         from: `"Luxe Men" <${process.env.BREVO_SENDER}>`,
         to: email,
-        subject: `Order Cancelled • ${orderNumber}`,
+        subject: isRejected
+            ? `Cancellation Request Rejected • ${orderNumber}`
+            : `Order Cancelled • ${orderNumber}`,
 
         html: `
             <div style="background:#f4f4f5;padding:40px 20px;font-family:Arial,sans-serif;">
@@ -36,7 +44,11 @@ export async function sendOrderCancellationEmail({
 
                     <div style="background:#111827;padding:32px;text-align:center;">
                         <h1 style="margin:0;color:#fff;">
-                            Order Cancelled
+                            ${
+                                isRejected
+                                    ? "Cancellation Request Rejected"
+                                    : "Order Cancelled"
+                            }
                         </h1>
                     </div>
 
@@ -45,7 +57,11 @@ export async function sendOrderCancellationEmail({
                         <p>Hello <strong>${name}</strong>,</p>
 
                         <p>
-                            Your order has been successfully cancelled.
+                            ${
+                                isRejected
+                                    ? "Your cancellation request for the following order has been rejected."
+                                    : "Your order has been successfully cancelled."
+                            }
                         </p>
 
                         <table
@@ -74,24 +90,69 @@ export async function sendOrderCancellationEmail({
 
                             <tr>
                                 <td><strong>Order Status</strong></td>
-                                <td>Cancelled</td>
+                                <td>
+                                    ${isRejected ? "Active" : "Cancelled"}
+                                </td>
                             </tr>
                         </table>
 
                         ${
-                            paymentMethod === "STRIPE"
+                            isRejected
                                 ? `
+                                    ${
+                                        reason
+                                            ? `
+                                                <div style="
+                                                    margin:30px 0;
+                                                    padding:16px;
+                                                    background:#f9fafb;
+                                                    border-left:3px solid #111827;
+                                                ">
+                                                    <p style="
+                                                        margin:0 0 8px;
+                                                        font-size:13px;
+                                                        font-weight:bold;
+                                                    ">
+                                                        Reason
+                                                    </p>
+
+                                                    <p style="
+                                                        margin:0;
+                                                        color:#6b7280;
+                                                        font-size:13px;
+                                                        line-height:1.6;
+                                                    ">
+                                                        ${reason}
+                                                    </p>
+                                                </div>
+                                            `
+                                            : ""
+                                    }
+
                                     <p>
-                                        Since this order was paid online, your refund
-                                        will be handled separately according to the
-                                        refund process.
+                                        Your order remains active and will
+                                        continue through the normal order process.
                                     </p>
                                 `
                                 : `
-                                    <p>
-                                        Since this order was placed with Cash on Delivery,
-                                        no payment was collected.
-                                    </p>
+                                    ${
+                                        paymentMethod === "STRIPE"
+                                            ? `
+                                                <p>
+                                                    Since this order was paid online,
+                                                    your refund will be handled
+                                                    separately according to the
+                                                    refund process.
+                                                </p>
+                                            `
+                                            : `
+                                                <p>
+                                                    Since this order was placed with
+                                                    Cash on Delivery, no payment was
+                                                    collected.
+                                                </p>
+                                            `
+                                    }
                                 `
                         }
 
@@ -127,7 +188,12 @@ export async function sendOrderCancellationEmail({
         `,
     });
 
-    console.log("Order cancellation email sent:", info.messageId);
+    console.log(
+        isRejected
+            ? "Order cancellation rejection email sent:"
+            : "Order cancellation email sent:",
+        info.messageId
+    );
 
     return info;
 }

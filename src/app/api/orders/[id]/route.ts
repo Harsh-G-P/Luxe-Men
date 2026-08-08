@@ -410,22 +410,22 @@ export async function PUT(req: NextRequest, { params }: Params) {
                 });
 
                 try {
-    await sendRefundEmail({
-        email: order.user.email,
-        name: order.user.name ?? "Customer",
-        orderNumber: order.orderNumber,
-        total: Number(order.total),
-        type: "REJECTED",
-        reason:
-            validate.refundReason ??
-            order.refundReason,
-    });
-} catch (emailError) {
-    console.error(
-        "Refund rejection email error:",
-        emailError
-    );
-}
+                    await sendRefundEmail({
+                        email: order.user.email,
+                        name: order.user.name ?? "Customer",
+                        orderNumber: order.orderNumber,
+                        total: Number(order.total),
+                        type: "REJECTED",
+                        reason:
+                            validate.refundReason ??
+                            order.refundReason,
+                    });
+                } catch (emailError) {
+                    console.error(
+                        "Refund rejection email error:",
+                        emailError
+                    );
+                }
 
                 return successResponse(
                     "Refund request rejected",
@@ -504,23 +504,23 @@ export async function PUT(req: NextRequest, { params }: Params) {
                             },
                         });
 
-                        try {
-    await sendRefundEmail({
-        email: order.user.email,
-        name: order.user.name ?? "Customer",
-        orderNumber: order.orderNumber,
-        total: Number(order.total),
-        type: "REFUNDED",
-        reason:
-            validate.refundReason ??
-            order.refundReason,
-    });
-} catch (emailError) {
-    console.error(
-        "Refund success email error:",
-        emailError
-    );
-}
+                    try {
+                        await sendRefundEmail({
+                            email: order.user.email,
+                            name: order.user.name ?? "Customer",
+                            orderNumber: order.orderNumber,
+                            total: Number(order.total),
+                            type: "REFUNDED",
+                            reason:
+                                validate.refundReason ??
+                                order.refundReason,
+                        });
+                    } catch (emailError) {
+                        console.error(
+                            "Refund success email error:",
+                            emailError
+                        );
+                    }
 
                     return successResponse(
                         "Refund processed successfully",
@@ -591,6 +591,10 @@ export async function PUT(req: NextRequest, { params }: Params) {
             order.cancellationStatus === "REQUESTED" &&
             validate.cancellationStatus === "NONE";
 
+        const cancellationRejected =
+            validate.cancellationStatus === "REJECTED" &&
+            order.cancellationStatus === "REQUESTED";
+
         if (cancellationApproved) {
             try {
                 await sendOrderCancellationEmail({
@@ -599,10 +603,29 @@ export async function PUT(req: NextRequest, { params }: Params) {
                     orderNumber: order.orderNumber,
                     total: Number(order.total),
                     paymentMethod: order.paymentMethod,
+                    type: "APPROVED",
                 });
             } catch (emailError) {
                 console.error(
-                    "Order cancellation email error:",
+                    "Order cancellation approval email error:",
+                    emailError
+                );
+            }
+        }
+
+        if (cancellationRejected) {
+            try {
+                await sendOrderCancellationEmail({
+                    email: order.user.email,
+                    name: order.user.name ?? "Customer",
+                    orderNumber: order.orderNumber,
+                    total: Number(order.total),
+                    paymentMethod: order.paymentMethod,
+                    type: "REJECTED",
+                });
+            } catch (emailError) {
+                console.error(
+                    "Order cancellation rejection email error:",
                     emailError
                 );
             }
