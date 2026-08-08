@@ -26,15 +26,14 @@ export default function Campaign() {
 
                 </div>
 
-                <div className="relative aspect-4/5 overflow-hidden">
-
+                <div className="relative aspect-4/5">
                     <Image
-                        fill
                         src="/images/look1.jpg"
-                        alt=""
+                        alt="Campaign"
+                        fill
                         className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 50vw"
                     />
-
                 </div>
 
             </div>
