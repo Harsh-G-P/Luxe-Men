@@ -2,6 +2,8 @@ import { errorResponse, successResponse } from "@/app/lib/apiResponse";
 import { authOptions } from "@/app/lib/auth";
 import { idSchema } from "@/app/lib/id";
 import prisma from "@/app/lib/prisma";
+import { sendOrderCancellationEmail } from "@/app/lib/sendOrderCancellationEmail";
+import { sendRefundEmail } from "@/app/lib/sendRefundEmail";
 import { stripe } from "@/app/lib/stripe";
 import { formatZodErrors } from "@/app/lib/validations/formatZod";
 import { updateOrderSchema } from "@/app/lib/validations/order";
@@ -185,8 +187,13 @@ export async function PUT(req: NextRequest, { params }: Params) {
             select: {
                 id: true,
                 orderNumber: true,
+
+                total: true,
+
                 status: true,
                 paymentStatus: true,
+                paymentMethod: true,
+
                 cancellationStatus: true,
 
                 refundStatus: true,
@@ -195,6 +202,13 @@ export async function PUT(req: NextRequest, { params }: Params) {
                 refundedAt: true,
 
                 paymentId: true,
+
+                user: {
+                    select: {
+                        email: true,
+                        name: true,
+                    },
+                },
             }
         });
 
@@ -292,7 +306,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
             }
         }
 
-        
+
         /* Cancellation request validation */
 
         if (
@@ -395,6 +409,24 @@ export async function PUT(req: NextRequest, { params }: Params) {
                     },
                 });
 
+                try {
+                    await sendRefundEmail({
+                        email: order.user.email,
+                        name: order.user.name ?? "Customer",
+                        orderNumber: order.orderNumber,
+                        total: Number(order.total),
+                        type: "REJECTED",
+                        reason:
+                            validate.refundReason ??
+                            order.refundReason,
+                    });
+                } catch (emailError) {
+                    console.error(
+                        "Refund rejection email error:",
+                        emailError
+                    );
+                }
+
                 return successResponse(
                     "Refund request rejected",
                     updatedOrder
@@ -472,6 +504,24 @@ export async function PUT(req: NextRequest, { params }: Params) {
                             },
                         });
 
+                    try {
+                        await sendRefundEmail({
+                            email: order.user.email,
+                            name: order.user.name ?? "Customer",
+                            orderNumber: order.orderNumber,
+                            total: Number(order.total),
+                            type: "REFUNDED",
+                            reason:
+                                validate.refundReason ??
+                                order.refundReason,
+                        });
+                    } catch (emailError) {
+                        console.error(
+                            "Refund success email error:",
+                            emailError
+                        );
+                    }
+
                     return successResponse(
                         "Refund processed successfully",
                         updatedOrder
@@ -535,6 +585,51 @@ export async function PUT(req: NextRequest, { params }: Params) {
                 updatedAt: true,
             },
         });
+
+        const cancellationApproved =
+            validate.status === "CANCELLED" &&
+            order.cancellationStatus === "REQUESTED" &&
+            validate.cancellationStatus === "NONE";
+
+        const cancellationRejected =
+            validate.cancellationStatus === "REJECTED" &&
+            order.cancellationStatus === "REQUESTED";
+
+        if (cancellationApproved) {
+            try {
+                await sendOrderCancellationEmail({
+                    email: order.user.email,
+                    name: order.user.name ?? "Customer",
+                    orderNumber: order.orderNumber,
+                    total: Number(order.total),
+                    paymentMethod: order.paymentMethod,
+                    type: "APPROVED",
+                });
+            } catch (emailError) {
+                console.error(
+                    "Order cancellation approval email error:",
+                    emailError
+                );
+            }
+        }
+
+        if (cancellationRejected) {
+            try {
+                await sendOrderCancellationEmail({
+                    email: order.user.email,
+                    name: order.user.name ?? "Customer",
+                    orderNumber: order.orderNumber,
+                    total: Number(order.total),
+                    paymentMethod: order.paymentMethod,
+                    type: "REJECTED",
+                });
+            } catch (emailError) {
+                console.error(
+                    "Order cancellation rejection email error:",
+                    emailError
+                );
+            }
+        }
 
         return successResponse(
             "Order updated successfully",
