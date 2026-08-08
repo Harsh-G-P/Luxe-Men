@@ -504,7 +504,23 @@ export async function PUT(req: NextRequest, { params }: Params) {
                             },
                         });
 
-                        
+                        try {
+    await sendRefundEmail({
+        email: order.user.email,
+        name: order.user.name ?? "Customer",
+        orderNumber: order.orderNumber,
+        total: Number(order.total),
+        type: "REFUNDED",
+        reason:
+            validate.refundReason ??
+            order.refundReason,
+    });
+} catch (emailError) {
+    console.error(
+        "Refund success email error:",
+        emailError
+    );
+}
 
                     return successResponse(
                         "Refund processed successfully",
