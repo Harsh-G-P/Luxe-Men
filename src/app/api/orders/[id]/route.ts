@@ -3,6 +3,7 @@ import { authOptions } from "@/app/lib/auth";
 import { idSchema } from "@/app/lib/id";
 import prisma from "@/app/lib/prisma";
 import { sendOrderCancellationEmail } from "@/app/lib/sendOrderCancellationEmail";
+import { sendRefundEmail } from "@/app/lib/sendRefundEmail";
 import { stripe } from "@/app/lib/stripe";
 import { formatZodErrors } from "@/app/lib/validations/formatZod";
 import { updateOrderSchema } from "@/app/lib/validations/order";
@@ -408,6 +409,24 @@ export async function PUT(req: NextRequest, { params }: Params) {
                     },
                 });
 
+                try {
+    await sendRefundEmail({
+        email: order.user.email,
+        name: order.user.name ?? "Customer",
+        orderNumber: order.orderNumber,
+        total: Number(order.total),
+        type: "REJECTED",
+        reason:
+            validate.refundReason ??
+            order.refundReason,
+    });
+} catch (emailError) {
+    console.error(
+        "Refund rejection email error:",
+        emailError
+    );
+}
+
                 return successResponse(
                     "Refund request rejected",
                     updatedOrder
@@ -484,6 +503,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
                                 updatedAt: true,
                             },
                         });
+
+                        
 
                     return successResponse(
                         "Refund processed successfully",
