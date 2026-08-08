@@ -3,7 +3,8 @@
 import Link from "next/link";
 import OrderFilter from "./OrderFilter";
 import { Bell } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const statusStyles = {
     PENDING: "bg-yellow-100 text-yellow-700",
@@ -28,6 +29,8 @@ type Order = {
     status: string
     paymentStatus: string
     cancellationStatus: "NONE" | "REQUESTED" | "REJECTED"
+    refundStatus: "NONE" | "REQUESTED" | "REJECTED" | "REFUNDED"
+    refundReason: string | null
     createdAt: Date
 
     user: {
@@ -51,11 +54,57 @@ type OrdersProps = {
 
 export default function OrdersPage({ orders }: OrdersProps) {
 
+    const notificationRef = useRef<HTMLDivElement>(null);
+
     const [showNotifications, setShowNotifications] = useState(false);
 
     const cancellationRequests = orders.filter(
         (order) => order.cancellationStatus === "REQUESTED"
     );
+
+    const refundRequests = orders.filter(
+        (order) => order.refundStatus === "REQUESTED"
+    );
+
+    const totalNotifications =
+        cancellationRequests.length + refundRequests.length;
+
+    const notifications = [
+        ...cancellationRequests.map((order) => ({
+            ...order,
+            type: "CANCELLATION",
+        })),
+
+        ...refundRequests.map((order) => ({
+            ...order,
+            type: "REFUND",
+        })),
+    ];
+
+    const router = useRouter()
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                notificationRef.current &&
+                !notificationRef.current.contains(event.target as Node)
+            ) {
+                setShowNotifications(false);
+            }
+        };
+
+        document.addEventListener(
+            "mousedown",
+            handleClickOutside
+        );
+
+        return () => {
+            document.removeEventListener(
+                "mousedown",
+                handleClickOutside
+            );
+        };
+    }, []);
 
     return (
         <div className="max-w-7xl mx-auto p-6">
@@ -74,21 +123,19 @@ export default function OrdersPage({ orders }: OrdersProps) {
                     </p>
                 </div>
 
-                <div className="relative">
+                <div ref={notificationRef} className="relative">
 
                     <button
                         type="button"
-                        onClick={() => setShowNotifications((prev) => !prev)}
+                        onClick={() => { router.refresh(); setShowNotifications((prev) => !prev) }}
                         className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100"
                         aria-label="Cancellation requests"
                         aria-expanded={showNotifications}
                     >
                         <Bell className="h-5 w-5" />
 
-                        {cancellationRequests.length > 0 && (
-                            <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
-                                {cancellationRequests.length}
-                            </span>
+                        {totalNotifications > 0 && (
+                            <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-blue-600" />
                         )}
                     </button>
 
@@ -105,22 +152,23 @@ export default function OrdersPage({ orders }: OrdersProps) {
                                     </h3>
 
                                     <p className="mt-1 text-xs text-slate-500">
-                                        Cancellation requests
+                                        Cancellation & refund requests
                                     </p>
                                 </div>
 
-                                {cancellationRequests.length > 0 && (
+                                {totalNotifications > 0 && (
                                     <span className="rounded-full bg-red-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-red-700">
-                                        {cancellationRequests.length} Pending
+                                        {totalNotifications} Pending
                                     </span>
                                 )}
+
 
                             </div>
 
 
                             {/* Notifications */}
 
-                            {cancellationRequests.length === 0 ? (
+                            {totalNotifications === 0 ? (
 
                                 <div className="px-5 py-10 text-center">
 
@@ -131,73 +179,92 @@ export default function OrdersPage({ orders }: OrdersProps) {
                                     </p>
 
                                     <p className="mt-1 text-xs text-slate-400">
-                                        Customer cancellation requests will appear here.
+                                        Customer cancellation and refund requests will appear here.
                                     </p>
 
                                 </div>
 
                             ) : (
+                                <div>
+                                    <div className="max-h-72 overflow-y-auto">
 
-                                <div className="max-h-[420px] overflow-y-auto">
+                                        {notifications.map((notification) => (
 
-                                    {cancellationRequests.map((order) => (
+                                            <Link
+                                                key={`${notification.type}-${notification.id}`}
+                                                href={`/admin/orders/${notification.id}`}
+                                                onClick={() => setShowNotifications(false)}
+                                                className="block border-b border-slate-100 px-5 py-4 transition hover:bg-slate-50"
+                                            >
 
-                                        <Link
-                                            key={order.id}
-                                            href={`/admin/orders/${order.id}`}
-                                            onClick={() => setShowNotifications(false)}
-                                            className="block border-b border-slate-100 px-5 py-4 transition hover:bg-slate-50"
-                                        >
+                                                <div className="flex items-start justify-between gap-4">
 
-                                            <div className="flex items-start justify-between gap-4">
+                                                    <div className="min-w-0">
 
-                                                <div className="min-w-0">
+                                                        <div className="flex items-center gap-2">
 
-                                                    <div className="flex items-center gap-2">
+                                                            <span
+                                                                className={`h-2 w-2 shrink-0 rounded-full ${notification.type === "REFUND"
+                                                                    ? "bg-amber-500"
+                                                                    : "bg-red-500"
+                                                                    }`}
+                                                            />
 
-                                                        <span className="h-2 w-2 shrink-0 rounded-full bg-red-500" />
+                                                            <p className="text-sm font-semibold text-slate-900">
+                                                                {notification.type === "REFUND"
+                                                                    ? "Refund requested"
+                                                                    : "Cancellation requested"}
+                                                            </p>
 
-                                                        <p className="text-sm font-semibold text-slate-900">
-                                                            Cancellation requested
+                                                        </div>
+
+                                                        <p className="mt-2 text-xs text-slate-600">
+                                                            {notification.user.name || "Customer"}
+                                                        </p>
+
+                                                        <p className="mt-1 text-xs text-slate-400">
+                                                            {notification.user.email}
                                                         </p>
 
                                                     </div>
 
-                                                    <p className="mt-2 text-xs text-slate-600">
-                                                        {order.user.name || "Customer"}
-                                                    </p>
-
-                                                    <p className="mt-1 text-xs text-slate-400">
-                                                        {order.user.email}
-                                                    </p>
+                                                    <span className="shrink-0 text-xs font-semibold text-slate-700">
+                                                        {notification.orderNumber}
+                                                    </span>
 
                                                 </div>
 
-                                                <span className="shrink-0 text-xs font-semibold text-slate-700">
-                                                    {order.orderNumber}
-                                                </span>
+                                                <div className="mt-3 flex items-center justify-between">
 
-                                            </div>
+                                                    <span
+                                                        className={`text-[10px] uppercase tracking-[0.12em] ${notification.type === "REFUND"
+                                                            ? "text-amber-600"
+                                                            : "text-red-600"
+                                                            }`}
+                                                    >
+                                                        Needs Review
+                                                    </span>
 
-                                            <div className="mt-3 flex items-center justify-between">
+                                                    <span className="text-xs text-slate-400">
+                                                        View →
+                                                    </span>
 
-                                                <span className="text-[10px] uppercase tracking-[0.12em] text-red-600">
-                                                    Needs Review
-                                                </span>
+                                                </div>
 
-                                                <span className="text-xs text-slate-400">
-                                                    View →
-                                                </span>
+                                            </Link>
 
-                                            </div>
+                                        ))}
 
-                                        </Link>
-
-                                    ))}
-
+                                    </div>
+                                    {notifications.length > 2 && (
+                                        <div className="border-t border-slate-100 px-5 py-3 text-center text-[10px] uppercase tracking-widest text-slate-400">
+                                            Scroll to view more requests
+                                        </div>
+                                    )}
                                 </div>
 
                             )}
+
 
                         </div>
                     )}

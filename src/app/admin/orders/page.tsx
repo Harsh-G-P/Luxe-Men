@@ -26,7 +26,6 @@ export default async function Orders({ searchParams }: Props) {
         redirect("/login");
     }
 
-
     const {
         search,
         status,
@@ -163,6 +162,8 @@ export default async function Orders({ searchParams }: Props) {
             status: true,
             paymentStatus: true,
             cancellationStatus: true,
+            refundStatus: true,
+            refundReason: true,
             createdAt: true,
 
 

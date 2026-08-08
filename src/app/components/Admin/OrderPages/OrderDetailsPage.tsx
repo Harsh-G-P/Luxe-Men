@@ -32,6 +32,11 @@ type Order = {
     cancellationStatus: "NONE" | "REQUESTED" | "REJECTED";
     cancellationReason: string | null;
 
+    refundStatus: "NONE" | "REQUESTED" | "REJECTED" | "REFUNDED";
+    refundReason: string | null;
+    refundRequestedAt: string | null;
+    refundedAt: string | null;
+
     notes: string | null;
     packagingOption: string | null;
     giftMessage: string | null;
@@ -110,6 +115,12 @@ export default function AdminOrderDetail({ id }: Props) {
 
     useEffect(() => {
         fetchOrderDetail();
+        const interval = setInterval(() => {
+        fetchOrderDetail();
+    }, 10000);
+
+    return () => clearInterval(interval);
+
     }, [id]);
 
     const handleOrderUpdate = (data: {
@@ -306,6 +317,9 @@ export default function AdminOrderDetail({ id }: Props) {
                         paymentStatus={order.paymentStatus}
                         cancellationStatus={order.cancellationStatus}
                         cancellationReason={order.cancellationReason}
+                        refundStatus={order.refundStatus}
+                        refundReason={order.refundReason}
+                        refundRequestedAt={order.refundRequestedAt}
                         onUpdated={handleOrderUpdate}
                     />
 

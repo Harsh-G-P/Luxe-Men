@@ -2,6 +2,7 @@ import { errorResponse, successResponse } from "@/app/lib/apiResponse";
 import { authOptions } from "@/app/lib/auth";
 import { idSchema } from "@/app/lib/id";
 import prisma from "@/app/lib/prisma";
+import { stripe } from "@/app/lib/stripe";
 import { formatZodErrors } from "@/app/lib/validations/formatZod";
 import { updateOrderSchema } from "@/app/lib/validations/order";
 import { getServerSession } from "next-auth";
@@ -61,6 +62,11 @@ export async function GET(req: NextRequest, { params }: Params) {
 
                 cancellationStatus: true,
                 cancellationReason: true,
+
+                refundStatus: true,
+                refundReason: true,
+                refundRequestedAt: true,
+                refundedAt: true,
 
                 notes: true,
                 packagingOption: true,
@@ -178,15 +184,25 @@ export async function PUT(req: NextRequest, { params }: Params) {
             },
             select: {
                 id: true,
+                orderNumber: true,
                 status: true,
                 paymentStatus: true,
                 cancellationStatus: true,
+
+                refundStatus: true,
+                refundReason: true,
+                refundRequestedAt: true,
+                refundedAt: true,
+
+                paymentId: true,
             }
-        })
+        });
 
         if (!order) {
             return errorResponse("Order not found", 404)
         }
+
+        // Change detection
 
         const hasStatusChange =
             validate.status &&
@@ -200,14 +216,55 @@ export async function PUT(req: NextRequest, { params }: Params) {
             validate.cancellationStatus !== undefined &&
             validate.cancellationStatus !== order.cancellationStatus;
 
+        const hasRefundChange =
+            validate.refundStatus !== undefined &&
+            validate.refundStatus !== order.refundStatus;
+
 
         if (
             !hasStatusChange &&
             !hasPaymentChange &&
-            !hasCancellationChange
+            !hasCancellationChange &&
+            !hasRefundChange
         ) {
             return errorResponse("Nothing to update", 400);
         }
+
+        // Payment status validation
+
+        if (
+            validate.paymentStatus === "REFUNDED" &&
+            validate.paymentStatus !== order.paymentStatus
+        ) {
+            return errorResponse(
+                "Payment can only be marked as refunded through the refund process",
+                400
+            );
+        }
+
+        if (
+            order.paymentStatus === "PAID" &&
+            validate.paymentStatus !== undefined &&
+            validate.paymentStatus !== "PAID"
+        ) {
+            return errorResponse(
+                "Paid payment status cannot be changed manually",
+                400
+            );
+        }
+
+        if (
+            order.paymentStatus === "REFUNDED" &&
+            validate.paymentStatus !== undefined &&
+            validate.paymentStatus !== "REFUNDED"
+        ) {
+            return errorResponse(
+                "Refunded payment status cannot be changed",
+                400
+            );
+        }
+
+        // Order status validation
 
         const currentStatus = order.status;
         const newStatus = validate.status;
@@ -235,31 +292,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
             }
         }
 
-
-
-        if (
-            order.paymentStatus === "PAID" &&
-            validate.paymentStatus !== undefined &&
-            validate.paymentStatus !== "PAID" &&
-            validate.paymentStatus !== "REFUNDED"
-        ) {
-            return errorResponse(
-                "Paid payment status cannot be changed",
-                400
-            );
-        }
-
-        if (
-            order.paymentStatus === "REFUNDED" &&
-            validate.paymentStatus !== undefined &&
-            validate.paymentStatus !== "REFUNDED"
-        ) {
-            return errorResponse(
-                "Refunded payment status cannot be changed",
-                400
-            );
-        }
-
+        
         /* Cancellation request validation */
 
         if (
@@ -309,6 +342,165 @@ export async function PUT(req: NextRequest, { params }: Params) {
             );
         }
 
+        // Refund validation
+
+        if (
+            validate.refundStatus !== undefined &&
+            validate.refundStatus !== order.refundStatus
+        ) {
+            // There must be an actual refund request.
+            if (
+                order.refundStatus !== "REQUESTED"
+            ) {
+                return errorResponse(
+                    "There is no pending refund request",
+                    400
+                );
+            }
+
+
+            // REJECT REFUND
+
+            if (
+                validate.refundStatus === "REJECTED"
+            ) {
+                const updatedOrder = await prisma.order.update({
+                    where: {
+                        id,
+                    },
+
+                    data: {
+                        refundStatus: "REJECTED",
+
+                        ...(validate.refundReason !== undefined && {
+                            refundReason: validate.refundReason,
+                        }),
+                    },
+
+                    select: {
+                        id: true,
+                        orderNumber: true,
+
+                        status: true,
+                        paymentStatus: true,
+
+                        cancellationStatus: true,
+
+                        refundStatus: true,
+                        refundReason: true,
+                        refundRequestedAt: true,
+                        refundedAt: true,
+
+                        updatedAt: true,
+                    },
+                });
+
+                return successResponse(
+                    "Refund request rejected",
+                    updatedOrder
+                );
+            }
+
+
+            // APPROVE REFUND
+
+            if (
+                validate.refundStatus === "REFUNDED"
+            ) {
+                if (order.paymentStatus !== "PAID") {
+                    return errorResponse(
+                        "Only paid orders can be refunded",
+                        400
+                    );
+                }
+
+                if (!order.paymentId) {
+                    return errorResponse(
+                        "Stripe payment information not found",
+                        400
+                    );
+                }
+
+                try {
+                    // Stripe refund
+                    const refund = await stripe.refunds.create({
+                        payment_intent: order.paymentId,
+                    });
+
+                    if (
+                        refund.status !== "succeeded"
+                    ) {
+                        return errorResponse(
+                            "Stripe refund was not successful",
+                            400
+                        );
+                    }
+
+                    // Only update DB after Stripe succeeds
+                    const updatedOrder =
+                        await prisma.order.update({
+                            where: {
+                                id,
+                            },
+
+                            data: {
+                                refundStatus: "REFUNDED",
+                                paymentStatus: "REFUNDED",
+                                refundedAt: new Date(),
+
+                                ...(validate.refundReason !== undefined && {
+                                    refundReason:
+                                        validate.refundReason,
+                                }),
+                            },
+
+                            select: {
+                                id: true,
+                                orderNumber: true,
+
+                                status: true,
+                                paymentStatus: true,
+
+                                cancellationStatus: true,
+
+                                refundStatus: true,
+                                refundReason: true,
+                                refundRequestedAt: true,
+                                refundedAt: true,
+
+                                updatedAt: true,
+                            },
+                        });
+
+                    return successResponse(
+                        "Refund processed successfully",
+                        updatedOrder
+                    );
+
+                } catch (stripeError) {
+                    console.error(
+                        "Stripe refund error:",
+                        stripeError
+                    );
+
+                    return errorResponse(
+                        "Failed to process Stripe refund",
+                        500
+                    );
+                }
+            }
+
+            // Do not allow NONE from REQUESTED.
+            if (
+                validate.refundStatus === "NONE"
+            ) {
+                return errorResponse(
+                    "A pending refund request cannot be changed to NONE",
+                    400
+                );
+            }
+        }
+
 
         const updatedOrder = await prisma.order.update({
             where: {
@@ -336,6 +528,10 @@ export async function PUT(req: NextRequest, { params }: Params) {
                 paymentStatus: true,
                 cancellationStatus: true,
                 cancellationReason: true,
+                refundStatus: true,
+                refundReason: true,
+                refundRequestedAt: true,
+                refundedAt: true,
                 updatedAt: true,
             },
         });
@@ -350,6 +546,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
         return errorResponse("Internal Server Error");
     }
 }
+
 
 const allowedStatusTransitions = {
     PENDING: ["CONFIRMED", "CANCELLED"],

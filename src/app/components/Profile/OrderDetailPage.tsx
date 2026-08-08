@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import OrderPreferences from "./Orders/OrderPreferences";
 import OrderTimeline from "./Orders/OrderTimeline";
 import RequestCancellation from "./Orders/RequestCancellation";
+import RequestRefund from "./Orders/RequestRefund";
 
 type Props = {
     id: string
@@ -28,6 +29,11 @@ type Order = {
 
     cancellationStatus: string;
     cancellationReason: string | null;
+
+    refundStatus: string;
+    refundReason: string | null;
+    refundRequestedAt: string | null;
+    refundedAt: string | null;
 
     notes: string | null;
     packagingOption: string | null;
@@ -83,6 +89,11 @@ export default function OrderDetailPage({ id }: Props) {
 
     useEffect(() => {
         fetchOrderDetail();
+        const interval = setInterval(() => {
+            fetchOrderDetail();
+        }, 10000);
+
+        return () => clearInterval(interval);
     }, [id]);
 
     if (loading) {
@@ -219,6 +230,13 @@ export default function OrderDetailPage({ id }: Props) {
                         orderId={order.id}
                         status={order.status}
                         cancellationStatus={order.cancellationStatus}
+                    />
+
+                    <RequestRefund
+                        orderId={order.id}
+                        status={order.status}
+                        paymentStatus={order.paymentStatus}
+                        refundStatus={order.refundStatus}
                     />
 
                 </div>

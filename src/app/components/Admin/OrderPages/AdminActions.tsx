@@ -40,10 +40,14 @@ type Props = {
   paymentStatus: string;
   cancellationStatus: "NONE" | "REQUESTED" | "REJECTED";
   cancellationReason: string | null;
+  refundStatus: "NONE" | "REQUESTED" | "REJECTED" | "REFUNDED";
+  refundReason: string | null;
+  refundRequestedAt: string | null;
   onUpdated: (data: {
     status: string;
     paymentStatus: string;
     cancellationStatus: "NONE" | "REQUESTED" | "REJECTED";
+    refundStatus?: "NONE" | "REQUESTED" | "REJECTED" | "REFUNDED";
   }) => void;
 };
 
@@ -53,6 +57,9 @@ export default function AdminActions({
   paymentStatus,
   cancellationStatus,
   cancellationReason,
+  refundStatus,
+  refundReason,
+  refundRequestedAt,
   onUpdated,
 }: Props) {
 
@@ -67,8 +74,14 @@ export default function AdminActions({
   const [currentCancellationStatus, setCurrentCancellationStatus] =
     useState(cancellationStatus);
 
-  const router = useRouter();
+  const [currentRefundStatus, setCurrentRefundStatus] =
+    useState(refundStatus);
 
+  const isOrderLocked =
+    orderStatus === "CANCELLED" ||
+    orderStatus === "DELIVERED";
+
+  const router = useRouter();
 
   const hasChanges =
     orderStatus !== status ||
@@ -178,6 +191,63 @@ export default function AdminActions({
     }
   };
 
+  const handleRefund = async (
+    action: "APPROVE" | "REJECT"
+  ) => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          action === "APPROVE"
+            ? {
+              refundStatus: "REFUNDED",
+            }
+            : {
+              refundStatus: "REJECTED",
+            }
+        ),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message);
+        return;
+      }
+
+      toast.success(
+        action === "APPROVE"
+          ? "Refund processed successfully"
+          : "Refund request rejected"
+      );
+
+      setCurrentRefundStatus(data.data.refundStatus);
+      setOrderStatus(data.data.status);
+      setPayment(data.data.paymentStatus);
+      setEditStatus(false);
+      setEditPayment(false);
+
+      onUpdated({
+        status: data.data.status,
+        paymentStatus: data.data.paymentStatus,
+        cancellationStatus: data.data.cancellationStatus,
+        refundStatus: data.data.refundStatus,
+      });
+
+      router.refresh();
+
+    } catch {
+      toast.error("Refund update failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="border border-neutral-200 bg-white">
 
@@ -200,17 +270,26 @@ export default function AdminActions({
           </label>
 
 
-          {!editStatus ? (
+          {!editStatus || isOrderLocked ? (
             <button
-              onClick={() => setEditStatus(true)}
-              className="flex w-full items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left"
+              onClick={() => {
+                if (!isOrderLocked) {
+                  setEditStatus(true);
+                }
+              }}
+              disabled={isOrderLocked}
+              className={`flex w-full items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left ${isOrderLocked
+                  ? "cursor-not-allowed opacity-60"
+                  : ""
+                }`}
+
             >
               <span className="text-xs font-semibold uppercase tracking-wide text-neutral-800">
                 {orderStatus}
               </span>
 
               <span className="text-[11px] uppercase tracking-[0.12em] text-neutral-400">
-                Edit
+                {isOrderLocked ? "Locked" : "Edit"}
               </span>
             </button>
           ) : (
@@ -242,14 +321,18 @@ export default function AdminActions({
 
           {!editPayment ? (
             <button
+              disabled={payment === "REFUNDED"}
               onClick={() => setEditPayment(true)}
-              className="flex w-full items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left"
+              className={`flex w-full items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left ${payment === "REFUNDED"
+                  ? "cursor-not-allowed opacity-60"
+                  : ""
+                }`}
             >
               <span className="text-xs font-semibold uppercase tracking-wide text-neutral-800">
                 {payment}
               </span>
               <span className="text-[11px] uppercase tracking-[0.12em] text-neutral-400">
-                Edit
+                {payment === "REFUNDED" ? "Locked" : "Edit"}
               </span>
             </button>
           ) : (
@@ -412,6 +495,108 @@ export default function AdminActions({
           </div>
         )}
 
+
+        {/* Refund Request */}
+        {currentRefundStatus === "REQUESTED" && (
+
+          <div className="border border-neutral-200 bg-neutral-50/50">
+
+            <div className="border-b border-neutral-200 px-5 py-5">
+
+              <div className="flex items-start justify-between">
+
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-neutral-500">
+                    Customer Request
+                  </p>
+
+                  <h3 className="mt-2 text-sm font-medium uppercase tracking-[0.08em] text-neutral-900">
+                    Refund Requested
+                  </h3>
+                </div>
+
+
+                <span className="border border-neutral-200 bg-white px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-neutral-600">
+                  Pending Review
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div className="px-5 py-5">
+
+              <p className="text-[10px] uppercase tracking-[0.16em] text-neutral-400">
+                Customer Reason
+              </p>
+
+
+              <div className="mt-3 border-l-2 border-neutral-900 pl-4">
+
+                <p className="text-xs leading-6 text-neutral-600">
+                  {refundReason || "No reason provided."}
+                </p>
+
+              </div>
+
+
+              {refundRequestedAt && (
+                <p className="mt-4 text-[11px] text-neutral-400">
+                  Requested on{" "}
+                  {new Date(refundRequestedAt).toLocaleString()}
+                </p>
+              )}
+
+            </div>
+
+
+            <div className="grid grid-cols-2 border-t border-neutral-200">
+
+
+              <button
+                disabled={loading}
+                onClick={() => handleRefund("REJECT")}
+                className="
+          border-r border-neutral-200
+          px-4 py-4
+          text-[10px]
+          uppercase
+          tracking-[0.16em]
+          text-neutral-500
+          transition
+          hover:bg-neutral-100
+          disabled:opacity-50
+        "
+              >
+                Reject Refund
+              </button>
+
+
+              <button
+                disabled={loading}
+                onClick={() => handleRefund("APPROVE")}
+                className="
+          bg-neutral-900
+          px-4 py-4
+          text-[10px]
+          uppercase
+          tracking-[0.16em]
+          text-white
+          transition
+          hover:bg-black
+          disabled:opacity-50
+        "
+              >
+                Approve Refund
+              </button>
+
+
+            </div>
+
+          </div>
+
+        )}
 
       </div>
 

@@ -54,6 +54,11 @@ export async function GET(req: NextRequest, { params }: Params) {
                 cancellationStatus: true,
                 cancellationReason: true,
 
+                refundStatus: true,
+                refundReason: true,
+                refundRequestedAt: true,
+                refundedAt: true,
+
                 notes: true,
                 packagingOption: true,
                 giftMessage: true,

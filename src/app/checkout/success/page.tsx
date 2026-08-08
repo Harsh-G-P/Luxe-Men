@@ -61,10 +61,20 @@ export default async function CheckoutSuccess({ searchParams }: Props) {
             notFound();
         }
 
+        if (
+            !stripeSession.payment_intent ||
+            typeof stripeSession.payment_intent !== "string"
+        ) {
+            notFound();
+        }
+
+
+        const paymentIntentId = stripeSession.payment_intent;
+
 
         order = await prisma.order.findFirst({
             where: {
-                paymentId: stripeSession.id,
+                paymentId: paymentIntentId,
             },
             include: {
                 items: true,
@@ -103,12 +113,9 @@ export default async function CheckoutSuccess({ searchParams }: Props) {
                 },
             });
 
-
-
             if (!cart || cart.items.length === 0) {
                 notFound();
             }
-
 
 
             order = await prisma.$transaction(async (tx) => {
@@ -135,10 +142,9 @@ export default async function CheckoutSuccess({ searchParams }: Props) {
 
                         paymentStatus: "PAID",
 
-                        paymentId: stripeSession.id,
+                        paymentId: paymentIntentId,
 
                         status: "CONFIRMED",
-
 
                         notes:
                             metadata.notes || null,

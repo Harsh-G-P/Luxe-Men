@@ -222,6 +222,11 @@ model Order {
   cancellationStatus CancellationStatus @default(NONE)
   cancellationReason String?
 
+  refundStatus      RefundStatus @default(NONE)
+  refundReason      String?
+  refundRequestedAt DateTime?
+  refundedAt        DateTime?
+
   notes String?
 
   packagingOption String?
@@ -237,7 +242,6 @@ model Order {
   @@index([status])
   @@index([paymentStatus])
   @@index([cancellationStatus])
-
 }
 
 model OrderItem {
@@ -291,3 +295,9 @@ enum CancellationStatus {
   REJECTED
 }
 
+enum RefundStatus {
+  NONE
+  REQUESTED
+  REJECTED
+  REFUNDED
+}
