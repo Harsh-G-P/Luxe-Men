@@ -2,6 +2,7 @@ import { errorResponse, successResponse } from "@/app/lib/apiResponse";
 import { authOptions } from "@/app/lib/auth";
 import { idSchema } from "@/app/lib/id";
 import prisma from "@/app/lib/prisma";
+import { sendOrderCancellationEmail } from "@/app/lib/sendOrderCancellationEmail";
 import { stripe } from "@/app/lib/stripe";
 import { formatZodErrors } from "@/app/lib/validations/formatZod";
 import { updateOrderSchema } from "@/app/lib/validations/order";
@@ -185,8 +186,13 @@ export async function PUT(req: NextRequest, { params }: Params) {
             select: {
                 id: true,
                 orderNumber: true,
+
+                total: true,
+
                 status: true,
                 paymentStatus: true,
+                paymentMethod: true,
+
                 cancellationStatus: true,
 
                 refundStatus: true,
@@ -195,6 +201,13 @@ export async function PUT(req: NextRequest, { params }: Params) {
                 refundedAt: true,
 
                 paymentId: true,
+
+                user: {
+                    select: {
+                        email: true,
+                        name: true,
+                    },
+                },
             }
         });
 
@@ -292,7 +305,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
             }
         }
 
-        
+
         /* Cancellation request validation */
 
         if (
@@ -535,6 +548,28 @@ export async function PUT(req: NextRequest, { params }: Params) {
                 updatedAt: true,
             },
         });
+
+        const cancellationApproved =
+            validate.status === "CANCELLED" &&
+            order.cancellationStatus === "REQUESTED" &&
+            validate.cancellationStatus === "NONE";
+
+        if (cancellationApproved) {
+            try {
+                await sendOrderCancellationEmail({
+                    email: order.user.email,
+                    name: order.user.name ?? "Customer",
+                    orderNumber: order.orderNumber,
+                    total: Number(order.total),
+                    paymentMethod: order.paymentMethod,
+                });
+            } catch (emailError) {
+                console.error(
+                    "Order cancellation email error:",
+                    emailError
+                );
+            }
+        }
 
         return successResponse(
             "Order updated successfully",
