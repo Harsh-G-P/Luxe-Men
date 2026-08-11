@@ -212,7 +212,7 @@ export default function UsersPage({ users }: UserProp) {
                                         {/* Action */}
                                         <div className="flex justify-end">
                                             <Link
-                                                href={`/admin/users/${user.id}`}
+                                                href={`/admin/user/${user.id}`}
                                                 className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 transition-all duration-300 hover:border-gray-900 hover:bg-gray-900 hover:text-white"
                                             >
                                                 View

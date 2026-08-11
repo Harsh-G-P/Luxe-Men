@@ -187,7 +187,7 @@ export default function AdminOrderDetail({ id }: Props) {
                     </p>
 
                     <Link
-                        href="/profile/orders"
+                        href="/admin/orders"
                         className="mt-10 inline-flex border border-black px-8 py-3 text-xs uppercase tracking-[0.12em] transition hover:bg-black hover:text-white"
                     >
                         Back to Orders

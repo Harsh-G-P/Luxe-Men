@@ -115,7 +115,7 @@ export default function CustomerInformation({ customer }: Props) {
         <div className="border-t border-neutral-200 pt-5">
 
           <Link
-            href={`/admin/users/${customer.id}`}
+            href={`/admin/user/${customer.id}`}
             className="block w-full border border-black px-5 py-3 text-center text-xs uppercase tracking-[0.12em] transition hover:bg-black hover:text-white"
           >
             View Customer
