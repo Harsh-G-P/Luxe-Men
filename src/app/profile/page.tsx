@@ -10,26 +10,29 @@ export default async function Profile() {
 
     const session = await getServerSession(authOptions)
 
-    if(!session){
+    if (!session) {
         redirect('/login')
     }
 
     const user = await prisma.user.findUnique({
         where: {
-            id:session.user.id
+            id: session.user.id
         },
-        select:{
+        select: {
             id: true,
             name: true,
             username: true,
-            email : true,
+            email: true,
             image: true,
-            createdAt: true
+            createdAt: true,
+            accountDeletionStatus: true,
+            accountDeletionReason: true,
+            accountDeletionRequestedAt: true,
         }
     })
 
-    if(!user) {
-        redirect('/login')
+    if (!user) {
+        redirect('/')
     }
 
     return (

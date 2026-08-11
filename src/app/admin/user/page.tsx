@@ -89,17 +89,17 @@ export default async function User({ searchParams }: Props) {
             },
         }),
         ...(date === "year" && {
-    createdAt: {
-        gte: new Date(new Date().getFullYear(), 0, 1),
-    },
-}),
+            createdAt: {
+                gte: new Date(new Date().getFullYear(), 0, 1),
+            },
+        }),
     };
 
-    let orderBy: Prisma.UserOrderByWithRelationInput ={
+    let orderBy: Prisma.UserOrderByWithRelationInput = {
         createdAt: "desc",
     };
 
-     switch (sort) {
+    switch (sort) {
         case "OLDEST":
             orderBy = {
                 createdAt: "asc",
@@ -137,6 +137,7 @@ export default async function User({ searchParams }: Props) {
             username: true,
             role: true,
             createdAt: true,
+            accountDeletionStatus: true,
         },
     })
 

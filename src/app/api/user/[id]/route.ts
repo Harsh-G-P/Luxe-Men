@@ -11,8 +11,9 @@ type Params = {
         id: string;
     }>;
 };
-export async function GET(req:NextRequest,{params}:Params){
-const session = await getServerSession(authOptions)
+
+export async function GET(req: NextRequest, { params }: Params) {
+    const session = await getServerSession(authOptions)
 
     if (!session || !session.user.id) {
         return errorResponse("Unauthorized", 401)
@@ -24,7 +25,7 @@ const session = await getServerSession(authOptions)
         return errorResponse("Forbidden", 403)
     }
     try {
-         const routeParams = await params
+        const routeParams = await params
         const result = idSchema.safeParse(routeParams)
 
         if (!result.success) {
@@ -37,47 +38,50 @@ const session = await getServerSession(authOptions)
         const { id } = result.data
 
         const user = await prisma.user.findUnique({
-            where:{
+            where: {
                 id
             },
-            select:{
-                id:true,
-                name:true,
-                username:true,
-                email:true,
-                image:true,
-                role:true,
-                createdAt:true,
-                updatedAt:true,
-                emailVerified:true,
+            select: {
+                id: true,
+                name: true,
+                username: true,
+                email: true,
+                image: true,
+                role: true,
+                accountDeletionStatus: true,
+                accountDeletionReason: true,
+                accountDeletionRequestedAt: true,
+                createdAt: true,
+                updatedAt: true,
+                emailVerified: true,
 
-                address:{
-                    orderBy:{
-                        createdAt:"desc"
+                address: {
+                    orderBy: {
+                        createdAt: "desc"
                     }
                 },
 
                 orders: {
-                    orderBy:{
-                        createdAt:"desc"
+                    orderBy: {
+                        createdAt: "desc"
                     },
-                    select:{
-                        id:true,
-                        orderNumber:true,
-                        status:true,
-                        paymentStatus:true,
-                        paymentMethod:true,
-                        subtotal:true,
-                        shipping:true,
-                        total:true,
-                        createdAt:true,
+                    select: {
+                        id: true,
+                        orderNumber: true,
+                        status: true,
+                        paymentStatus: true,
+                        paymentMethod: true,
+                        subtotal: true,
+                        shipping: true,
+                        total: true,
+                        createdAt: true,
                     }
                 }
             }
         })
 
-        if(!user){
-            return errorResponse("User not found",404)
+        if (!user) {
+            return errorResponse("User not found", 404)
         }
 
         const totalOrders = user.orders.length;
@@ -124,34 +128,161 @@ const session = await getServerSession(authOptions)
             total: Number(order.total),
         }));
 
-        return successResponse("User fetched successfully",{
-                profile: {
-                    id: user.id,
-                    name: user.name,
-                    username: user.username,
-                    email: user.email,
-                    image: user.image,
-                    role: user.role,
-                    createdAt: user.createdAt,
-                    updatedAt: user.updatedAt,
-                    emailVerified:user.emailVerified
-                },
+        return successResponse("User fetched successfully", {
+            profile: {
+                id: user.id,
+                name: user.name,
+                username: user.username,
+                email: user.email,
+                image: user.image,
+                role: user.role,
+                accountDeletionStatus: user.accountDeletionStatus,
+                accountDeletionReason: user.accountDeletionReason,
+                accountDeletionRequestedAt: user.accountDeletionRequestedAt,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+                emailVerified: user.emailVerified
+            },
 
-                statistics: {
-                    orders: orderSummary.total,
-                    addresses: user.address.length,
-                    totalSpent: orderSummary.totalSpent,
-                },
+            statistics: {
+                orders: orderSummary.total,
+                addresses: user.address.length,
+                totalSpent: orderSummary.totalSpent,
+            },
 
-                orderSummary,
+            orderSummary,
 
-                addresses: user.address,
+            addresses: user.address,
 
-                orders: formattedOrders,
-            })
+            orders: formattedOrders,
+        })
     } catch (error) {
-         console.error("Admin UserDetail GET API:", error);
+        console.error("Admin UserDetail GET API:", error);
         return errorResponse("Internal Server Error");
     }
 
+}
+
+
+export async function PUT(req: NextRequest, { params }: Params) {
+    const session = await getServerSession(authOptions)
+
+    if (!session || !session.user.id) {
+        return errorResponse("Unauthorized", 401)
+    }
+
+    const isAdmin = session.user.role === "ADMIN"
+
+    if (!isAdmin) {
+        return errorResponse("Forbidden", 403)
+    }
+    let body
+    try {
+        body = await req.json()
+        const routeParams = await params
+        const result = idSchema.safeParse(routeParams)
+
+        if (!result.success) {
+            console.log(
+                result.error.flatten()
+            );
+            return errorResponse("Invalid ID", 400)
+        }
+
+        const { id } = result.data
+
+        if (id === session.user.id) {
+            return errorResponse("You cannot change your own role", 400);
+        }
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id
+            },
+            select: {
+                id: true,
+                role: true,
+                accountDeletionStatus: true
+            }
+        })
+
+        if (!user) {
+            return errorResponse("User not found", 404)
+        }
+
+        // Account deletion request
+        if (
+            body.action === "APPROVE" ||
+            body.action === "REJECT"
+        ) {
+            if (user.accountDeletionStatus !== "REQUESTED") {
+                return errorResponse(
+                    "There is no pending account deletion request",
+                    400
+                )
+            }
+
+            if (body.action === "REJECT") {
+                const updated = await prisma.user.update({
+                    where: {
+                        id,
+                    },
+                    data: {
+                        accountDeletionStatus: "REJECTED",
+                    },
+                    select: {
+                        id: true,
+                        accountDeletionStatus: true,
+                    },
+                })
+
+                return successResponse(
+                    "Account deletion request rejected",
+                    updated
+                )
+            }
+
+            if (body.action === "APPROVE") {
+                await prisma.user.delete({
+                    where: {
+                        id,
+                    },
+                })
+
+                return successResponse(
+                    "User account deleted successfully",
+                    {
+                        userId: id,
+                    }
+                )
+            }
+        }
+
+        if (body.role !== "USER" && body.role !== "ADMIN") {
+            return errorResponse("Invalid role", 400);
+        }
+
+        if (user.role === body.role) {
+            return errorResponse("User already has this role", 400);
+        }
+
+        const updated = await prisma.user.update({
+            where: {
+                id
+            },
+            data: {
+                role: body.role
+            },
+            select: {
+                id: true,
+                role: true
+            }
+        })
+
+        return successResponse("User role updated successfully", updated)
+
+    } catch (error) {
+        console.error("Admin UserDetail PUT API:", error);
+        return errorResponse("Internal Server Error");
+    }
 }

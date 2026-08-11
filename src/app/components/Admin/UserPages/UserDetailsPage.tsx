@@ -23,9 +23,15 @@ type UserProfile = {
     username: string;
     image: string | null;
     role: "USER" | "ADMIN";
+
+    accountDeletionStatus: "NONE" | "REQUESTED" | "REJECTED";
+    accountDeletionReason: string | null;
+    accountDeletionRequestedAt: string | null;
+
     createdAt: string;
     updatedAt: string;
     emailVerified: string | null;
+
 };
 
 type UserAddress = {
@@ -314,21 +320,19 @@ export default function UserDetailPage({ id }: Props) {
                 <div className="flex gap-3">
 
                     <span
-                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${
-                            profile.role === "ADMIN"
+                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${profile.role === "ADMIN"
                                 ? "bg-purple-100 text-purple-700"
                                 : "bg-slate-200 text-slate-700"
-                        }`}
+                            }`}
                     >
                         {profile.role}
                     </span>
 
                     <span
-                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${
-                            profile.emailVerified
+                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${profile.emailVerified
                                 ? "bg-green-100 text-green-700"
                                 : "bg-amber-100 text-amber-700"
-                        }`}
+                            }`}
                     >
                         {profile.emailVerified
                             ? "Verified"
@@ -349,7 +353,7 @@ export default function UserDetailPage({ id }: Props) {
                 <div className="space-y-8">
 
                     <UserAddresses addresses={user.addresses} />
-                    
+
                     <UserOrders orders={user.orders} />
 
 
@@ -367,7 +371,13 @@ export default function UserDetailPage({ id }: Props) {
                         totalSpent={statistics.totalSpent}
                     />
 
-                    <UserAdminActions userId={profile.id} />
+                    <UserAdminActions
+                        userId={profile.id}
+                        role={profile.role}
+                        accountDeletionStatus={profile.accountDeletionStatus}
+                        accountDeletionReason={profile.accountDeletionReason}
+                        accountDeletionRequestedAt={profile.accountDeletionRequestedAt}
+                    />
 
                 </div>
 

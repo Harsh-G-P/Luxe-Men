@@ -146,10 +146,34 @@ export const authOptions: NextAuthOptions = ({
             if (typeof token.loginTime === "number" && Date.now() - token.loginTime > Absolute_Expiry) {
                 token.expired = true
             }
+            if(token.userId){
+                const existingUser = await prisma.user.findUnique({
+                    where:{
+                        id:token.userId as string
+                    },
+                    select:{
+                        id:true,
+                        role:true,
+                        name:true,
+                        username:true,
+                    }
+                })
+                if(!existingUser){
+                    token.userDeleted = true
+                } else {
+                    token.role = existingUser.role
+                    token.name = existingUser.name
+                    token.username = existingUser.username
+                }
+            }
             return token
         },
         async session({ session, token }) {
             if (token.expired) {
+                session.user = undefined as any
+                return session
+            }
+            if(token.userDeleted){
                 session.user = undefined as any
                 return session
             }

@@ -31,6 +31,17 @@ model User {
   address Address[]
   cart    Cart?
   orders  Order[]
+
+  accountDeletionStatus AccountDeletionStatus @default(NONE)
+  accountDeletionReason String?
+  accountDeletionRequestedAt DateTime?
+  accountDeletedAt DateTime?
+}
+
+enum AccountDeletionStatus {
+  NONE
+  REQUESTED
+  REJECTED
 }
 
 enum Role {
