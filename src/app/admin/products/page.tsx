@@ -9,8 +9,8 @@ export default async function products() {
 
     const session = await getServerSession(authOptions)
 
-    if (!session) {
-        redirect('/login')
+    if (!session || session.user.role !== "ADMIN") {
+        redirect("/login");
     }
     const products = await prisma.product.findMany({
         include: {

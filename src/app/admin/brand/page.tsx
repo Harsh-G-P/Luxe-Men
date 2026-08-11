@@ -7,10 +7,10 @@ import { redirect } from "next/navigation";
 export default async function Brand() {
     const session = await getServerSession(authOptions)
 
-    if(!session){
-        redirect('/login')
+    if (!session || session.user.role !== "ADMIN") {
+        redirect("/login");
     }
-    
+
     const brand = await prisma.brand.findMany({
         orderBy: {
             createdAt: "desc"

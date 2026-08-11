@@ -9,8 +9,8 @@ export default async function Category() {
 
     const session = await getServerSession(authOptions)
 
-    if(!session){
-        redirect("/login")
+    if (!session || session.user.role !== "ADMIN") {
+        redirect("/login");
     }
     const categories = await prisma.category.findMany({
         orderBy: {

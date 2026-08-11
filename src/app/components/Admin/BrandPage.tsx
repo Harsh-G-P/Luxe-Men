@@ -139,7 +139,7 @@ export default function BrandPage({ brand }: BrandProps) {
 
             <div className="flex items-center mb-5">
                 <Link
-                    href="/admin/brand"
+                    href="/admin"
                     className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
                 >
                     ← Back to Dashboard

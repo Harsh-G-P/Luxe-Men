@@ -321,19 +321,14 @@ export default function AdminActions({
 
           {!editPayment ? (
             <button
-              disabled={payment === "REFUNDED"}
-              onClick={() => setEditPayment(true)}
-              className={`flex w-full items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left ${payment === "REFUNDED"
-                  ? "cursor-not-allowed opacity-60"
-                  : ""
-                }`}
+              disabled={ payment === "REFUNDED" || orderStatus === "CANCELLED" }
+              onClick={() => { if ( payment !== "REFUNDED" && orderStatus !== "CANCELLED" ) { setEditPayment(true); } }}
+              className={`flex w-full items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left ${ payment === "REFUNDED" || orderStatus === "CANCELLED" ? "cursor-not-allowed opacity-60" : "" }`}
             >
               <span className="text-xs font-semibold uppercase tracking-wide text-neutral-800">
                 {payment}
               </span>
-              <span className="text-[11px] uppercase tracking-[0.12em] text-neutral-400">
-                {payment === "REFUNDED" ? "Locked" : "Edit"}
-              </span>
+              <span className="text-[11px] uppercase tracking-[0.12em] text-neutral-400"> {payment === "REFUNDED" || orderStatus === "CANCELLED" ? "Locked" : "Edit"} </span>
             </button>
           ) : (
             <Select
