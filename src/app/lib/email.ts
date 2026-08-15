@@ -16,7 +16,7 @@ export async function sendVerificationEmail(
   verificationLink: string
 ) {
   const info = await transporter.sendMail({
-    from: `"Your App" <${process.env.BREVO_SENDER}>`,
+    from: `"Luxe Men" <${process.env.BREVO_SENDER}>`,
     to: email,
     subject: "Verify your email address",
     html: `

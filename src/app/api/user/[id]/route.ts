@@ -2,6 +2,7 @@ import { errorResponse, successResponse } from "@/app/lib/apiResponse";
 import { authOptions } from "@/app/lib/auth";
 import { idSchema } from "@/app/lib/id";
 import prisma from "@/app/lib/prisma";
+import { sendAccountDeletionEmail } from "@/app/lib/sendAccountDeletionEmail";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 
@@ -201,6 +202,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
             },
             select: {
                 id: true,
+                name: true,
+                email: true,
                 role: true,
                 accountDeletionStatus: true
             }
@@ -234,27 +237,56 @@ export async function PUT(req: NextRequest, { params }: Params) {
                         id: true,
                         accountDeletionStatus: true,
                     },
-                })
+                });
+
+                
+                try {
+                    await sendAccountDeletionEmail({
+                        email: user.email,
+                        name: user.name,
+                        type: "REJECTED",
+                    });
+                } catch (emailError) {
+                    console.error(
+                        "Failed to send account deletion rejection email:",
+                        emailError
+                    );
+                }
 
                 return successResponse(
                     "Account deletion request rejected",
                     updated
-                )
+                );
             }
+
 
             if (body.action === "APPROVE") {
                 await prisma.user.delete({
                     where: {
                         id,
                     },
-                })
+                });
+
+                
+                try {
+                    await sendAccountDeletionEmail({
+                        email: user.email,
+                        name: user.name,
+                        type: "DELETED",
+                    });
+                } catch (emailError) {
+                    console.error(
+                        "Failed to send account deletion email:",
+                        emailError
+                    );
+                }
 
                 return successResponse(
                     "User account deleted successfully",
                     {
                         userId: id,
                     }
-                )
+                );
             }
         }
 
