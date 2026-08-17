@@ -421,7 +421,7 @@ export default function AddProductPage({ product, brands, categories }: ProductF
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
+        <div className="w-full p-6">
 
             <div className="flex items-center justify-between mb-5">
                 <Link

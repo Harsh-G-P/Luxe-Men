@@ -107,7 +107,7 @@ export default function OrdersPage({ orders }: OrdersProps) {
     }, []);
 
     return (
-        <div className="max-w-7xl mx-auto p-6">
+        <div className="w-full">
 
             {/* Header */}
 
@@ -270,17 +270,6 @@ export default function OrdersPage({ orders }: OrdersProps) {
                     )}
 
                 </div>
-
-            </div>
-
-            <div className="flex items-center mb-6">
-
-                <Link
-                    href="/admin"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
-                >
-                    ← Back to Dashboard
-                </Link>
 
             </div>
 

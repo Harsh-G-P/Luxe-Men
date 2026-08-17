@@ -78,16 +78,8 @@ export default function ProductPage({ products }: ProductProps) {
     }
 
     return (
-        <div className="max-w-7xl mx-auto p-6">
+        <div className="w-full p-6">
 
-            <div className="flex items-center justify-between mb-5">
-                <Link
-                    href="/admin"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
-                >
-                    ← Back to Dashboard
-                </Link>
-            </div>
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div>

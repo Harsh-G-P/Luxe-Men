@@ -129,29 +129,9 @@ export default function UserDetailPage({ id }: Props) {
         return () => clearInterval(interval);
     }, [id]);
 
-
-    if (!user) {
-        return (
-            <section className="mx-auto max-w-7xl px-6 py-14">
-                <Link
-                    href="/admin/user"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-                >
-                    ← Back to Users
-                </Link>
-
-                <div className="mt-10">
-                    <p className="text-sm text-neutral-500">
-                        User not found.
-                    </p>
-                </div>
-            </section>
-        );
-    }
-
     if (loading) {
         return (
-            <section className="mx-auto max-w-7xl px-6 py-20">
+            <section className="w-full px-6 py-20">
                 <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
 
                     <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-neutral-200 border-t-black" />
@@ -175,7 +155,7 @@ export default function UserDetailPage({ id }: Props) {
 
     if (!user) {
         return (
-            <section className="mx-auto max-w-7xl px-6 py-20">
+            <section className="w-full px-6 py-20">
                 <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
 
                     <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-neutral-200 text-3xl">
@@ -211,7 +191,7 @@ export default function UserDetailPage({ id }: Props) {
     const statistics = user.statistics;
 
     return (
-        <section className="mx-auto max-w-7xl px-6 py-14">
+        <section className="w-full px-6">
 
             {/* Back */}
 

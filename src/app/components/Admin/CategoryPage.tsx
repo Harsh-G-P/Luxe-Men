@@ -126,7 +126,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
+        <div className="w-full">
 
             {/* Header */}
             <div className="mb-8">
@@ -136,14 +136,7 @@ export default function CategoryPage({ categories }: CategoryProps) {
                 </p>
             </div>
 
-            <div className="flex items-center justify-between mb-5">
-                <Link
-                    href="/admin"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
-                >
-                    ← Back to Dashboard
-                </Link>
-
+            <div className="flex justify-end mb-5">
                 <Link
                     href="/admin/category/categoryAttribute"
                     className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"

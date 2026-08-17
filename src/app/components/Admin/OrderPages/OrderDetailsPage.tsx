@@ -142,7 +142,7 @@ export default function AdminOrderDetail({ id }: Props) {
 
     if (loading) {
         return (
-            <section className="mx-auto max-w-7xl px-6 py-20">
+            <section className="w-full px-6 py-20">
                 <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
 
                     <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-neutral-200 border-t-black" />
@@ -166,7 +166,7 @@ export default function AdminOrderDetail({ id }: Props) {
 
     if (!order) {
         return (
-            <section className="mx-auto max-w-7xl px-6 py-20">
+            <section className="w-full px-6 py-20">
                 <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
 
                     <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-neutral-200 text-3xl">
@@ -199,7 +199,7 @@ export default function AdminOrderDetail({ id }: Props) {
     }
 
     return (
-        <section className="mx-auto max-w-7xl px-6 py-14">
+        <section className="w-full px-6">
 
             <Link
                 href="/admin/orders"
