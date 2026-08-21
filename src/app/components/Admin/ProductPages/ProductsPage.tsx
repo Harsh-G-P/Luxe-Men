@@ -61,18 +61,18 @@ export default function ProductPage({
     const [isPending, startTransition] = useTransition();
 
     const router = useRouter();
-const searchParams = useSearchParams();
+    const searchParams = useSearchParams();
 
-const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const handlePageChange = (page: number) => {
+        const params = new URLSearchParams(searchParams.toString());
 
-    params.set("page", page.toString());
+        params.set("page", page.toString());
 
-    startTransition(() => {
-        router.push(`/admin/products?${params.toString()}`);
-    });
-};
-    
+        startTransition(() => {
+            router.push(`/admin/products?${params.toString()}`);
+        });
+    };
+
     const handleDelete = async (id: string) => {
         setDeletingId(id);
 
@@ -551,11 +551,11 @@ const handlePageChange = (page: number) => {
                     <div className="flex items-center gap-2">
 
                         <button
-                        type="button"
-    disabled={!pagination.hasPreviousPage || isPending}
-    onClick={() =>
-        handlePageChange(pagination.page - 1)
-    }
+                            type="button"
+                            disabled={!pagination.hasPreviousPage || isPending}
+                            onClick={() =>
+                                handlePageChange(pagination.page - 1)
+                            }
                             className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${pagination.hasPreviousPage
                                 ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
                                 : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
@@ -574,9 +574,9 @@ const handlePageChange = (page: number) => {
                             ).map((page) => (
                                 <button
                                     key={page}
-        type="button"
-        disabled={isPending}
-        onClick={() => handlePageChange(page)}
+                                    type="button"
+                                    disabled={isPending}
+                                    onClick={() => handlePageChange(page)}
                                     className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold transition ${pagination.page === page
                                         ? "bg-slate-950 text-white shadow-sm"
                                         : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
@@ -590,10 +590,10 @@ const handlePageChange = (page: number) => {
 
                         <button
                             type="button"
-    disabled={!pagination.hasNextPage || isPending}
-    onClick={() =>
-        handlePageChange(pagination.page + 1)
-    }
+                            disabled={!pagination.hasNextPage || isPending}
+                            onClick={() =>
+                                handlePageChange(pagination.page + 1)
+                            }
                             className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${pagination.hasNextPage
                                 ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
                                 : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
