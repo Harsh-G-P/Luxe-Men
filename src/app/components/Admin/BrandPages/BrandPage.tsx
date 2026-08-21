@@ -1,7 +1,14 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import {
+    useRouter,
+    useSearchParams,
+} from "next/navigation";
+import {
+    useEffect,
+    useState,
+    useTransition,
+} from "react";
 import { toast } from "sonner";
 import {
     Edit3,
@@ -41,16 +48,17 @@ export default function BrandPage({
     brand,
     pagination,
 }: BrandProps) {
-
     const [title, setTitle] = useState<FormTitle>({
         title: "",
     });
 
     const [brands, setBrands] = useState(brand);
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] =
+        useState(false);
 
-    const [error, setError] = useState("");
+    const [error, setError] =
+        useState("");
 
     const [fieldErrors, setFieldErrors] =
         useState<FieldErrors>({});
@@ -64,6 +72,10 @@ export default function BrandPage({
     const [isPending, startTransition] =
         useTransition();
 
+    // NEW
+    const [isFormOpen, setIsFormOpen] =
+        useState(false);
+
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -71,75 +83,26 @@ export default function BrandPage({
         setBrands(brand);
     }, [brand]);
 
-
     const handlePageChange = (page: number) => {
-
         const params = new URLSearchParams(
             searchParams.toString()
         );
 
-        params.set("page", page.toString());
+        params.set(
+            "page",
+            page.toString()
+        );
 
         startTransition(() => {
-
             router.push(
                 `/admin/brand?${params.toString()}`
             );
-
         });
-    };
-
-    const getBrand = async () => {
-
-        setLoading(true);
-
-        try {
-
-            const params = new URLSearchParams(
-                searchParams.toString()
-            );
-
-            const page =
-                params.get("page") || "1";
-
-            const res = await fetch(
-                `/api/brand?page=${page}`
-            );
-
-            const data = await res.json();
-
-            if (!res.ok) {
-
-                setError(
-                    "❌ " +
-                    (data.message ||
-                        "Failed to fetch brands")
-                );
-
-                return;
-            }
-
-            setBrands(data.data);
-
-        } catch (error) {
-
-            console.log(error);
-
-            setError(
-                "❌ Failed to fetch brands. Try again."
-            );
-
-        } finally {
-
-            setLoading(false);
-
-        }
     };
 
     const handleSubmit = async (
         e: React.FormEvent<HTMLFormElement>
     ) => {
-
         e.preventDefault();
 
         setLoading(true);
@@ -147,7 +110,6 @@ export default function BrandPage({
         setFieldErrors({});
 
         try {
-
             const url = editId
                 ? `/api/brand/${editId}`
                 : "/api/brand";
@@ -157,99 +119,84 @@ export default function BrandPage({
                 : "POST";
 
             const res = await fetch(url, {
-
                 method,
-
                 headers: {
                     "Content-Type":
                         "application/json",
                 },
-
                 body: JSON.stringify(title),
-
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-
                 if (
                     data.errors &&
                     typeof data.errors === "object"
                 ) {
-
                     const errors: FieldErrors = {};
 
                     Object.entries(
                         data.errors
                     ).forEach(
                         ([key, message]) => {
-
                             errors[
                                 key as keyof FieldErrors
                             ] = message as string;
-
                         }
                     );
 
                     setFieldErrors(errors);
-
                     return;
                 }
 
                 setError(
                     "❌ " +
-                    (
-                        data.message ||
-                        "Something went wrong"
-                    )
+                        (
+                            data.message ||
+                            "Something went wrong"
+                        )
                 );
 
                 return;
             }
 
             if (data.success) {
-
                 setTitle({
                     title: "",
                 });
 
                 setEditId(null);
-
+                setIsFormOpen(false);
                 setFieldErrors({});
-
                 setError("");
-
-                await getBrand();
 
                 toast.success(
                     data.message
                 );
+
+                // Refresh server component
+                startTransition(() => {
+                    router.refresh();
+                });
             }
-
         } catch (error) {
-
             console.log(error);
 
             setError(
                 "❌ Network error. Try again."
             );
-
         } finally {
-
             setLoading(false);
-
         }
     };
 
     const handleDelete = async (
         id: string
     ) => {
-
         setDeletingId(id);
 
         try {
-
             const res = await fetch(
                 `/api/brand/${id}`,
                 {
@@ -261,9 +208,9 @@ export default function BrandPage({
                 await res.json();
 
             if (!res.ok) {
-
                 toast.error(
-                    data.message
+                    data.message ||
+                        "Failed to delete brand"
                 );
 
                 return;
@@ -273,20 +220,18 @@ export default function BrandPage({
                 data.message
             );
 
-            window.location.reload();
-
+            // Refresh instead of full reload
+            startTransition(() => {
+                router.refresh();
+            });
         } catch (error) {
-
             console.log(error);
 
             toast.error(
                 "Something went wrong"
             );
-
         } finally {
-
             setDeletingId(null);
-
         }
     };
 
@@ -294,7 +239,6 @@ export default function BrandPage({
         id: string,
         brandTitle: string
     ) => {
-
         setEditId(id);
 
         setTitle({
@@ -302,8 +246,26 @@ export default function BrandPage({
         });
 
         setFieldErrors({});
-
         setError("");
+        setIsFormOpen(true);
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
+    // NEW
+    const handleAddBrand = () => {
+        setEditId(null);
+
+        setTitle({
+            title: "",
+        });
+
+        setFieldErrors({});
+        setError("");
+        setIsFormOpen(true);
 
         window.scrollTo({
             top: 0,
@@ -312,7 +274,6 @@ export default function BrandPage({
     };
 
     const handleCancel = () => {
-
         setEditId(null);
 
         setTitle({
@@ -320,22 +281,17 @@ export default function BrandPage({
         });
 
         setFieldErrors({});
-
         setError("");
+        setIsFormOpen(false);
     };
 
     if (isPending) {
-
         return (
-
             <section className="w-full px-6 py-20">
-
                 <div className="mx-auto max-w-2xl border border-slate-200 bg-white px-12 py-20 text-center shadow-sm">
 
                     <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
-
                         <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-slate-950" />
-
                     </div>
 
                     <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
@@ -353,40 +309,54 @@ export default function BrandPage({
                     </p>
 
                 </div>
-
             </section>
-
         );
     }
 
     return (
-
         <div className="w-full px-6">
 
             {/* Header */}
 
-            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mb-10 flex flex-col gap-6 border-b border-slate-200 pb-8 lg:flex-row lg:items-start lg:justify-between">
 
-                <div>
+                {/* Left */}
+
+                <div className="min-w-0">
 
                     <div className="mb-4 flex items-center gap-3">
+                        <span className="h-px w-8 bg-slate-950" />
 
-                        <span className="h-px w-8 bg-black" />
-
-                        <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-neutral-400">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
                             Store / Catalog
                         </p>
-
                     </div>
 
-                    <h1 className="text-4xl font-light uppercase tracking-[0.08em] text-neutral-950">
+                    <h1 className="text-3xl font-light uppercase tracking-[0.08em] text-slate-950 sm:text-4xl">
                         Brands
                     </h1>
 
-                    <p className="mt-4 text-sm text-neutral-500">
-                        Create, update and manage
-                        your product brands.
+                    <p className="mt-3 max-w-xl text-sm leading-6 text-slate-500">
+                        Create, update and manage your product brands.
                     </p>
+
+                </div>
+
+                {/* Right: Add Brand */}
+
+                <div className="flex w-full sm:w-auto">
+
+                    <button
+                        type="button"
+                        onClick={handleAddBrand}
+                        className="group inline-flex h-11 w-full items-center justify-center gap-3 border border-black bg-black px-6 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-white hover:text-black sm:w-auto"
+                    >
+                        <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+                            +
+                        </span>
+
+                        Add Brand
+                    </button>
 
                 </div>
 
@@ -394,153 +364,151 @@ export default function BrandPage({
 
             {/* Add / Update Brand */}
 
-            <form onSubmit={handleSubmit}>
+            {isFormOpen && (
+                <form onSubmit={handleSubmit}>
 
-                <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
+                    <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
 
-                    <div className="border-b border-slate-100 px-6 py-5">
+                        {/* Form Header */}
 
-                        <div className="flex items-center gap-3">
+                        <div className="border-b border-slate-100 px-6 py-5">
 
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 text-white">
+                            <div className="flex items-center justify-between gap-4">
 
-                                <Tag className="h-4 w-4" />
+                                <div className="flex items-center gap-3">
 
-                            </div>
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 text-white">
+                                        <Tag className="h-4 w-4" />
+                                    </div>
 
-                            <div>
+                                    <div>
 
-                                <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+                                        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+                                            {editId
+                                                ? "Update Brand"
+                                                : "Add Brand"}
+                                        </h2>
 
-                                    {editId
-                                        ? "Update Brand"
-                                        : "Add Brand"}
+                                        <p className="mt-1 text-xs text-slate-400">
+                                            {editId
+                                                ? "Update the selected brand."
+                                                : "Create a new brand for your catalog."}
+                                        </p>
 
-                                </h2>
+                                    </div>
 
-                                <p className="mt-1 text-xs text-slate-400">
+                                </div>
 
-                                    {editId
-                                        ? "Update the selected brand."
-                                        : "Create a new brand for your catalog."}
+                                {/* Close */}
 
-                                </p>
+                                <button
+                                    type="button"
+                                    onClick={handleCancel}
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+                                    aria-label="Close form"
+                                >
+                                    ×
+                                </button>
 
                             </div>
 
                         </div>
 
-                    </div>
+                        {/* Form Body */}
 
-                    <div className="p-6">
+                        <div className="p-6">
 
-                        {error && (
-
-                            <div className="mb-4 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3">
-
-                                <p className="text-sm text-rose-600">
-                                    {error}
-                                </p>
-
-                            </div>
-
-                        )}
-
-                        <div className="flex flex-col gap-4 md:flex-row">
-
-                            <div className="flex-1">
-
-                                <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                                    Brand Name
-                                </label>
-
-                                <input
-                                    type="text"
-                                    placeholder={
-                                        editId
-                                            ? "Update brand..."
-                                            : "Brand name..."
-                                    }
-                                    value={
-                                        title.title
-                                    }
-                                    onChange={(e) =>
-                                        setTitle({
-                                            ...title,
-                                            title:
-                                                e.target.value,
-                                        })
-                                    }
-                                    className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:ring-2 focus:ring-slate-950 ${
-                                        fieldErrors.title
-                                            ? "border-rose-300 focus:ring-rose-500"
-                                            : "border-slate-200"
-                                    }`}
-                                />
-
-                                {fieldErrors.title && (
-
-                                    <p className="mt-2 ml-1 text-xs text-rose-500">
-                                        {fieldErrors.title}
+                            {error && (
+                                <div className="mb-4 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3">
+                                    <p className="text-sm text-rose-600">
+                                        {error}
                                     </p>
+                                </div>
+                            )}
 
-                                )}
+                            <div className="flex flex-col gap-4 md:flex-row">
 
-                            </div>
+                                <div className="flex-1">
 
-                            <div className="flex items-end gap-2">
+                                    <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                        Brand Name
+                                    </label>
 
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="inline-flex h-11.5 items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-slate-800 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
-                                >
+                                    <input
+                                        type="text"
+                                        autoFocus
+                                        placeholder={
+                                            editId
+                                                ? "Update brand..."
+                                                : "Brand name..."
+                                        }
+                                        value={title.title}
+                                        onChange={(e) =>
+                                            setTitle({
+                                                ...title,
+                                                title: e.target.value,
+                                            })
+                                        }
+                                        className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:ring-2 focus:ring-slate-950 ${
+                                            fieldErrors.title
+                                                ? "border-rose-300 focus:ring-rose-500"
+                                                : "border-slate-200"
+                                        }`}
+                                    />
 
-                                    {loading ? (
-
-                                        <>
-
-                                            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-500 border-t-white" />
-
-                                            {editId
-                                                ? "Updating..."
-                                                : "Adding..."}
-
-                                        </>
-
-                                    ) : (
-
-                                        <>
-
-                                            <span className="text-lg font-light leading-none">
-                                                {editId
-                                                    ? "✓"
-                                                    : "+"}
-                                            </span>
-
-                                            {editId
-                                                ? "Update"
-                                                : "Add Brand"}
-
-                                        </>
-
+                                    {fieldErrors.title && (
+                                        <p className="mt-2 ml-1 text-xs text-rose-500">
+                                            {fieldErrors.title}
+                                        </p>
                                     )}
 
-                                </button>
+                                </div>
 
-                                {editId && (
+                                <div className="flex items-end gap-3">
+
+                                    {/* Submit */}
+
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="group inline-flex h-11 items-center justify-center gap-2 border border-black bg-black px-6 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+
+                                        {loading ? (
+                                            <>
+                                                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-500 border-t-white" />
+
+                                                {editId
+                                                    ? "Updating..."
+                                                    : "Adding..."}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+                                                    {editId
+                                                        ? "✓"
+                                                        : "+"}
+                                                </span>
+
+                                                {editId
+                                                    ? "Update"
+                                                    : "Add Brand"}
+                                            </>
+                                        )}
+
+                                    </button>
+
+                                    {/* Cancel */}
 
                                     <button
                                         type="button"
-                                        onClick={
-                                            handleCancel
-                                        }
-                                        className="h-11.5 rounded-xl border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50"
+                                        onClick={handleCancel}
+                                        className="inline-flex h-11 items-center justify-center border border-slate-200 bg-white px-6 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
                                     >
                                         Cancel
                                     </button>
 
-                                )}
+                                </div>
 
                             </div>
 
@@ -548,9 +516,10 @@ export default function BrandPage({
 
                     </div>
 
-                </div>
+                </form>
+            )}
 
-            </form>
+            {/* Filters */}
 
             <BrandFilter />
 
@@ -573,13 +542,10 @@ export default function BrandPage({
                     </div>
 
                     <span className="text-sm text-slate-500">
-
                         {pagination.totalBrands}{" "}
-
                         {pagination.totalBrands === 1
                             ? "Brand"
                             : "Brands"}
-
                     </span>
 
                 </div>
@@ -587,9 +553,7 @@ export default function BrandPage({
                 {/* Brands */}
 
                 {brands.length > 0 ? (
-
                     brands.map((brand) => (
-
                         <div
                             key={brand.id}
                             className="group overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-px hover:border-slate-300 hover:shadow-[0_12px_35px_rgba(15,23,42,0.08)]"
@@ -615,13 +579,9 @@ export default function BrandPage({
 
                                     <div className="min-w-0">
 
-                                        <div className="flex flex-wrap items-center gap-2">
-
-                                            <h3 className="truncate text-base font-semibold text-slate-900">
-                                                {brand.title}
-                                            </h3>
-
-                                        </div>
+                                        <h3 className="truncate text-base font-semibold text-slate-900">
+                                            {brand.title}
+                                        </h3>
 
                                         <p className="mt-2 text-sm font-medium text-slate-600">
                                             Product Brand
@@ -684,7 +644,6 @@ export default function BrandPage({
                                         </p>
 
                                         <p className="mt-2 text-sm font-medium text-slate-600">
-
                                             {new Date(
                                                 brand.createdAt
                                             ).toLocaleDateString(
@@ -695,12 +654,13 @@ export default function BrandPage({
                                                     year: "numeric",
                                                 }
                                             )}
-
                                         </p>
 
                                     </div>
 
                                     <div className="mt-6 flex w-full gap-2 lg:w-auto">
+
+                                        {/* Edit */}
 
                                         <button
                                             type="button"
@@ -712,12 +672,12 @@ export default function BrandPage({
                                             }
                                             className="group/edit inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 hover:shadow-md lg:flex-none"
                                         >
-
                                             <Edit3 className="h-3.5 w-3.5 transition-transform group-hover/edit:-rotate-6" />
 
                                             Edit
-
                                         </button>
+
+                                        {/* Delete */}
 
                                         <button
                                             type="button"
@@ -735,25 +695,17 @@ export default function BrandPage({
 
                                             {deletingId ===
                                             brand.id ? (
-
                                                 <>
-
                                                     <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-rose-200 border-t-rose-600 group-hover/delete:border-rose-400 group-hover/delete:border-t-white" />
 
                                                     Deleting...
-
                                                 </>
-
                                             ) : (
-
                                                 <>
-
                                                     <Trash2 className="h-3.5 w-3.5 transition-transform group-hover/delete:scale-110" />
 
                                                     Delete
-
                                                 </>
-
                                             )}
 
                                         </button>
@@ -765,9 +717,7 @@ export default function BrandPage({
                             </div>
 
                         </div>
-
                     ))
-
                 ) : (
 
                     /* Empty State */
@@ -777,9 +727,7 @@ export default function BrandPage({
                         <div className="px-6 py-20 text-center">
 
                             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
-
                                 <Tag className="h-8 w-8 stroke-[1.2] text-slate-400" />
-
                             </div>
 
                             <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
@@ -801,13 +749,7 @@ export default function BrandPage({
 
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        document
-                                            .querySelector<HTMLInputElement>(
-                                                'input[placeholder="Brand name..."]'
-                                            )
-                                            ?.focus();
-                                    }}
+                                    onClick={handleAddBrand}
                                     className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-6 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg"
                                 >
 
@@ -824,7 +766,6 @@ export default function BrandPage({
                         </div>
 
                     </div>
-
                 )}
 
             </div>
@@ -832,26 +773,20 @@ export default function BrandPage({
             {/* Pagination */}
 
             {pagination.totalPages > 0 && (
-
-                <div className="mt-7 flex items-center justify-between border-t border-slate-200 pt-5">
+                <div className="mt-7 flex flex-col gap-4 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
 
                     <div className="text-sm text-slate-500">
-
                         Page{" "}
-
                         <span className="font-semibold text-slate-900">
                             {pagination.page}
                         </span>
-
                         {" "}of{" "}
-
                         <span className="font-semibold text-slate-900">
                             {pagination.totalPages}
                         </span>
-
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
 
                         {/* Previous */}
 
@@ -877,7 +812,7 @@ export default function BrandPage({
 
                         {/* Page Numbers */}
 
-                        <div className="flex items-center gap-1">
+                        <div className="flex flex-wrap items-center gap-1">
 
                             {Array.from(
                                 {
@@ -887,7 +822,6 @@ export default function BrandPage({
                                 (_, index) =>
                                     index + 1
                             ).map((page) => (
-
                                 <button
                                     key={page}
                                     type="button"
@@ -906,7 +840,6 @@ export default function BrandPage({
                                 >
                                     {page}
                                 </button>
-
                             ))}
 
                         </div>
@@ -936,7 +869,6 @@ export default function BrandPage({
                     </div>
 
                 </div>
-
             )}
 
         </div>

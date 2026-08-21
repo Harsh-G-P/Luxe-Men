@@ -1,4 +1,4 @@
-import BrandPage from "@/app/components/Admin/BrandPage";
+import BrandPage from "@/app/components/Admin/BrandPages/BrandPage";
 import { authOptions } from "@/app/lib/auth";
 import prisma from "@/app/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
