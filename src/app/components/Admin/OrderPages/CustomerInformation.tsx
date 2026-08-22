@@ -115,10 +115,14 @@ export default function CustomerInformation({ customer }: Props) {
         <div className="border-t border-neutral-200 pt-5">
 
           <Link
-            href={`/admin/users/${customer.id}`}
-            className="block w-full border border-black px-5 py-3 text-center text-xs uppercase tracking-[0.12em] transition hover:bg-black hover:text-white"
+            href={`/admin/user/${customer.id}`}
+            className="group w-full inline-flex h-11 items-center justify-center gap-3 border border-black bg-white px-5 py-3 text-center  text-xs font-semibold uppercase tracking-[0.14em] text-black transition-all duration-200 hover:bg-black hover:text-white"
           >
+            <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+              +
+            </span>
             View Customer
+
           </Link>
 
         </div>

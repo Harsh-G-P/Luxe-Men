@@ -1,0 +1,759 @@
+"use client";
+
+import Select from "react-select";
+import {
+    useRouter,
+    usePathname,
+    useSearchParams,
+} from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { SlidersHorizontal, X } from "lucide-react";
+
+type Option = {
+    value: string;
+    label: string;
+};
+
+const statusOptions = [
+    { value: "ALL", label: "All Status" },
+    { value: "ACTIVE", label: "Active" },
+    { value: "INACTIVE", label: "Inactive" },
+];
+
+const featuredOptions = [
+    { value: "ALL", label: "All Featured" },
+    { value: "FEATURED", label: "Featured" },
+    { value: "NOT_FEATURED", label: "Not Featured" },
+];
+
+const bestsellerOptions = [
+    { value: "ALL", label: "All Products" },
+    { value: "BESTSELLER", label: "Bestsellers" },
+    { value: "NOT_BESTSELLER", label: "Not Bestsellers" },
+];
+
+const stockOptions = [
+    { value: "ALL", label: "All Stock" },
+    { value: "IN_STOCK", label: "In Stock" },
+    { value: "LOW_STOCK", label: "Low Stock" },
+    { value: "OUT_OF_STOCK", label: "Out of Stock" },
+];
+
+const sortOptions = [
+    { value: "NEWEST", label: "Newest First" },
+    { value: "OLDEST", label: "Oldest First" },
+    { value: "HIGH", label: "Highest Price" },
+    { value: "LOW", label: "Lowest Price" },
+    { value: "NAME_AZ", label: "Name A-Z" },
+    { value: "NAME_ZA", label: "Name Z-A" },
+];
+
+const dateOptions = [
+    { value: "ALL", label: "All Dates" },
+    { value: "today", label: "Today" },
+    { value: "week", label: "Last 7 Days" },
+    { value: "month", label: "This Month" },
+];
+
+export default function ProductFilter() {
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    const [search, setSearch] = useState(
+        searchParams.get("search") ?? ""
+    );
+
+    const [brands, setBrands] = useState<Option[]>([]);
+    const [categories, setCategories] = useState<Option[]>([]);
+
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    useEffect(() => {
+        setSearch(searchParams.get("search") ?? "");
+    }, [searchParams]);
+
+    useEffect(() => {
+        const getFilters = async () => {
+            try {
+                const [brandsRes, categoriesRes] =
+                    await Promise.all([
+                        fetch("/api/brand"),
+                        fetch("/api/category"),
+                    ]);
+
+                const brandsData = await brandsRes.json();
+                const categoriesData =
+                    await categoriesRes.json();
+
+                if (brandsRes.ok) {
+                    setBrands(
+                        brandsData.data.map(
+                            (brand: any) => ({
+                                value: brand.id,
+                                label: brand.title,
+                            })
+                        )
+                    );
+                }
+
+                if (categoriesRes.ok) {
+                    setCategories(
+                        categoriesData.data.map(
+                            (category: any) => ({
+                                value: category.id,
+                                label: category.title,
+                            })
+                        )
+                    );
+                }
+            } catch (error) {
+                console.error(
+                    "Failed to load filters",
+                    error
+                );
+            }
+        };
+
+        getFilters();
+    }, []);
+
+    const updateFilter = (
+        key: string,
+        value: string
+    ) => {
+        const params = new URLSearchParams(
+            searchParams.toString()
+        );
+
+        if (!value || value === "ALL") {
+            params.delete(key);
+        } else {
+            params.set(key, value);
+        }
+
+        params.delete("page");
+
+        const query = params.toString();
+
+        router.replace(
+            query
+                ? `${pathname}?${query}`
+                : pathname,
+            {
+                scroll: false,
+            }
+        );
+    };
+
+    const clearFilters = () => {
+        setSearch("");
+
+        router.replace(pathname, {
+            scroll: false,
+        });
+    };
+
+    const brandOptions = [
+        {
+            value: "ALL",
+            label: "All Brands",
+        },
+        ...brands,
+    ];
+
+    const categoryOptions = [
+        {
+            value: "ALL",
+            label: "All Categories",
+        },
+        ...categories,
+    ];
+
+    /*
+     * Count active filters.
+     */
+    const activeFilterCount = useMemo(() => {
+        let count = 0;
+
+        const filterKeys = [
+            "search",
+            "brand",
+            "category",
+            "status",
+            "featured",
+            "bestseller",
+            "stock",
+            "date",
+        ];
+
+        filterKeys.forEach((key) => {
+            const value = searchParams.get(key);
+
+            if (value && value !== "ALL") {
+                count++;
+            }
+        });
+
+        const sort = searchParams.get("sort");
+
+        if (sort && sort !== "NEWEST") {
+            count++;
+        }
+
+        return count;
+    }, [searchParams]);
+
+    const selectStyles = {
+        control: (base: any, state: any) => ({
+            ...base,
+
+            minHeight: "50px",
+            height: "50px",
+
+            borderRadius: "14px",
+
+            backgroundColor: "#ffffff",
+
+            border: state.isFocused
+                ? "1px solid #111827"
+                : "1px solid #e5e7eb",
+
+            boxShadow: state.isFocused
+                ? "0 0 0 3px rgba(15,23,42,0.06)"
+                : "0 1px 2px rgba(15,23,42,0.02)",
+
+            transition: "all 150ms ease",
+
+            "&:hover": {
+                borderColor: "#cbd5e1",
+            },
+
+            cursor: "pointer",
+        }),
+
+        valueContainer: (base: any) => ({
+            ...base,
+            padding: "0 15px",
+        }),
+
+        placeholder: (base: any) => ({
+            ...base,
+            color: "#94a3b8",
+            fontSize: "13px",
+        }),
+
+        singleValue: (base: any) => ({
+            ...base,
+            color: "#334155",
+            fontSize: "13px",
+            fontWeight: 500,
+        }),
+
+        input: (base: any) => ({
+            ...base,
+            color: "#0f172a",
+            fontSize: "13px",
+        }),
+
+        indicatorsContainer: (base: any) => ({
+            ...base,
+            paddingRight: "8px",
+        }),
+
+        dropdownIndicator: (
+            base: any,
+            state: any
+        ) => ({
+            ...base,
+            color: state.isFocused
+                ? "#0f172a"
+                : "#94a3b8",
+
+            transition: "transform 150ms ease",
+
+            transform: state.selectProps.menuIsOpen
+                ? "rotate(180deg)"
+                : "rotate(0deg)",
+
+            "&:hover": {
+                color: "#0f172a",
+            },
+        }),
+
+        indicatorSeparator: () => ({
+            display: "none",
+        }),
+
+        menu: (base: any) => ({
+            ...base,
+
+            marginTop: "7px",
+
+            borderRadius: "14px",
+
+            overflow: "hidden",
+
+            border: "1px solid #e2e8f0",
+
+            backgroundColor: "#ffffff",
+
+            boxShadow:
+                "0 20px 50px rgba(15,23,42,0.14), 0 4px 12px rgba(15,23,42,0.06)",
+
+            zIndex: 99999,
+        }),
+
+        menuList: (base: any) => ({
+            ...base,
+
+            padding: "6px",
+
+            maxHeight: "260px",
+        }),
+
+        option: (
+            base: any,
+            state: any
+        ) => ({
+            ...base,
+
+            borderRadius: "9px",
+
+            padding: "10px 12px",
+
+            marginBottom: "2px",
+
+            backgroundColor:
+                state.isSelected
+                    ? "#0f172a"
+                    : state.isFocused
+                        ? "#f8fafc"
+                        : "#ffffff",
+
+            color:
+                state.isSelected
+                    ? "#ffffff"
+                    : "#334155",
+
+            fontSize: "13px",
+
+            fontWeight:
+                state.isSelected
+                    ? 600
+                    : 500,
+
+            cursor: "pointer",
+
+            transition:
+                "background-color 120ms ease",
+
+            "&:active": {
+                backgroundColor: "#0f172a",
+                color: "#ffffff",
+            },
+        }),
+    };
+
+    const selectProps = {
+        styles: selectStyles,
+        menuPortalTarget:
+            typeof document !== "undefined"
+                ? document.body
+                : undefined,
+        menuPosition: "fixed" as const,
+        menuPlacement: "auto" as const,
+        menuShouldScrollIntoView: false,
+        isSearchable: false,
+    };
+
+    return (
+        <section className="mb-10">
+
+            {/* =========================================================
+                MOBILE FILTER BUTTON
+            ========================================================= */}
+
+            <div className="mb-4 md:hidden">
+
+                <button
+                    type="button"
+                    onClick={() =>
+                        setMobileOpen((prev) => !prev)
+                    }
+                    className="group flex h-12 w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 shadow-[0_4px_20px_rgba(15,23,42,0.04)] transition-all duration-200 hover:border-slate-300"
+                >
+
+                    <div className="flex items-center gap-3">
+
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-950 text-white">
+                            <SlidersHorizontal className="h-4 w-4" />
+                        </div>
+
+                        <div className="text-left">
+
+                            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400">
+                                Catalog
+                            </p>
+
+                            <p className="mt-0.5 text-sm font-semibold text-slate-900">
+                                Filter Products
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div className="flex items-center gap-3">
+
+                        {activeFilterCount > 0 && (
+                            <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-slate-950 px-2 text-[10px] font-bold text-white">
+                                {activeFilterCount}
+                            </span>
+                        )}
+
+                        <span
+                            className={`text-slate-400 transition-transform duration-300 ${
+                                mobileOpen
+                                    ? "rotate-180"
+                                    : ""
+                            }`}
+                        >
+                            ↓
+                        </span>
+
+                    </div>
+
+                </button>
+
+            </div>
+
+
+            {/* =========================================================
+                FILTER PANEL
+            ========================================================= */}
+
+            <div
+                className={`
+                    overflow-visible rounded-3xl border border-slate-200
+                    bg-white shadow-[0_4px_25px_rgba(15,23,42,0.04)]
+                    transition-all duration-300
+                    ${
+                        mobileOpen
+                            ? "block"
+                            : "hidden"
+                    }
+                    md:block
+                `}
+            >
+
+                {/* Header */}
+
+                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-5 sm:px-6">
+
+                    <div>
+
+                        <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-slate-400">
+                            Catalog
+                        </p>
+
+                        <h3 className="mt-1 text-base font-semibold tracking-tight text-slate-900">
+                            Filter Products
+                        </h3>
+
+                    </div>
+
+                    <div className="flex items-center gap-2">
+
+                        {/* Mobile close */}
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setMobileOpen(false)
+                            }
+                            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:border-slate-900 hover:bg-slate-950 hover:text-white md:hidden"
+                            aria-label="Close filters"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+
+                        {/* Desktop clear */}
+
+                        <button
+                            type="button"
+                            onClick={clearFilters}
+                            className="group hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-slate-900 hover:bg-slate-950 hover:text-white hover:shadow-md sm:inline-flex"
+                        >
+
+                            <span className="text-sm transition-transform duration-200 group-hover:rotate-90">
+                                ×
+                            </span>
+
+                            Clear Filters
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                {/* Filters */}
+
+                <div className="overflow-visible p-4 sm:p-5">
+
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+
+                        {/* Search */}
+
+                        <div className="relative">
+
+                            <input
+                                value={search}
+                                onChange={(e) => {
+                                    setSearch(
+                                        e.target.value
+                                    );
+
+                                    updateFilter(
+                                        "search",
+                                        e.target.value
+                                    );
+                                }}
+                                placeholder="Search products..."
+                                className="h-12.5 w-full rounded-[14px] border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5"
+                            />
+
+                        </div>
+
+
+                        {/* Brand */}
+
+                        <Select
+                            {...selectProps}
+                            instanceId="product-brand"
+                            options={brandOptions}
+                            placeholder="All Brands"
+                            value={
+                                brandOptions.find(
+                                    (x) =>
+                                        x.value ===
+                                        (searchParams.get(
+                                            "brand"
+                                        ) ?? "ALL")
+                                )
+                            }
+                            onChange={(option) =>
+                                updateFilter(
+                                    "brand",
+                                    option?.value ??
+                                        "ALL"
+                                )
+                            }
+                        />
+
+
+                        {/* Category */}
+
+                        <Select
+                            {...selectProps}
+                            instanceId="product-category"
+                            options={categoryOptions}
+                            placeholder="All Categories"
+                            value={
+                                categoryOptions.find(
+                                    (x) =>
+                                        x.value ===
+                                        (searchParams.get(
+                                            "category"
+                                        ) ?? "ALL")
+                                )
+                            }
+                            onChange={(option) =>
+                                updateFilter(
+                                    "category",
+                                    option?.value ??
+                                        "ALL"
+                                )
+                            }
+                        />
+
+
+                        {/* Status */}
+
+                        <Select
+                            {...selectProps}
+                            instanceId="product-status"
+                            options={statusOptions}
+                            value={
+                                statusOptions.find(
+                                    (x) =>
+                                        x.value ===
+                                        (searchParams.get(
+                                            "status"
+                                        ) ?? "ALL")
+                                )
+                            }
+                            onChange={(option) =>
+                                updateFilter(
+                                    "status",
+                                    option?.value ??
+                                        "ALL"
+                                )
+                            }
+                        />
+
+
+                        {/* Featured */}
+
+                        <Select
+                            {...selectProps}
+                            instanceId="product-featured"
+                            options={featuredOptions}
+                            value={
+                                featuredOptions.find(
+                                    (x) =>
+                                        x.value ===
+                                        (searchParams.get(
+                                            "featured"
+                                        ) ?? "ALL")
+                                )
+                            }
+                            onChange={(option) =>
+                                updateFilter(
+                                    "featured",
+                                    option?.value ??
+                                        "ALL"
+                                )
+                            }
+                        />
+
+
+                        {/* Bestseller */}
+
+                        <Select
+                            {...selectProps}
+                            instanceId="product-bestseller"
+                            options={bestsellerOptions}
+                            value={
+                                bestsellerOptions.find(
+                                    (x) =>
+                                        x.value ===
+                                        (searchParams.get(
+                                            "bestseller"
+                                        ) ?? "ALL")
+                                )
+                            }
+                            onChange={(option) =>
+                                updateFilter(
+                                    "bestseller",
+                                    option?.value ??
+                                        "ALL"
+                                )
+                            }
+                        />
+
+
+                        {/* Stock */}
+
+                        <Select
+                            {...selectProps}
+                            instanceId="product-stock"
+                            options={stockOptions}
+                            value={
+                                stockOptions.find(
+                                    (x) =>
+                                        x.value ===
+                                        (searchParams.get(
+                                            "stock"
+                                        ) ?? "ALL")
+                                )
+                            }
+                            onChange={(option) =>
+                                updateFilter(
+                                    "stock",
+                                    option?.value ??
+                                        "ALL"
+                                )
+                            }
+                        />
+
+
+                        {/* Date */}
+
+                        <Select
+                            {...selectProps}
+                            instanceId="product-date"
+                            options={dateOptions}
+                            value={
+                                dateOptions.find(
+                                    (x) =>
+                                        x.value ===
+                                        (searchParams.get(
+                                            "date"
+                                        ) ?? "ALL")
+                                )
+                            }
+                            onChange={(option) =>
+                                updateFilter(
+                                    "date",
+                                    option?.value ??
+                                        "ALL"
+                                )
+                            }
+                        />
+
+
+                        {/* Sort */}
+
+                        <Select
+                            {...selectProps}
+                            instanceId="product-sort"
+                            options={sortOptions}
+                            value={
+                                sortOptions.find(
+                                    (x) =>
+                                        x.value ===
+                                        (searchParams.get(
+                                            "sort"
+                                        ) ?? "NEWEST")
+                                )
+                            }
+                            onChange={(option) =>
+                                updateFilter(
+                                    "sort",
+                                    option?.value ??
+                                        "NEWEST"
+                                )
+                            }
+                        />
+
+                    </div>
+
+
+                    {/* Footer */}
+
+                    <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
+
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-slate-400">
+                            Refine your catalog
+                        </p>
+
+                        <button
+                            type="button"
+                            onClick={clearFilters}
+                            className="text-left text-xs font-semibold text-slate-500 underline-offset-4 transition hover:text-slate-950 hover:underline sm:text-right"
+                        >
+                            Reset all filters
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+    );
+}

@@ -421,243 +421,384 @@ export default function AddProductPage({ product, brands, categories }: ProductF
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
+    <div className="min-h-screen w-full px-4 py-6 sm:px-6 lg:px-8">
 
-            <div className="flex items-center justify-between mb-5">
+        {/* Page Header */}
+        <div className="mx-auto max-w-375">
+
+            <div className="mb-8">
+
+                {/* Back */}
                 <Link
                     href="/admin/products"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
+                    className="group mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-950"
                 >
-                    ← Back to Products
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm transition group-hover:-translate-x-0.5 group-hover:border-slate-300">
+                        ←
+                    </span>
+
+                    Back to Products
                 </Link>
-            </div>
 
-            {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold">
-                    {product ? "Edit Product" : "Add Product"}
-                </h1>
+                {/* Heading */}
+                <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
 
-                <p>
-                    {product
-                        ? "Update your product."
-                        : "Create a new product and its variants."}
-                </p>
-            </div>
+                    <div>
+                        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.28em] text-slate-400">
+                            Catalog Management
+                        </p>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                            {product ? "Edit Product" : "Add Product"}
+                        </h1>
 
-                {error &&
-                    <div className="text-center">
-                        <p className="text-red-500 ms-3 mb-4">{error}</p>
-                    </div>
-                }
-
-                {/* Basic Information */}
-                <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                    <div className="mb-6">
-                        <h2 className="text-lg font-semibold text-gray-900">
-                            Basic Information
-                        </h2>
-
-                        <p className="mt-1 text-sm text-gray-500">
-                            Enter the essential details about your product.
+                        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+                            {product
+                                ? "Update product details, inventory, variants and storefront visibility."
+                                : "Create a polished product with pricing, imagery, variants and storefront settings."}
                         </p>
                     </div>
 
-                    <div className="grid gap-6 md:grid-cols-2">
+                    {/* Status Badge */}
+                    <div className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
+                        <span
+                            className={`h-2 w-2 rounded-full ${
+                                formData.isActive
+                                    ? "bg-emerald-500"
+                                    : "bg-slate-300"
+                            }`}
+                        />
 
-                        {/* Product Title */}
-                        <div className="md:col-span-2">
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                Product Title
-                            </label>
+                        <span className="text-xs font-semibold text-slate-600">
+                            {formData.isActive
+                                ? "Product Active"
+                                : "Product Inactive"}
+                        </span>
+                    </div>
 
-                            <input
-                                type="text"
-                                placeholder="e.g. Nike Air Force 1"
-                                value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                className="w-full rounded-xl border border-gray-300 px-4 py-3 transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
-                            />
-                            {fieldErrors.title && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {fieldErrors.title}
+                </div>
+            </div>
+
+            <form
+                onSubmit={handleSubmit}
+                className="space-y-6"
+            >
+
+                {/* Global Error */}
+                {error && (
+                    <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-red-100">
+                            !
+                        </span>
+
+                        <p>{error}</p>
+                    </div>
+                )}
+
+                {/* BASIC INFORMATION */}
+                <section className="overflow-visible rounded-3xl border border-slate-200 bg-white shadow-[0_4px_30px_rgba(15,23,42,0.04)]">
+
+                    {/* Section Header */}
+                    <div className="border-b border-slate-100 px-6 py-5 sm:px-7">
+
+                        <div className="flex items-start gap-4">
+
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white shadow-sm">
+                                ✦
+                            </div>
+
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                                    Product Details
                                 </p>
-                            )}
+
+                                <h2 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">
+                                    Basic Information
+                                </h2>
+
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Essential information customers will see about this product.
+                                </p>
+                            </div>
+
                         </div>
 
-                        {/* Brand */}
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                Brand
-                            </label>
+                    </div>
 
-                            <Select
-                                instanceId="brand"
-                                styles={selectStyles}
-                                placeholder="Select Brand"
-                                options={brands.map((brand) => ({
-                                    value: brand.id,
-                                    label: brand.title,
-                                }))}
-                                value={
-                                    brands
-                                        .map((brand) => ({
-                                            value: brand.id,
-                                            label: brand.title,
-                                        }))
-                                        .find((option) => option.value === formData.brandId) ?? null
-                                }
-                                onChange={(option) =>
-                                    setFormData((prev) => ({
-                                        ...prev,
-                                        brandId: option?.value || "",
-                                    }))
-                                }
-                            />
+                    <div className="p-6 sm:p-7">
 
-                            {fieldErrors.brandId && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {fieldErrors.brandId}
-                                </p>
-                            )}
-                        </div>
+                        <div className="grid gap-6 md:grid-cols-2">
 
-                        {/* Category */}
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                Category
-                            </label>
+                            {/* Product Title */}
+                            <div className="md:col-span-2">
 
-                            <Select
-                                instanceId="category"
-                                styles={selectStyles}
-                                placeholder="Select Category"
-                                options={categories.map((category) => ({
-                                    value: category.id,
-                                    label: category.title,
-                                }))}
-                                value={
-                                    categories
-                                        .map((category) => ({
-                                            value: category.id,
-                                            label: category.title,
-                                        }))
-                                        .find((option) => option.value === formData.categoryId) ?? null
-                                }
-                                onChange={(option) => {
-                                    const selectedCategory = categories.find(
-                                        (category) => category.id === option?.value
-                                    );
-
-                                    const attributes = selectedCategory?.attributes ?? [];
-
-                                    setCategoryAttributes(attributes);
-
-                                    setFormData((prev) => ({
-                                        ...prev,
-                                        categoryId: option?.value || "",
-                                        variants: attributes.length === 0 ? [] : prev.variants,
-                                    }));
-                                }}
-                            />
-
-                            {fieldErrors.categoryId && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {fieldErrors.categoryId}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Price */}
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                Base Price
-                            </label>
-
-                            <div className="flex overflow-hidden rounded-xl border border-gray-300 bg-white transition focus-within:border-black focus-within:ring-2 focus-within:ring-black/10">
-                                <div className="flex items-center justify-center px-4 text-gray-500 font-medium border-r border-gray-300 bg-gray-50">
-                                    $
-                                </div>
+                                <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    Product Title
+                                </label>
 
                                 <input
-                                    type="number"
-                                    placeholder="0.00"
-                                    value={formData.price}
-                                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                    className="w-full px-4 py-3 outline-none"
+                                    type="text"
+                                    placeholder="e.g. Nike Air Force 1"
+                                    value={formData.title}
+                                    onChange={(e) =>
+                                        setFormData({
+                                            ...formData,
+                                            title: e.target.value,
+                                        })
+                                    }
+                                    className={`h-13 w-full rounded-xl border bg-white px-4 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 ${
+                                        fieldErrors.title
+                                            ? "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
+                                            : "border-slate-200 hover:border-slate-300 focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
+                                    }`}
                                 />
+
+                                {fieldErrors.title && (
+                                    <p className="mt-2 text-xs font-medium text-red-500">
+                                        {fieldErrors.title}
+                                    </p>
+                                )}
+
+                            </div>
+
+                            {/* Brand */}
+                            <div>
+
+                                <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    Brand
+                                </label>
+
+                                <Select
+                                    instanceId="brand"
+                                    styles={selectStyles}
+                                    placeholder="Select Brand"
+                                    options={brands.map((brand) => ({
+                                        value: brand.id,
+                                        label: brand.title,
+                                    }))}
+                                    value={
+                                        brands
+                                            .map((brand) => ({
+                                                value: brand.id,
+                                                label: brand.title,
+                                            }))
+                                            .find(
+                                                (option) =>
+                                                    option.value ===
+                                                    formData.brandId
+                                            ) ?? null
+                                    }
+                                    onChange={(option) =>
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            brandId: option?.value || "",
+                                        }))
+                                    }
+                                />
+
+                                {fieldErrors.brandId && (
+                                    <p className="mt-2 text-xs font-medium text-red-500">
+                                        {fieldErrors.brandId}
+                                    </p>
+                                )}
+
+                            </div>
+
+                            {/* Category */}
+                            <div>
+
+                                <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    Category
+                                </label>
+
+                                <Select
+                                    instanceId="category"
+                                    styles={selectStyles}
+                                    placeholder="Select Category"
+                                    options={categories.map((category) => ({
+                                        value: category.id,
+                                        label: category.title,
+                                    }))}
+                                    value={
+                                        categories
+                                            .map((category) => ({
+                                                value: category.id,
+                                                label: category.title,
+                                            }))
+                                            .find(
+                                                (option) =>
+                                                    option.value ===
+                                                    formData.categoryId
+                                            ) ?? null
+                                    }
+                                    onChange={(option) => {
+                                        const selectedCategory =
+                                            categories.find(
+                                                (category) =>
+                                                    category.id ===
+                                                    option?.value
+                                            );
+
+                                        const attributes =
+                                            selectedCategory?.attributes ?? [];
+
+                                        setCategoryAttributes(attributes);
+
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            categoryId:
+                                                option?.value || "",
+                                            variants:
+                                                attributes.length === 0
+                                                    ? []
+                                                    : prev.variants,
+                                        }));
+                                    }}
+                                />
+
+                                {fieldErrors.categoryId && (
+                                    <p className="mt-2 text-xs font-medium text-red-500">
+                                        {fieldErrors.categoryId}
+                                    </p>
+                                )}
+
+                            </div>
+
+                            {/* Price */}
+                            <div>
+
+                                <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    Base Price
+                                </label>
+
+                                <div
+                                    className={`flex h-13 overflow-hidden rounded-xl border bg-white transition focus-within:ring-4 ${
+                                        fieldErrors.price
+                                            ? "border-red-300 focus-within:border-red-500 focus-within:ring-red-500/10"
+                                            : "border-slate-200 focus-within:border-slate-950 focus-within:ring-slate-950/5"
+                                    }`}
+                                >
+                                    <div className="flex w-14 shrink-0 items-center justify-center border-r border-slate-200 bg-slate-50 text-sm font-semibold text-slate-500">
+                                        $
+                                    </div>
+
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        value={formData.price}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                price: e.target.value,
+                                            })
+                                        }
+                                        className="w-full px-4 text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400"
+                                    />
+                                </div>
+
                                 {fieldErrors.price && (
-                                    <p className="mt-1 text-sm text-red-500">
+                                    <p className="mt-2 text-xs font-medium text-red-500">
                                         {fieldErrors.price}
                                     </p>
                                 )}
+
                             </div>
+
+                        </div>
+
+                        {/* Description */}
+                        <div className="mt-6">
+
+                            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Description
+                            </label>
+
+                            <textarea
+                                rows={6}
+                                placeholder="Write a detailed description of your product..."
+                                value={formData.description}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        description: e.target.value,
+                                    })
+                                }
+                                className={`w-full resize-y rounded-xl border bg-white px-4 py-3.5 text-sm leading-6 text-slate-800 outline-none transition placeholder:text-slate-400 ${
+                                    fieldErrors.description
+                                        ? "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
+                                        : "border-slate-200 hover:border-slate-300 focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
+                                }`}
+                            />
+
+                            {fieldErrors.description && (
+                                <p className="mt-2 text-xs font-medium text-red-500">
+                                    {fieldErrors.description}
+                                </p>
+                            )}
+
+                            <p className="mt-2 text-xs text-slate-400">
+                                Describe the product, materials, features and other important details.
+                            </p>
+
+                        </div>
+
+                    </div>
+                </section>
+
+                {/* IMAGES */}
+                <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_4px_30px_rgba(15,23,42,0.04)]">
+
+                    <div className="border-b border-slate-100 px-6 py-5 sm:px-7">
+
+                        <div className="flex items-start gap-4">
+
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-lg">
+                                ◇
+                            </div>
+
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                                    Visual Identity
+                                </p>
+
+                                <h2 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">
+                                    Product Images
+                                </h2>
+
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Add high-quality images to showcase your product.
+                                </p>
+                            </div>
+
                         </div>
 
                     </div>
 
-                    {/* Description */}
-                    <div className="mt-6">
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
-                            Description
-                        </label>
+                    <div className="p-6 sm:p-7">
 
-                        <textarea
-                            rows={6}
-                            placeholder="Write a detailed description of your product..."
-                            value={formData.description}
-                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="w-full rounded-xl border border-gray-300 px-4 py-3 transition outline-none focus:border-black focus:ring-2 focus:ring-black/10"
-                        />
-                        {fieldErrors.description && (
-                            <p className="mt-1 text-sm text-red-500">
-                                {fieldErrors.description}
-                            </p>
+                        {fieldErrors.images && (
+                            <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-600">
+                                {fieldErrors.images}
+                            </div>
                         )}
 
-                        <p className="mt-2 text-xs text-gray-500">
-                            Describe the product, materials, features and other important details.
-                        </p>
-                    </div>
-                </div>
+                        {/* Upload */}
+                        <div className="group relative overflow-hidden rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-10 text-center transition hover:border-slate-500 hover:bg-slate-50">
 
-                {/* Images */}
-                <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white text-2xl shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-md">
+                                ↑
+                            </div>
 
-                    <div className="mb-6">
-                        <h2 className="text-lg font-semibold text-gray-900">
-                            Product Images
-                        </h2>
+                            <h3 className="mt-5 text-sm font-semibold text-slate-900">
+                                Upload product images
+                            </h3>
 
-                        <p className="mt-1 text-sm text-gray-500">
-                            Upload up to 10 images. The first image will be used as the product thumbnail.
-                        </p>
-                    </div>
+                            <p className="mx-auto mt-1 max-w-md text-xs leading-5 text-slate-500">
+                                Upload clear product photography. The first image will be used as the primary thumbnail.
+                            </p>
 
-                    {fieldErrors.images && (
-                        <p className="mt-1 text-sm text-red-500">
-                            {fieldErrors.images}
-                        </p>
-                    )}
-
-                    {/* Upload Area */}
-                    <div className="rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-6 text-center transition hover:border-black">
-                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
-                            📷
-                        </div>
-
-                        <h3 className="mt-3 text-base font-medium text-gray-900">
-                            Upload Product Images
-                        </h3>
-
-                        <p className="mt-1 text-sm text-gray-500">
-                            Click below.
-                        </p>
-
-
-                        <div className="flex w-full flex-col items-center justify-center text-center">
                             <input
                                 id="product-images"
                                 type="file"
@@ -669,230 +810,415 @@ export default function AddProductPage({ product, brands, categories }: ProductF
 
                             <label
                                 htmlFor="product-images"
-                                className="mt-4 inline-flex cursor-pointer items-center justify-center rounded-xl bg-black px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800"
+                                className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-xs font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg"
                             >
                                 Choose Images
+                                <span>→</span>
                             </label>
-                        </div>
 
-                        <p className="mt-2 text-xs text-gray-400">
-                            PNG, JPG, JPEG, WEBP • Max 10 images
-                        </p>
-                    </div>
-
-                    {/* Preview */}
-                    <div className="mt-8">
-                        <h3 className="mb-4 font-medium text-gray-900">
-                            Uploaded Images
-                        </h3>
-
-                        <div className="flex flex-wrap gap-4">
-                            {formData.images.map((image, index) => (
-                                <div key={index} className="relative w-fit">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                images: prev.images.filter((_, i) => i !== index),
-                                            }))
-                                        }
-                                        className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-black shadow hover:bg-slate-300"
-                                    >
-                                        ×
-                                    </button>
-
-                                    <img
-                                        src={image}
-                                        alt={`Product ${index + 1}`}
-                                        className="h-24 w-24 rounded-xl border border-gray-200 object-cover"
-                                    />
-                                </div>
-                            ))}
-                        </div>
-
-                    </div>
-
-                </div>
-
-                {/* Variants */}
-                <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                    <div className="mb-6 flex items-center justify-between">
-                        <div>
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Product Variants
-                            </h2>
-
-                            <p className="mt-1 text-sm text-gray-500">
-                                Add different sizes, colors and stock for this product.
+                            <p className="mt-3 text-[11px] text-slate-400">
+                                PNG, JPG, JPEG or WEBP · Maximum 10 images
                             </p>
+
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={() => {
-                                if (!formData.categoryId) {
-                                    toast.error("Please select a category first");
-                                    return;
-                                }
+                        {/* Image Preview */}
+                        {formData.images.length > 0 && (
+                            <div className="mt-8">
 
-                                setSkuLocked(false);
+                                <div className="mb-4 flex items-center justify-between">
 
-                                setVariantForm({
-                                    attributes: {},
-                                    sku: "",
-                                    price: "",
-                                    stock: 0,
-                                });
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-slate-900">
+                                            Uploaded Images
+                                        </h3>
 
-                                setShowVariantModal(true);
-                            }}
-                            className="rounded-xl bg-black px-5 py-2.5 font-medium text-white transition hover:bg-gray-800"
-                        >
-                            + Add Variant
-                        </button>
-                    </div>
+                                        <p className="mt-1 text-xs text-slate-400">
+                                            {formData.images.length} of 10 images
+                                        </p>
+                                    </div>
 
-                    {fieldErrors.variants && (
-                        <p className="mt-1 text-sm text-red-500">
-                            {fieldErrors.variants}
-                        </p>
-                    )}
+                                    <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-500">
+                                        First image = thumbnail
+                                    </span>
 
-                    <div className="overflow-x-auto rounded-xl border border-gray-200">
-                        <table className="w-full">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-                                        Attributes
-                                    </th>
+                                </div>
 
-                                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-                                        SKU
-                                    </th>
+                                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-6">
 
-                                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-                                        Price
-                                    </th>
-
-                                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-                                        Stock
-                                    </th>
-
-                                    <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {formData.variants.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={5}
-                                            className="px-6 py-8 text-center text-gray-500"
-                                        >
-                                            No variants added.
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    formData.variants.map((variant, index) => (
-                                        <tr
+                                    {formData.images.map((image, index) => (
+                                        <div
                                             key={index}
-                                            className="border-t hover:bg-gray-50 transition"
+                                            className="group relative aspect-square overflow-hidden rounded-2xl border border-slate-200 bg-slate-50"
                                         >
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-wrap gap-2">
-                                                    {Object.entries(variant.attributes).map(
-                                                        ([key, value]) => (
-                                                            <span
-                                                                key={key}
-                                                                className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"
-                                                            >
-                                                                {key}: {value}
-                                                            </span>
-                                                        )
-                                                    )}
+
+                                            <img
+                                                src={image}
+                                                alt={`Product ${index + 1}`}
+                                                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                            />
+
+                                            {index === 0 && (
+                                                <div className="absolute left-2 top-2 rounded-lg bg-slate-950/90 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur">
+                                                    Primary
                                                 </div>
-                                            </td>
+                                            )}
 
-                                            <td className="px-6 py-4 font-mono text-sm">
-                                                {variant.sku}
-                                            </td>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setFormData((prev) => ({
+                                                        ...prev,
+                                                        images: prev.images.filter(
+                                                            (_, i) => i !== index
+                                                        ),
+                                                    }))
+                                                }
+                                                className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-lg bg-white/90 text-sm font-semibold text-slate-700 opacity-0 shadow-md backdrop-blur transition group-hover:opacity-100 hover:bg-red-500 hover:text-white"
+                                            >
+                                                ×
+                                            </button>
 
-                                            <td className="px-6 py-4 font-medium">
-                                                ${variant.price}
-                                            </td>
+                                        </div>
+                                    ))}
 
-                                            <td className="px-6 py-4">
-                                                <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                                                    {variant.stock} In Stock
-                                                </span>
-                                            </td>
+                                </div>
 
-                                            <td className="px-6 py-4">
-                                                <div className="flex justify-end gap-2">
+                            </div>
+                        )}
 
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setEditingVariantIndex(index);
-                                                            setVariantForm(variant);
-                                                            setShowVariantModal(true);
-                                                        }}
-                                                        className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100"
-                                                    >
-                                                        Edit
-                                                    </button>
-
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            setFormData((prev) => ({
-                                                                ...prev,
-                                                                variants: prev.variants.filter(
-                                                                    (_, i) => i !== index
-                                                                ),
-                                                            }))
-                                                        }
-                                                        className="rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-                                                    >
-                                                        Remove
-                                                    </button>
-
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-
-                        </table>
                     </div>
-                </div>
+                </section>
 
-                {/* Status */}
-                <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                    <div className="mb-6">
-                        <h2 className="text-lg font-semibold text-gray-900">
-                            Product Status
-                        </h2>
+                {/* VARIANTS */}
+                <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_4px_30px_rgba(15,23,42,0.04)]">
 
-                        <p className="mt-1 text-sm text-gray-500">
-                            Choose how this product should appear in your store.
-                        </p>
-                    </div>
+                    <div className="border-b border-slate-100 px-6 py-5 sm:px-7">
 
-                    <div className="grid gap-4 md:grid-cols-3">
+                        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
 
-                        <label className="cursor-pointer rounded-xl border border-gray-200 p-4 transition hover:border-black hover:bg-gray-50">
-                            <div className="flex items-start justify-between">
+                            <div className="flex items-start gap-4">
+
+                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-lg">
+                                    ◈
+                                </div>
+
                                 <div>
-                                    <h3 className="font-medium text-gray-900">
-                                        Active
-                                    </h3>
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                                        Inventory Structure
+                                    </p>
 
-                                    <p className="mt-1 text-sm text-gray-500">
+                                    <h2 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">
+                                        Product Variants
+                                    </h2>
+
+                                    <p className="mt-1 text-sm text-slate-500">
+                                        Manage sizes, colors, SKUs, pricing and inventory.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (!formData.categoryId) {
+                                        toast.error(
+                                            "Please select a category first"
+                                        );
+                                        return;
+                                    }
+
+                                    setEditingVariantIndex(null);
+                                    setSkuLocked(false);
+
+                                    setVariantForm({
+                                        attributes: {},
+                                        sku: "",
+                                        price: "",
+                                        stock: 0,
+                                    });
+
+                                    setShowVariantModal(true);
+                                }}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-xs font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg"
+                            >
+                                <span className="text-base leading-none">
+                                    +
+                                </span>
+                                Add Variant
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div className="p-6 sm:p-7">
+
+                        {fieldErrors.variants && (
+                            <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-600">
+                                {fieldErrors.variants}
+                            </div>
+                        )}
+
+                        <div className="overflow-hidden rounded-2xl border border-slate-200">
+
+                            <div className="overflow-x-auto">
+
+                                <table className="w-full min-w-212.5">
+
+                                    <thead>
+                                        <tr className="border-b border-slate-200 bg-slate-50/80">
+
+                                            <th className="px-6 py-4 text-left text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                                                Attributes
+                                            </th>
+
+                                            <th className="px-6 py-4 text-left text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                                                SKU
+                                            </th>
+
+                                            <th className="px-6 py-4 text-left text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                                                Price
+                                            </th>
+
+                                            <th className="px-6 py-4 text-left text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                                                Stock
+                                            </th>
+
+                                            <th className="px-6 py-4 text-right text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                                                Actions
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody className="divide-y divide-slate-100">
+
+                                        {formData.variants.length === 0 ? (
+                                            <tr>
+                                                <td
+                                                    colSpan={5}
+                                                    className="px-6 py-14 text-center"
+                                                >
+                                                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+                                                        ◇
+                                                    </div>
+
+                                                    <p className="mt-4 text-sm font-semibold text-slate-700">
+                                                        No variants yet
+                                                    </p>
+
+                                                    <p className="mt-1 text-xs text-slate-400">
+                                                        Add variants to manage different product combinations.
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            formData.variants.map(
+                                                (variant, index) => (
+                                                    <tr
+                                                        key={index}
+                                                        className="group transition hover:bg-slate-50/70"
+                                                    >
+
+                                                        <td className="px-6 py-5">
+
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {Object.entries(
+                                                                    variant.attributes
+                                                                ).map(
+                                                                    ([
+                                                                        key,
+                                                                        value,
+                                                                    ]) => (
+                                                                        <span
+                                                                            key={key}
+                                                                            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-slate-600 shadow-sm"
+                                                                        >
+                                                                            <span className="text-slate-400">
+                                                                                {key}
+                                                                            </span>
+                                                                            <span className="mx-1 text-slate-300">
+                                                                                /
+                                                                            </span>
+                                                                            {value}
+                                                                        </span>
+                                                                    )
+                                                                )}
+                                                            </div>
+
+                                                        </td>
+
+                                                        <td className="px-6 py-5">
+
+                                                            <span className="rounded-lg bg-slate-100 px-3 py-1.5 font-mono text-xs font-medium text-slate-600">
+                                                                {variant.sku}
+                                                            </span>
+
+                                                        </td>
+
+                                                        <td className="px-6 py-5">
+
+                                                            <span className="text-sm font-semibold text-slate-900">
+                                                                ${variant.price}
+                                                            </span>
+
+                                                        </td>
+
+                                                        <td className="px-6 py-5">
+
+                                                            <span
+                                                                className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold ${
+                                                                    variant.stock === 0
+                                                                        ? "bg-red-50 text-red-600"
+                                                                        : variant.stock < 10
+                                                                            ? "bg-amber-50 text-amber-600"
+                                                                            : "bg-emerald-50 text-emerald-600"
+                                                                }`}
+                                                            >
+                                                                <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                                                                {variant.stock} in stock
+                                                            </span>
+
+                                                        </td>
+
+                                                        <td className="px-6 py-5">
+
+                                                            <div className="flex justify-end gap-2">
+
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        setEditingVariantIndex(
+                                                                            index
+                                                                        );
+                                                                        setVariantForm(
+                                                                            variant
+                                                                        );
+                                                                        setSkuLocked(
+                                                                            true
+                                                                        );
+                                                                        setShowVariantModal(
+                                                                            true
+                                                                        );
+                                                                    }}
+                                                                    className="rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:border-slate-400 hover:text-slate-950"
+                                                                >
+                                                                    Edit
+                                                                </button>
+
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        setFormData(
+                                                                            ( prev ) => ({
+                                                                                ...prev,
+                                                                                variants:
+                                                                                    prev.variants.filter(
+                                                                                        ( _, i ) =>
+                                                                                            i !==
+                                                                                            index
+                                                                                    ),
+                                                                            })
+                                                                        )
+                                                                    }
+                                                                    className="rounded-lg border border-red-100 bg-red-50 px-3.5 py-2 text-xs font-semibold text-red-600 transition hover:border-red-200 hover:bg-red-100"
+                                                                >
+                                                                    Remove
+                                                                </button>
+
+                                                            </div>
+
+                                                        </td>
+
+                                                    </tr>
+                                                )
+                                            )
+                                        )}
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </section>
+
+                {/* STATUS */}
+                <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_4px_30px_rgba(15,23,42,0.04)]">
+
+                    <div className="border-b border-slate-100 px-6 py-5 sm:px-7">
+
+                        <div className="flex items-start gap-4">
+
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100">
+                                ●
+                            </div>
+
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                                    Storefront
+                                </p>
+
+                                <h2 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">
+                                    Product Status
+                                </h2>
+
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Control how this product appears throughout your store.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div className="grid gap-4 p-6 sm:p-7 md:grid-cols-3">
+
+                        {/* Active */}
+                        <label
+                            className={`group cursor-pointer rounded-2xl border p-5 transition ${
+                                formData.isActive
+                                    ? "border-slate-900 bg-slate-950 text-white shadow-lg"
+                                    : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
+                            }`}
+                        >
+                            <div className="flex items-start justify-between gap-4">
+
+                                <div>
+                                    <div className="flex items-center gap-2">
+
+                                        <span
+                                            className={`h-2 w-2 rounded-full ${
+                                                formData.isActive
+                                                    ? "bg-emerald-400"
+                                                    : "bg-slate-300"
+                                            }`}
+                                        />
+
+                                        <h3
+                                            className={`text-sm font-semibold ${
+                                                formData.isActive
+                                                    ? "text-white"
+                                                    : "text-slate-900"
+                                            }`}
+                                        >
+                                            Active
+                                        </h3>
+
+                                    </div>
+
+                                    <p
+                                        className={`mt-2 text-xs leading-5 ${
+                                            formData.isActive
+                                                ? "text-slate-300"
+                                                : "text-slate-500"
+                                        }`}
+                                    >
                                         Customers can view and purchase this product.
                                     </p>
                                 </div>
@@ -903,22 +1229,40 @@ export default function AddProductPage({ product, brands, categories }: ProductF
                                     onChange={(e) =>
                                         setFormData((prev) => ({
                                             ...prev,
-                                            isActive: e.target.checked,
+                                            isActive:
+                                                e.target.checked,
                                         }))
                                     }
-                                    className="h-5 w-5 accent-black"
+                                    className="h-5 w-5 shrink-0 accent-white"
                                 />
+
                             </div>
                         </label>
 
-                        <label className="cursor-pointer rounded-xl border border-gray-200 p-4 transition hover:border-black hover:bg-gray-50">
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <h3 className="font-medium text-gray-900">
-                                        Featured
-                                    </h3>
+                        {/* Featured */}
+                        <label
+                            className={`group cursor-pointer rounded-2xl border p-5 transition ${
+                                formData.isFeatured
+                                    ? "border-amber-300 bg-amber-50 shadow-sm"
+                                    : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
+                            }`}
+                        >
+                            <div className="flex items-start justify-between gap-4">
 
-                                    <p className="mt-1 text-sm text-gray-500">
+                                <div>
+                                    <div className="flex items-center gap-2">
+
+                                        <span className="text-sm">
+                                            ✦
+                                        </span>
+
+                                        <h3 className="text-sm font-semibold text-slate-900">
+                                            Featured
+                                        </h3>
+
+                                    </div>
+
+                                    <p className="mt-2 text-xs leading-5 text-slate-500">
                                         Highlight this product on your homepage.
                                     </p>
                                 </div>
@@ -929,22 +1273,40 @@ export default function AddProductPage({ product, brands, categories }: ProductF
                                     onChange={(e) =>
                                         setFormData((prev) => ({
                                             ...prev,
-                                            isFeatured: e.target.checked,
+                                            isFeatured:
+                                                e.target.checked,
                                         }))
                                     }
-                                    className="h-5 w-5 accent-black"
+                                    className="h-5 w-5 shrink-0 accent-slate-950"
                                 />
+
                             </div>
                         </label>
 
-                        <label className="cursor-pointer rounded-xl border border-gray-200 p-4 transition hover:border-black hover:bg-gray-50">
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <h3 className="font-medium text-gray-900">
-                                        Bestseller
-                                    </h3>
+                        {/* Bestseller */}
+                        <label
+                            className={`group cursor-pointer rounded-2xl border p-5 transition ${
+                                formData.bestseller
+                                    ? "border-violet-200 bg-violet-50 shadow-sm"
+                                    : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
+                            }`}
+                        >
+                            <div className="flex items-start justify-between gap-4">
 
-                                    <p className="mt-1 text-sm text-gray-500">
+                                <div>
+                                    <div className="flex items-center gap-2">
+
+                                        <span className="text-sm">
+                                            ◆
+                                        </span>
+
+                                        <h3 className="text-sm font-semibold text-slate-900">
+                                            Bestseller
+                                        </h3>
+
+                                    </div>
+
+                                    <p className="mt-2 text-xs leading-5 text-slate-500">
                                         Mark this product as a bestseller.
                                     </p>
                                 </div>
@@ -955,51 +1317,100 @@ export default function AddProductPage({ product, brands, categories }: ProductF
                                     onChange={(e) =>
                                         setFormData((prev) => ({
                                             ...prev,
-                                            bestseller: e.target.checked,
+                                            bestseller:
+                                                e.target.checked,
                                         }))
                                     }
-                                    className="h-5 w-5 accent-black"
+                                    className="h-5 w-5 shrink-0 accent-slate-950"
                                 />
+
                             </div>
                         </label>
 
                     </div>
+                </section>
+
+                {/* ACTION BAR */}
+                <div className="sticky bottom-4 z-30">
+
+                    <div className="flex flex-col-reverse items-stretch justify-between gap-3 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-[0_15px_50px_rgba(15,23,42,0.12)] backdrop-blur sm:flex-row sm:items-center">
+
+                        <button
+                            type="button"
+                            onClick={resetForm}
+                            className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
+                        >
+                            Cancel
+                        </button>
+
+                        <div className="flex flex-col gap-2 sm:flex-row">
+
+                            <Link
+                                href="/admin/products"
+                                className="rounded-xl px-5 py-3 text-center text-sm font-semibold text-slate-500 transition hover:text-slate-950"
+                            >
+                                Back to Products
+                            </Link>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                                {loading ? (
+                                    <>
+                                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                        {product
+                                            ? "Updating..."
+                                            : "Creating..."}
+                                    </>
+                                ) : (
+                                    <>
+                                        {product
+                                            ? "Update Product"
+                                            : "Create Product"}
+
+                                        <span className="text-base">
+                                            →
+                                        </span>
+                                    </>
+                                )}
+                            </button>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
-                {/* Buttons */}
-                <div className="flex justify-end gap-4">
-                    <button
-                        type="button"
-                        onClick={resetForm}
-                        className="rounded-xl border border-gray-300 px-6 py-3"
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        type="submit"
-                        className="rounded-xl bg-black px-6 py-3 text-white"
-                    >
-                        {loading
-                            ? product
-                                ? "Updating..."
-                                : "Creating..."
-                            : product
-                                ? "Update Product"
-                                : "Create Product"}
-                    </button>
-                </div>
-
+                {/*  VARIANT MODAL */}
                 {showVariantModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-                        <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm"
+                        onMouseDown={(e) => {
+                            if (e.target === e.currentTarget) {
+                                setEditingVariantIndex(null);
+                                setShowVariantModal(false);
+                            }
+                        }}
+                    >
 
-                            <div className="mb-6 flex items-center justify-between">
-                                <h2 className="text-xl font-semibold">
-                                    {editingVariantIndex !== null
-                                        ? "Edit Variant"
-                                        : "Add Variant"}
-                                </h2>
+                        <div className="flex max-h-[90vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl border border-white/20 bg-white shadow-[0_30px_100px_rgba(15,23,42,0.25)]">
+
+                            {/* Modal Header */}
+                            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+
+                                <div>
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
+                                        Inventory
+                                    </p>
+
+                                    <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-950">
+                                        {editingVariantIndex !== null
+                                            ? "Edit Variant"
+                                            : "Add Variant"}
+                                    </h2>
+                                </div>
 
                                 <button
                                     type="button"
@@ -1007,182 +1418,263 @@ export default function AddProductPage({ product, brands, categories }: ProductF
                                         setEditingVariantIndex(null);
                                         setShowVariantModal(false);
                                     }}
-                                    className="text-2xl"
+                                    className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-lg text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
                                 >
                                     ×
                                 </button>
+
                             </div>
 
-                            <div className="space-y-5">
+                            {/* Modal Content */}
+                            <div className="overflow-y-auto p-6">
 
-                                {categoryAttributes.map((attribute) => (
-                                    <div key={attribute.title}>
-                                        <label className="mb-2 block text-sm font-medium">
-                                            {attribute.title}
-                                        </label>
+                                <div className="space-y-5">
 
-                                        <Select
-                                            instanceId={attribute.title}
-                                            styles={selectStyles}
-                                            options={attribute.values.map((value) => ({
-                                                value,
-                                                label: value,
-                                            }))}
-                                            value={
-                                                variantForm.attributes[attribute.title]
-                                                    ? {
-                                                        value:
-                                                            variantForm.attributes[
-                                                            attribute.title
-                                                            ],
-                                                        label:
-                                                            variantForm.attributes[
-                                                            attribute.title
-                                                            ],
-                                                    }
-                                                    : null
-                                            }
-                                            onChange={(option) => {
-                                                const updatedAttributes = {
-                                                    ...variantForm.attributes,
-                                                    [attribute.title]: option?.value || "",
-                                                };
+                                    {/* Attributes */}
+                                    {categoryAttributes.map((attribute) => (
+                                        <div key={attribute.title}>
 
-                                                setVariantForm((prev) => {
-                                                    const shouldAutoGenerate =
-                                                        !skuLocked &&
-                                                        isVariantComplete(updatedAttributes, categoryAttributes);
+                                            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                                {attribute.title}
+                                            </label>
 
-                                                    if (!shouldAutoGenerate) {
+                                            <Select
+                                                instanceId={`variant-${attribute.title}`}
+                                                styles={selectStyles}
+                                                options={attribute.values.map(
+                                                    (value) => ({
+                                                        value,
+                                                        label: value,
+                                                    })
+                                                )}
+                                                value={
+                                                    variantForm.attributes[
+                                                        attribute.title
+                                                    ]
+                                                        ? {
+                                                            value:
+                                                                variantForm
+                                                                    .attributes[
+                                                                    attribute
+                                                                        .title
+                                                                ],
+                                                            label:
+                                                                variantForm
+                                                                    .attributes[
+                                                                    attribute
+                                                                        .title
+                                                                ],
+                                                        }
+                                                        : null
+                                                }
+                                                onChange={(option) => {
+                                                    const updatedAttributes = {
+                                                        ...variantForm.attributes,
+                                                        [attribute.title]:
+                                                            option?.value || "",
+                                                    };
+
+                                                    setVariantForm((prev) => {
+                                                        const shouldAutoGenerate =
+                                                            !skuLocked &&
+                                                            isVariantComplete(
+                                                                updatedAttributes,
+                                                                categoryAttributes
+                                                            );
+
+                                                        if (!shouldAutoGenerate) {
+                                                            return {
+                                                                ...prev,
+                                                                attributes:
+                                                                    updatedAttributes,
+                                                            };
+                                                        }
+
+                                                        let newSku =
+                                                            generateSKU(
+                                                                formData.title,
+                                                                updatedAttributes
+                                                            );
+
+                                                        if (
+                                                            isSkuDuplicate(
+                                                                newSku
+                                                            )
+                                                        ) {
+                                                            newSku =
+                                                                generateUniqueSKU(
+                                                                    formData.title,
+                                                                    updatedAttributes
+                                                                );
+                                                        }
+
                                                         return {
                                                             ...prev,
-                                                            attributes: updatedAttributes,
+                                                            attributes:
+                                                                updatedAttributes,
+                                                            sku: newSku,
                                                         };
-                                                    }
+                                                    });
+                                                }}
+                                            />
 
-                                                    let newSku = generateSKU(formData.title, updatedAttributes);
+                                        </div>
+                                    ))}
 
-                                                    if (isSkuDuplicate(newSku)) {
-                                                        newSku = generateUniqueSKU(
-                                                            formData.title,
-                                                            updatedAttributes
-                                                        );
-                                                    }
+                                    {/* SKU */}
+                                    <div>
 
-                                                    return {
-                                                        ...prev,
-                                                        attributes: updatedAttributes,
-                                                        sku: newSku,
-                                                    };
-                                                });
+                                        <div className="mb-2 flex items-center justify-between">
+
+                                            <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                                SKU
+                                            </label>
+
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setSkuLocked(false);
+
+                                                    setVariantForm(
+                                                        (prev) => ({
+                                                            ...prev,
+                                                            sku: generateSKU(
+                                                                formData.title,
+                                                                prev.attributes
+                                                            ),
+                                                        })
+                                                    );
+                                                }}
+                                                className="text-[11px] font-semibold text-slate-500 transition hover:text-slate-950"
+                                            >
+                                                Regenerate
+                                            </button>
+
+                                        </div>
+
+                                        <input
+                                            type="text"
+                                            value={variantForm.sku}
+                                            onChange={(e) => {
+                                                setSkuLocked(true);
+
+                                                setVariantForm((prev) => ({
+                                                    ...prev,
+                                                    sku: e.target.value,
+                                                }));
                                             }}
+                                            className="h-12.5 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 font-mono text-sm text-slate-800 outline-none transition focus:border-slate-950 focus:bg-white focus:ring-4 focus:ring-slate-950/5"
+                                            placeholder="SKU-001"
                                         />
+
+                                        <p className="mt-1.5 text-[11px] text-slate-400">
+                                            Leave generated or enter your own SKU.
+                                        </p>
+
                                     </div>
-                                ))}
 
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium">
-                                        SKU
-                                    </label>
+                                    {/* Price / Stock */}
+                                    <div className="grid gap-4 sm:grid-cols-2">
 
-                                    <input
-                                        type="text"
-                                        value={variantForm.sku}
-                                        onChange={(e) => {
-                                            const value = e.target.value;
+                                        <div>
 
-                                            setSkuLocked(true);
+                                            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                                Price
+                                            </label>
 
-                                            setVariantForm((prev) => ({
-                                                ...prev,
-                                                sku: value,
-                                            }));
-                                        }}
-                                        className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-black"
-                                    />
+                                            <div className="flex h-12.5 overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-slate-950 focus-within:ring-4 focus-within:ring-slate-950/5">
 
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setSkuLocked(false);
-                                            setVariantForm((prev) => ({
-                                                ...prev,
-                                                sku: generateSKU(formData.title, prev.attributes),
-                                            }));
-                                        }}
-                                        className="text-xs text-blue-600 mt-1"
-                                    >
-                                        Regenerate SKU
-                                    </button>
-                                </div>
+                                                <div className="flex w-12 items-center justify-center border-r border-slate-200 bg-slate-50 text-sm font-semibold text-slate-500">
+                                                    $
+                                                </div>
 
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium">
-                                        Price
-                                    </label>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    step="0.01"
+                                                    value={variantForm.price}
+                                                    onChange={(e) =>
+                                                        setVariantForm(
+                                                            (prev) => ({
+                                                                ...prev,
+                                                                price: e.target
+                                                                    .value,
+                                                            })
+                                                        )
+                                                    }
+                                                    className="w-full px-3 text-sm outline-none"
+                                                    placeholder="0.00"
+                                                />
 
-                                    <input
-                                        type="number"
-                                        value={variantForm.price}
-                                        onChange={(e) =>
-                                            setVariantForm((prev) => ({
-                                                ...prev,
-                                                price: e.target.value,
-                                            }))
-                                        }
-                                        className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-black"
-                                    />
-                                </div>
+                                            </div>
 
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium">
-                                        Stock
-                                    </label>
+                                        </div>
 
-                                    <input
-                                        type="number"
-                                        value={variantForm.stock}
-                                        onChange={(e) =>
-                                            setVariantForm((prev) => ({
-                                                ...prev,
-                                                stock: Number(e.target.value),
-                                            }))
-                                        }
-                                        className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-black"
-                                    />
-                                </div>
+                                        <div>
 
-                                <div className="flex justify-end gap-3 pt-4">
+                                            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                                Stock
+                                            </label>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setEditingVariantIndex(null);
-                                            setShowVariantModal(false);
-                                        }}
-                                        className="rounded-xl border px-5 py-2"
-                                    >
-                                        Cancel
-                                    </button>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                value={variantForm.stock}
+                                                onChange={(e) =>
+                                                    setVariantForm(
+                                                        (prev) => ({
+                                                            ...prev,
+                                                            stock: Number(
+                                                                e.target.value
+                                                            ),
+                                                        })
+                                                    )
+                                                }
+                                                className="h-12.5 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none transition focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5"
+                                                placeholder="0"
+                                            />
 
-                                    <button
-                                        type="button"
-                                        onClick={handleSaveVariant}
-                                        className="rounded-xl bg-black px-5 py-2 text-white"
-                                    >
-                                        {editingVariantIndex !== null
-                                            ? "Update Variant"
-                                            : "Save Variant"}
-                                    </button>
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
                             </div>
+
+                            {/* Modal Footer */}
+                            <div className="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50/70 px-6 py-4">
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setEditingVariantIndex(null);
+                                        setShowVariantModal(false);
+                                    }}
+                                    className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-950"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={handleSaveVariant}
+                                    className="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                                >
+                                    {editingVariantIndex !== null
+                                        ? "Update Variant"
+                                        : "Save Variant"}
+                                </button>
+
+                            </div>
+
                         </div>
+
                     </div>
                 )}
 
             </form>
         </div>
-    );
+    </div>
+);
 }

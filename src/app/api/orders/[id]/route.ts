@@ -278,6 +278,18 @@ export async function PUT(req: NextRequest, { params }: Params) {
             );
         }
 
+        // Cancelled orders cannot change payment status
+        if (
+            order.status === "CANCELLED" &&
+            validate.paymentStatus !== undefined &&
+            validate.paymentStatus !== order.paymentStatus
+        ) {
+            return errorResponse(
+                "Payment status cannot be changed for a cancelled order",
+                400
+            );
+        }
+
         // Order status validation
 
         const currentStatus = order.status;

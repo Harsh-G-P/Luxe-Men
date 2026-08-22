@@ -188,9 +188,12 @@ export default function OrderSummary({ order }: Props) {
           <Link
             href={`/api/order/${order.id}/invoice`}
             target="_blank"
-            className="block w-full border border-black px-6 py-3 text-center text-xs uppercase tracking-[0.12em] transition hover:bg-gray-700 hover:text-white"
+            className="group w-full inline-flex h-11 items-center justify-center gap-3 border border-black bg-white px-5 py-3 text-center  text-xs font-semibold uppercase tracking-[0.14em] text-black transition-all duration-200 hover:bg-gray-700 hover:text-white"
           >
-            ↓ Download Invoice
+            <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+              ↓
+            </span>
+             Download Invoice
           </Link>
 
         </div>

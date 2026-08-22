@@ -8,6 +8,8 @@ import { redirect } from "next/navigation";
 
 type Props = {
     searchParams: Promise<{
+        page?: string;
+        limit?: string;
         search?: string;
         status?: string;
         payment?: string;
@@ -22,11 +24,13 @@ export default async function Orders({ searchParams }: Props) {
 
     const session = await getServerSession(authOptions);
 
-    if (!session) {
+    if (!session || session.user.role !== "ADMIN") {
         redirect("/login");
     }
 
     const {
+        page: pageParam,
+        limit: limitParam,
         search,
         status,
         payment,
@@ -34,6 +38,18 @@ export default async function Orders({ searchParams }: Props) {
         sort,
         date,
     } = await searchParams;
+
+    const page = Math.max(
+        Number(pageParam) || 1,
+        1
+    );
+
+    const limit = Math.min(
+        Math.max(Number(limitParam) || 10, 1),
+        100
+    );
+
+    const skip = (page - 1) * limit;
 
 
     const where: Prisma.OrderWhereInput = {
@@ -148,56 +164,74 @@ export default async function Orders({ searchParams }: Props) {
 
     }
 
-    const orders = await prisma.order.findMany({
+    const [orders, totalOrders] =
+        await Promise.all([
+            prisma.order.findMany({
+                where,
 
-        where,
+                orderBy,
 
-        orderBy,
+                skip,
+                take: limit,
 
-        select: {
-
-            id: true,
-            orderNumber: true,
-            total: true,
-            status: true,
-            paymentStatus: true,
-            cancellationStatus: true,
-            refundStatus: true,
-            refundReason: true,
-            createdAt: true,
-
-
-            user: {
                 select: {
                     id: true,
-                    name: true,
-                    email: true,
-                }
-            },
+                    orderNumber: true,
+                    total: true,
+                    status: true,
+                    paymentStatus: true,
+                    cancellationStatus: true,
+                    refundStatus: true,
+                    refundReason: true,
+                    createdAt: true,
 
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                        },
+                    },
 
-            items: {
-                select: {
-                    id: true,
-                    title: true,
-                    quantity: true,
-                }
-            }
+                    items: {
+                        select: {
+                            id: true,
+                            title: true,
+                            quantity: true,
+                        },
+                    },
+                },
+            }),
 
-        }
-
-    });
+            prisma.order.count({
+                where,
+            }),
+        ]);
 
     const formattedOrders = orders.map((order) => ({
-
         ...order,
-
         total: Number(order.total),
-
     }));
 
+    const totalPages = Math.ceil(
+        totalOrders / limit
+    );
+
+    const pagination = {
+        page,
+        limit,
+        totalOrders,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+    };
 
     return (
-        <OrdersPage orders={formattedOrders} />
+        <OrdersPage
+            orders={formattedOrders}
+            pagination={pagination}
+        />
     );
+
+
 }
