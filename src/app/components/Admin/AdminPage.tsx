@@ -49,27 +49,77 @@ export default function AdminPage({ adminName }: Props) {
     const [dashboard, setDashboard] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(true);
     const [activePoint, setActivePoint] = useState<number | null>(null);
+    const [salesLoading, setSalesLoading] = useState(false);
+    const [salesPeriod, setSalesPeriod] = useState<"7D" | "30D" | "1Y">("30D");
 
     const fetchDashboard = async () => {
         try {
-            const res = await fetch("/api/dashboard", {
-                method: "GET"
-            })
-            const data = await res.json()
+            setLoading(true);
+
+            const res = await fetch("/api/dashboard?period=30D", {
+                method: "GET",
+            });
+
+            const data = await res.json();
+
             if (!res.ok) {
-                toast.error(data.message || "Failed to fetch dashboard")
-                return
+                toast.error(data.message || "Failed to fetch dashboard");
+                return;
             }
-            setDashboard(data.data)
+
+            setDashboard(data.data);
         } catch (error) {
-            toast.error("Dashboard fetch error")
+            toast.error("Dashboard fetch error");
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
+
     useEffect(() => {
-        fetchDashboard()
-    }, [])
+        fetchDashboard();
+    }, []);
+
+    const fetchSales = async (
+        period: "7D" | "30D" | "1Y"
+    ) => {
+        try {
+            setSalesLoading(true);
+            setActivePoint(null);
+
+            const res = await fetch(
+                `/api/dashboard?period=${period}`,
+                {
+                    method: "GET",
+                }
+            );
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(
+                    data.message || "Failed to fetch sales data"
+                );
+                return;
+            }
+
+            setDashboard((prev) => {
+                if (!prev) return prev;
+
+                return {
+                    ...prev,
+                    salesOverview: data.data.salesOverview,
+                    salesOverviewTotal:
+                        data.data.salesOverviewTotal,
+                    salesOverviewOrders:
+                        data.data.salesOverviewOrders,
+                };
+            });
+        } catch (error) {
+            toast.error("Sales data fetch error");
+        } finally {
+            setSalesLoading(false);
+        }
+    };
 
 
     const stats = dashboard
@@ -78,21 +128,25 @@ export default function AdminPage({ adminName }: Props) {
                 label: "Revenue",
                 value: `$${dashboard.statistics.revenue.toLocaleString()}`,
                 change: "+12.8%",
+                href: "/admin/orders",
             },
             {
                 label: "Orders",
                 value: dashboard.statistics.orders.toLocaleString(),
                 change: "+8.4%",
+                href: "/admin/orders",
             },
             {
                 label: "Customers",
                 value: dashboard.statistics.users.toLocaleString(),
                 change: "+18.2%",
+                href: "/admin/user",
             },
             {
                 label: "Products",
                 value: dashboard.statistics.products.toLocaleString(),
                 change: "+2.1%",
+                href: "/admin/products",
             },
         ]
         : [];
@@ -127,74 +181,80 @@ export default function AdminPage({ adminName }: Props) {
 
     if (loading) {
         return (
-            <main className="min-h-screen bg-[#f7f7f5] text-[#111111]">
-                <section className="w-full px-4 py-12 sm:px-6 sm:py-20">
-                    <div className="mx-auto max-w-2xl border border-black/10 bg-white px-6 py-16 text-center shadow-[0_2px_15px_rgba(0,0,0,0.02)] sm:px-12 sm:py-20">
+            <section className="w-full px-6 py-20">
 
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-black/10">
-                            <div className="h-7 w-7 animate-spin rounded-full border-2 border-black/10 border-t-black" />
-                        </div>
+                <div className="mx-auto max-w-2xl border border-slate-200 bg-white px-12 py-20 text-center shadow-sm">
 
-                        <p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-black/35 sm:text-xs">
-                            Admin Dashboard
-                        </p>
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
 
-                        <h2 className="mt-4 text-2xl font-light uppercase tracking-[0.16em] sm:text-3xl">
-                            Loading Dashboard
-                        </h2>
-
-                        <p className="mx-auto mt-5 max-w-md text-xs leading-6 text-black/40 sm:text-sm">
-                            We're retrieving your latest sales, products, customers,
-                            and order information.
-                        </p>
-
-                        <div className="mx-auto mt-10 h-px w-16 bg-black/10" />
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-slate-950" />
 
                     </div>
-                </section>
-            </main>
+
+                    <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
+                        Dashboard
+                    </p>
+
+                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em] text-slate-900">
+                        Please Wait
+                    </h2>
+
+                    <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-slate-500">
+                        We're processing your request.
+                        Please wait while we're retrieving
+                        your Dashboard details.
+                    </p>
+
+                </div>
+
+            </section>
         );
     }
 
     if (!dashboard) {
         return (
-            <main className="min-h-screen bg-[#f7f7f5] text-[#111111]">
-                <section className="w-full px-4 py-12 sm:px-6 sm:py-20">
-                    <div className="mx-auto max-w-2xl border border-black/10 bg-white px-6 py-16 text-center shadow-[0_2px_15px_rgba(0,0,0,0.02)] sm:px-12 sm:py-20">
+            <section className="w-full px-6 py-20">
 
-                        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-black/10 text-2xl font-light">
-                            !
-                        </div>
+                <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
 
-                        <p className="mt-8 text-[9px] uppercase tracking-[0.35em] text-black/35 sm:text-xs">
-                            Admin Dashboard
-                        </p>
+                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-neutral-200 text-3xl">
+                        !
+                    </div>
 
-                        <h2 className="mt-4 text-2xl font-light uppercase tracking-[0.16em] sm:text-3xl">
-                            Dashboard Unavailable
-                        </h2>
+                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-neutral-500">
+                        Dashboard
+                    </p>
 
-                        <p className="mx-auto mt-5 max-w-md text-xs leading-6 text-black/40 sm:text-sm">
-                            We couldn't retrieve the dashboard information right now.
-                            Please try again or return to the admin dashboard.
-                        </p>
+                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em]">
+                        Unavailable
+                    </h2>
 
-                        <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+                    <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
+                        We couldn't retrieve the dashboard information right now.
+                        Please try again later.
+                    </p>
 
-                            <button
-                                onClick={() => {
-                                    setLoading(true);
-                                    fetchDashboard();
-                                }}
-                                className="inline-flex items-center justify-center border border-black bg-black px-8 py-3 text-xs uppercase tracking-[0.12em] text-white transition hover:bg-black/80"
-                            >
-                                Try Again
-                            </button>
-                        </div>
+                    <div className="mt-9 flex items-center justify-center">
+
+                        <button
+                            onClick={() => {
+                                setLoading(true);
+                                fetchDashboard();
+                            }}
+                            className="group inline-flex h-11 items-center justify-center gap-3 border border-black bg-black px-6 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-white hover:text-black"
+                        >
+                            <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+                                +
+                            </span>
+
+                            Try Again
+                        </button>
 
                     </div>
-                </section>
-            </main>
+
+                </div>
+
+            </section>
         );
     }
 
@@ -211,41 +271,69 @@ export default function AdminPage({ adminName }: Props) {
             <div className="w-full">
 
                 {/* Welcome */}
-                <div className="mb-6 sm:mb-8 lg:mb-10">
-                    <p className="text-xs text-black/40 sm:text-sm">
-                        {new Date().toLocaleDateString("en-US", {
-                            weekday: "long",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </p>
 
-                    <h3 className="mt-2 text-2xl font-light tracking-tight sm:text-3xl lg:text-4xl">
-                        Good evening, {adminName}.
-                    </h3>
+                <div className="mb-10 flex flex-col gap-6 border-b border-slate-200 pb-8 lg:flex-row lg:items-start lg:justify-between">
+
+                    <div className="min-w-0">
+
+                        <div className="mb-4 flex items-center gap-3">
+
+                            <span className="h-px w-8 bg-slate-950" />
+
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
+                                Store / Dashboard
+                            </p>
+
+                        </div>
+
+                        <h1 className="text-3xl font-light uppercase tracking-[0.08em] text-slate-950 sm:text-4xl">
+                            Good evening, {adminName}.
+                        </h1>
+                        <p className="text-xs text-black/40 mt-2">
+                            {new Date().toLocaleDateString("en-US", {
+                                weekday: "long",
+                                month: "long",
+                                day: "numeric",
+                            })}
+                        </p>
+
+                        <p className="mt-3 max-w-xl text-sm leading-6 text-slate-500">
+                            Here&apos;s what&apos;s happening with your store
+                            today.
+                        </p>
+
+                    </div>
+
                 </div>
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
                     {stats.map((stat) => (
-                        <div
+                        <Link
                             key={stat.label}
-                            className="rounded-xl border border-black/10 bg-white p-4 shadow-[0_2px_15px_rgba(0,0,0,0.02)] sm:rounded-2xl sm:p-6"
+                            href={stat.href}
+                            className="group rounded-xl border border-black/10 bg-white p-4 shadow-[0_2px_15px_rgba(0,0,0,0.02)] transition-all duration-200 hover:border-black hover:bg-black hover:text-white sm:rounded-2xl sm:p-6"
                         >
-                            <p className="text-[9px] uppercase tracking-[0.15em] text-black/35 sm:text-xs sm:tracking-[0.2em]">
-                                {stat.label}
-                            </p>
+                            <div className="flex items-start justify-between gap-3">
+                                <p className="text-[9px] uppercase tracking-[0.15em] text-black/35 transition-colors duration-200 group-hover:text-white/60 sm:text-xs sm:tracking-[0.2em]">
+                                    {stat.label}
+                                </p>
+
+                                <span className="text-sm text-black transition-all duration-300 group-hover:rotate-180 group-hover:text-white">
+                                    ↗
+                                </span>
+                            </div>
 
                             <div className="mt-4 flex flex-col gap-2 sm:mt-6 sm:flex-row sm:items-end sm:justify-between">
-                                <p className="text-xl font-light sm:text-2xl">
+                                <p className="text-xl font-light text-black transition-colors duration-200 group-hover:text-white sm:text-2xl">
                                     {stat.value}
                                 </p>
 
-                                <span className="w-fit rounded-full bg-[#e8eee9] px-2 py-1 text-[9px] text-[#637568] sm:px-2.5 sm:py-1 sm:text-[10px]">
+                                <span className="w-fit rounded-full bg-[#e8eee9] px-2 py-1 text-[9px] text-[#637568] transition-all duration-200 group-hover:bg-white/10 group-hover:text-white sm:px-2.5 sm:py-1 sm:text-[10px]">
                                     {stat.change}
                                 </span>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
 
@@ -266,13 +354,61 @@ export default function AdminPage({ adminName }: Props) {
                                 </p>
 
                                 <p className="mt-1 text-[9px] text-black/30 sm:text-[10px]">
-                                    Last 30 days
+                                    {salesPeriod === "7D"
+                                        ? "Last 7 days"
+                                        : salesPeriod === "30D"
+                                            ? "Last 30 days"
+                                            : "Last year"}
                                 </p>
                             </div>
 
-                            <button className="shrink-0 rounded-lg border border-black/10 px-2.5 py-2 text-[10px] text-black/50 transition hover:border-black/20 hover:text-black sm:px-3 sm:text-xs">
-                                Last 30 days
-                            </button>
+                            <div className="group/period relative">
+                                <button
+                                    type="button"
+                                    className="flex shrink-0 items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-[10px] text-black/45 transition-all duration-200 hover:border-black hover:bg-black hover:text-white sm:px-3.5 sm:py-2 sm:text-xs"
+                                >
+                                    <span>
+                                        {salesPeriod === "7D"
+                                            ? "Last 7 days"
+                                            : salesPeriod === "30D"
+                                                ? "Last 30 days"
+                                                : "Last year"}
+                                    </span>
+
+                                    <span className="text-sm text-black transition-all duration-300 group-hover/period:rotate-180 group-hover/period:text-white">
+                                        ↗
+                                    </span>
+                                </button>
+
+                                <div className="invisible absolute right-0 top-full z-30 mt-2 w-36 translate-y-1 rounded-xl border border-black/10 bg-white p-1.5 opacity-0 shadow-[0_12px_35px_rgba(0,0,0,0.12)] transition-all duration-200 group-hover/period:visible group-hover/period:translate-y-0 group-hover/period:opacity-100">
+                                    {[
+                                        { value: "7D", label: "Last 7 days" },
+                                        { value: "30D", label: "Last 30 days" },
+                                        { value: "1Y", label: "Last year" },
+                                    ].map((period) => (
+                                        <button
+                                            key={period.value}
+                                            type="button"
+                                            onClick={() => {
+                                                const value = period.value as "7D" | "30D" | "1Y";
+
+                                                setSalesPeriod(value);
+                                                fetchSales(value);
+                                            }}
+                                            className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-[10px] transition-colors duration-200 sm:text-xs ${salesPeriod === period.value
+                                                ? "bg-black text-white"
+                                                : "text-black/50 hover:bg-black hover:text-white"
+                                                }`}
+                                        >
+                                            <span>{period.label}</span>
+
+                                            {salesPeriod === period.value && (
+                                                <span className="text-xs">✓</span>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
 
                         {/* Sales Chart */}
@@ -280,6 +416,11 @@ export default function AdminPage({ adminName }: Props) {
                             className="relative mt-8 h-56 select-none sm:mt-10 sm:h-72"
                             onMouseLeave={() => setActivePoint(null)}
                         >
+                            {salesLoading && (
+                                <div className="absolute inset-0 z-30 flex items-center justify-center rounded-xl bg-white/70 backdrop-blur-[2px]">
+                                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-black/10 border-t-black" />
+                                </div>
+                            )}
                             {/* Tooltip */}
                             {activePoint !== null && (
                                 <div
@@ -373,13 +514,7 @@ export default function AdminPage({ adminName }: Props) {
                                                 return `${x},${y}`;
                                             });
 
-                                            return `
-                        M ${points[0]}
-                        L ${points.slice(1).join(" L ")}
-                        L 1000,300
-                        L 0,300
-                        Z
-                    `;
+                                            return ` M ${points[0]} L ${points.slice(1).join(" L ")} L 1000,300 L 0,300 Z`;
                                         })()}
                                         fill="url(#salesGradient)"
                                     />
@@ -471,24 +606,27 @@ export default function AdminPage({ adminName }: Props) {
 
                         {/* Chart labels */}
                         <div className="mt-3 flex justify-between text-[8px] uppercase tracking-wider text-black/25 sm:mt-4 sm:text-[10px] sm:tracking-widest">
-                            {[
-                                chartData[0],
-                                chartData[7],
-                                chartData[14],
-                                chartData[21],
-                                chartData[29],
-                            ].map((item) => (
-                                <span key={item.date}>
-                                    {new Date(item.date).toLocaleDateString(
-                                        "en-US",
-                                        {
+                            {chartData.map((item, index) => {
+                                const showLabel =
+                                    salesPeriod === "1Y"
+                                        ? true
+                                        : salesPeriod === "30D"
+                                            ? index % 7 === 0
+                                            : true;
+
+                                if (!showLabel) return null;
+
+                                return (
+                                    <span key={item.date}>
+                                        {new Date(item.date).toLocaleDateString("en-US", {
                                             month: "short",
-                                            day: "numeric",
-                                        }
-                                    )}
-                                </span>
-                            ))}
+                                            day: salesPeriod === "1Y" ? undefined : "numeric",
+                                        })}
+                                    </span>
+                                );
+                            })}
                         </div>
+                        
                     </div>
 
                     {/* Top Products */}
@@ -505,49 +643,68 @@ export default function AdminPage({ adminName }: Props) {
                                 </p>
                             </div>
 
-                            <Link href={'/collections?sort=bestseller'} className="shrink-0 text-[10px] text-black/40 transition hover:text-black sm:text-xs">
-                                View all
+                            <Link
+                                href="/admin/products?bestseller=BESTSELLER"
+                                className="group/view flex shrink-0 items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-[10px] text-black/45 transition-all duration-200 hover:border-black hover:bg-black hover:text-white sm:px-3.5 sm:py-2 sm:text-xs"
+                            >
+                                <span>View all</span>
+
+                                <span className="text-sm text-black transition-all duration-300 group-hover/view:rotate-180 group-hover/view:text-white">
+                                    ↗
+                                </span>
                             </Link>
                         </div>
 
-                        <div className="mt-6 space-y-4 sm:mt-8 sm:space-y-5">
+                        <div className="mt-6 space-y-2 sm:mt-8">
                             {dashboard.bestSellers.map((product, index) => (
                                 <div
                                     key={product.id}
-                                    className="flex items-center gap-3 border-b border-black/5 pb-4 last:border-0 sm:gap-4 sm:pb-5"
+                                    className="group flex cursor-pointer items-center gap-3 rounded-xl border border-transparent px-3 py-3 transition-all duration-200 hover:border-black hover:bg-black sm:gap-4 sm:px-4 sm:py-4"
                                 >
-                                    <span className="text-[10px] text-black/20 sm:text-xs">
+                                    {/* Number */}
+                                    <span className="w-5 shrink-0 text-[10px] text-black/20 transition-colors duration-200 group-hover:text-white/40 sm:text-xs">
                                         {String(index + 1).padStart(2, "0")}
                                     </span>
 
+                                    {/* Image */}
                                     {product.images ? (
                                         <img
                                             src={product.images}
                                             alt={product.title}
-                                            className="h-10 w-10 shrink-0 rounded-lg object-cover sm:h-12 sm:w-12"
+                                            className="h-10 w-10 shrink-0 rounded-lg object-cover transition-transform duration-200 group-hover:scale-105 sm:h-12 sm:w-12"
                                         />
                                     ) : (
-                                        <div className="h-10 w-10 shrink-0 rounded-lg bg-[#eeeeeb] sm:h-12 sm:w-12" />
+                                        <div className="h-10 w-10 shrink-0 rounded-lg bg-[#eeeeeb] transition-colors duration-200 group-hover:bg-white/10 sm:h-12 sm:w-12" />
                                     )}
 
+                                    {/* Product info */}
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate text-xs text-black/80 sm:text-sm">
+                                        <p className="truncate text-xs text-black/80 transition-colors duration-200 group-hover:text-white sm:text-sm">
                                             {product.title}
                                         </p>
 
-                                        <p className="mt-1 text-[10px] text-black/30 sm:text-xs">
+                                        <p className="mt-1 text-[10px] text-black/30 transition-colors duration-200 group-hover:text-white/40 sm:text-xs">
                                             Best seller
                                         </p>
                                     </div>
 
-                                    <span className="shrink-0 text-xs text-black/60 sm:text-sm">
-                                        ${product.price.toLocaleString()}
-                                    </span>
+                                    {/* Price + arrow */}
+                                    <div className="flex shrink-0 items-center gap-2">
+                                        <span className="text-xs text-black/60 transition-colors duration-200 group-hover:text-white sm:text-sm">
+                                            ${product.price.toLocaleString()}
+                                        </span>
+
+
+                                        <span className="text-sm text-black/0 transition-all duration-300 group-hover:rotate-180 group-hover:text-white">
+                                            ↗
+                                        </span>
+
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    
+
                 </div>
 
                 {/* Recent Orders */}
@@ -565,13 +722,20 @@ export default function AdminPage({ adminName }: Props) {
                             </h3>
                         </div>
 
-                        <Link href={'/admin/orders'} className="shrink-0 text-[10px] text-black/40 transition hover:text-black sm:text-xs">
+                        <Link
+                            href="/admin/orders"
+                            className="group/view flex shrink-0 items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-[10px] text-black/45 transition-all duration-200 hover:border-black hover:bg-black hover:text-white sm:px-3.5 sm:py-2 sm:text-xs"
+                        >
                             <span className="hidden sm:inline">
-                                View all orders →
+                                View all orders
                             </span>
 
                             <span className="sm:hidden">
-                                View all →
+                                View all
+                            </span>
+
+                            <span className="text-sm text-black transition-all duration-300 group-hover/view:rotate-180 group-hover/view:text-white">
+                                ↗
                             </span>
                         </Link>
                     </div>
@@ -600,6 +764,8 @@ export default function AdminPage({ adminName }: Props) {
                                     <th className="px-4 py-3 font-normal sm:px-8 sm:py-4">
                                         Status
                                     </th>
+
+                                    <th className="w-12 px-4 py-3 font-normal sm:px-8 sm:py-4" />
                                 </tr>
                             </thead>
 
@@ -607,32 +773,53 @@ export default function AdminPage({ adminName }: Props) {
                                 {dashboard.recentOrders.map((order) => (
                                     <tr
                                         key={order.id}
-                                        className="border-b border-black/5 text-xs last:border-0 sm:text-sm"
+                                        onClick={() => {
+                                            window.location.href = `/admin/orders/${order.id}`;
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                window.location.href = `/admin/orders/${order.id}`;
+                                            }
+                                        }}
+                                        tabIndex={0}
+                                        role="link"
+                                        aria-label={`View order ${order.orderNumber}`}
+                                        className="group cursor-pointer border-b border-black/5 text-xs transition-colors duration-200 last:border-0 hover:bg-black hover:text-white focus:outline-none focus:ring-1 focus:ring-black sm:text-sm"
                                     >
-                                        <td className="px-4 py-4 text-black/50 sm:px-8 sm:py-5">
+                                        <td className="px-4 py-4 text-black/50 transition-colors duration-200 group-hover:text-white/60 sm:px-8 sm:py-5">
                                             #{order.orderNumber}
                                         </td>
 
-                                        <td className="px-4 py-4 sm:px-8 sm:py-5">
+                                        <td className="px-4 py-4 transition-colors duration-200 group-hover:text-white sm:px-8 sm:py-5">
                                             {order.user.name}
                                         </td>
 
-                                        <td className="px-4 py-4 text-black/50 sm:px-8 sm:py-5">
+                                        <td className="px-4 py-4 text-black/50 transition-colors duration-200 group-hover:text-white/60 sm:px-8 sm:py-5">
                                             {order.product}
                                         </td>
 
-                                        <td className="px-4 py-4 sm:px-8 sm:py-5">
+                                        <td className="px-4 py-4 transition-colors duration-200 group-hover:text-white sm:px-8 sm:py-5">
                                             ${order.total.toLocaleString()}
                                         </td>
 
                                         <td className="px-4 py-4 sm:px-8 sm:py-5">
                                             <span
-                                                className={`rounded-full px-2.5 py-1 text-[9px] uppercase tracking-wide sm:px-3 sm:text-[10px] ${getStatusStyles(
+                                                className={`rounded-full px-2.5 py-1 text-[9px] uppercase tracking-wide transition-all duration-200 sm:px-3 sm:text-[10px] ${getStatusStyles(
                                                     order.status
-                                                )}`}
+                                                )} group-hover:bg-white/10 group-hover:text-white`}
                                             >
                                                 {order.status}
                                             </span>
+                                        </td>
+
+                                        {/* Arrow */}
+                                        <td className="px-4 py-4 sm:px-8 sm:py-5">
+                                            <div className="flex justify-end">
+                                                <span className="text-sm text-black/0 transition-all duration-300 group-hover:rotate-180 group-hover:text-white">
+                                                    ↗
+                                                </span>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -641,6 +828,7 @@ export default function AdminPage({ adminName }: Props) {
                     </div>
 
                 </div>
+
             </div>
         </main>
     );

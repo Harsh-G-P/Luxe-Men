@@ -77,6 +77,7 @@ export default function AdminLayoutPage({
                         <h1 className="mt-2 text-2xl font-light tracking-[0.2em]">
                             MEN
                         </h1>
+                        
                     </div>
 
                     {/* Navigation */}
