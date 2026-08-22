@@ -380,9 +380,6 @@ export default function CategoryAttributePage({
             label: item.title,
         }));
 
-    /*
-     * Pending state
-     */
     if (isPending) {
         return (
             <section className="w-full px-6 py-20">
@@ -408,6 +405,55 @@ export default function CategoryAttributePage({
             </section>
         );
     }
+
+    const getPaginationPages = (
+        currentPage: number,
+        totalPages: number
+    ): (number | "...")[] => {
+        const maxVisiblePages = 4;
+
+        if (totalPages <= maxVisiblePages) {
+            return Array.from(
+                { length: totalPages },
+                (_, index) => index + 1
+            );
+        }
+
+        // First pages
+        if (currentPage <= 2) {
+            return [
+                1,
+                2,
+                3,
+                4,
+                "...",
+                totalPages,
+            ];
+        }
+
+        // Last pages
+        if (currentPage >= totalPages - 1) {
+            return [
+                1,
+                "...",
+                totalPages - 3,
+                totalPages - 2,
+                totalPages - 1,
+                totalPages,
+            ];
+        }
+
+        // Middle pages
+        return [
+            1,
+            "...",
+            currentPage - 1,
+            currentPage,
+            currentPage + 1,
+            "...",
+            totalPages,
+        ];
+    };
 
     return (
         <div className="w-full px-6">
@@ -973,34 +1019,41 @@ export default function CategoryAttributePage({
                         {/* Pages */}
 
                         <div className="flex flex-wrap items-center gap-1">
-                            {Array.from(
-                                {
-                                    length:
-                                        pagination.totalPages,
-                                },
-                                (_, index) =>
-                                    index + 1
-                            ).map((page) => (
-                                <button
-                                    key={page}
-                                    type="button"
-                                    disabled={
-                                        isPending
-                                    }
-                                    onClick={() =>
-                                        handlePageChange(
-                                            page
-                                        )
-                                    }
-                                    className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold transition ${pagination.page ===
-                                        page
-                                        ? "bg-slate-950 text-white shadow-sm"
-                                        : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                                        }`}
-                                >
-                                    {page}
-                                </button>
-                            ))}
+
+                            {getPaginationPages(
+                                pagination.page,
+                                pagination.totalPages
+                            ).map((page, index) => {
+
+                                if (page === "...") {
+                                    return (
+                                        <span
+                                            key={`ellipsis-${index}`}
+                                            className="flex h-9 min-w-9 items-center justify-center px-2 text-sm font-semibold text-slate-400"
+                                        >
+                                            ...
+                                        </span>
+                                    );
+                                }
+
+                                return (
+                                    <button
+                                        key={page}
+                                        type="button"
+                                        disabled={isPending}
+                                        onClick={() =>
+                                            handlePageChange(page)
+                                        }
+                                        className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold transition ${pagination.page === page
+                                                ? "bg-slate-950 text-white shadow-sm"
+                                                : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                                            }`}
+                                    >
+                                        {page}
+                                    </button>
+                                );
+                            })}
+
                         </div>
 
                         {/* Next */}

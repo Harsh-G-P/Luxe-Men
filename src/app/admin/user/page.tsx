@@ -5,30 +5,45 @@ import { Prisma } from "@/generated/prisma/client";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-
 type Props = {
     searchParams: Promise<{
+        page?: string;
+        limit?: string;
         search?: string;
         role?: string;
         sort?: string;
-        date?: string
+        date?: string;
     }>;
 };
 
-
 export default async function User({ searchParams }: Props) {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "ADMIN") {
         redirect("/login");
     }
 
     const {
+        page: pageParam,
+        limit: limitParam,
         search,
         role,
         sort,
         date,
     } = await searchParams;
+
+    // Pagination
+    const page = Math.max(
+        Number(pageParam) || 1,
+        1
+    );
+
+    const limit = Math.min(
+        Math.max(Number(limitParam) || 10, 1),
+        100
+    );
+
+    const skip = (page - 1) * limit;
 
     const where: Prisma.UserWhereInput = {
         // Search
@@ -56,9 +71,10 @@ export default async function User({ searchParams }: Props) {
         }),
 
         // Role filter
-        ...(role && role !== "ALL" && {
-            role: role as Prisma.EnumRoleFilter,
-        }),
+        ...(role &&
+            role !== "ALL" && {
+                role: role as Prisma.EnumRoleFilter,
+            }),
 
         // Today
         ...(date === "today" && {
@@ -86,11 +102,6 @@ export default async function User({ searchParams }: Props) {
                     new Date().getMonth(),
                     1
                 ),
-            },
-        }),
-        ...(date === "year" && {
-            createdAt: {
-                gte: new Date(new Date().getFullYear(), 0, 1),
             },
         }),
     };
@@ -126,25 +137,47 @@ export default async function User({ searchParams }: Props) {
             break;
     }
 
-    const users = await prisma.user.findMany({
-        where,
-        orderBy,
-        select: {
-            id: true,
-            email: true,
-            name: true,
-            image: true,
-            username: true,
-            role: true,
-            createdAt: true,
-            accountDeletionStatus: true,
-        },
-    })
+    const [users, totalUsers] = await Promise.all([
+        prisma.user.findMany({
+            where,
+            orderBy,
+            skip,
+            take: limit,
 
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                image: true,
+                username: true,
+                role: true,
+                createdAt: true,
+                accountDeletionStatus: true,
+            },
+        }),
+
+        prisma.user.count({
+            where,
+        }),
+    ]);
+
+    const totalPages = Math.ceil(
+        totalUsers / limit
+    );
+
+    const pagination = {
+        page,
+        limit,
+        totalUsers,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+    };
 
     return (
-        <div>
-            <UsersPage users={users} />
-        </div>
+        <UsersPage
+            users={users}
+            pagination={pagination}
+        />
     );
 }

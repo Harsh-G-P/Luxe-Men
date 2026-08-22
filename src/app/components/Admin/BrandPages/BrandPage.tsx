@@ -152,10 +152,10 @@ export default function BrandPage({
 
                 setError(
                     "❌ " +
-                        (
-                            data.message ||
-                            "Something went wrong"
-                        )
+                    (
+                        data.message ||
+                        "Something went wrong"
+                    )
                 );
 
                 return;
@@ -210,7 +210,7 @@ export default function BrandPage({
             if (!res.ok) {
                 toast.error(
                     data.message ||
-                        "Failed to delete brand"
+                    "Failed to delete brand"
                 );
 
                 return;
@@ -312,6 +312,55 @@ export default function BrandPage({
             </section>
         );
     }
+
+    const getPaginationPages = (
+        currentPage: number,
+        totalPages: number
+    ): (number | "...")[] => {
+        const maxVisiblePages = 4;
+
+        if (totalPages <= maxVisiblePages) {
+            return Array.from(
+                { length: totalPages },
+                (_, index) => index + 1
+            );
+        }
+
+        // First pages
+        if (currentPage <= 2) {
+            return [
+                1,
+                2,
+                3,
+                4,
+                "...",
+                totalPages,
+            ];
+        }
+
+        // Last pages
+        if (currentPage >= totalPages - 1) {
+            return [
+                1,
+                "...",
+                totalPages - 3,
+                totalPages - 2,
+                totalPages - 1,
+                totalPages,
+            ];
+        }
+
+        // Middle pages
+        return [
+            1,
+            "...",
+            currentPage - 1,
+            currentPage,
+            currentPage + 1,
+            "...",
+            totalPages,
+        ];
+    };
 
     return (
         <div className="w-full px-6">
@@ -449,11 +498,10 @@ export default function BrandPage({
                                                 title: e.target.value,
                                             })
                                         }
-                                        className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:ring-2 focus:ring-slate-950 ${
-                                            fieldErrors.title
+                                        className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:ring-2 focus:ring-slate-950 ${fieldErrors.title
                                                 ? "border-rose-300 focus:ring-rose-500"
                                                 : "border-slate-200"
-                                        }`}
+                                            }`}
                                     />
 
                                     {fieldErrors.title && (
@@ -694,7 +742,7 @@ export default function BrandPage({
                                         >
 
                                             {deletingId ===
-                                            brand.id ? (
+                                                brand.id ? (
                                                 <>
                                                     <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-rose-200 border-t-rose-600 group-hover/delete:border-rose-400 group-hover/delete:border-t-white" />
 
@@ -801,46 +849,50 @@ export default function BrandPage({
                                     pagination.page - 1
                                 )
                             }
-                            className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
-                                pagination.hasPreviousPage
+                            className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${pagination.hasPreviousPage
                                     ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
                                     : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
-                            }`}
+                                }`}
                         >
                             Previous
                         </button>
 
                         {/* Page Numbers */}
-
                         <div className="flex flex-wrap items-center gap-1">
 
-                            {Array.from(
-                                {
-                                    length:
-                                        pagination.totalPages,
-                                },
-                                (_, index) =>
-                                    index + 1
-                            ).map((page) => (
-                                <button
-                                    key={page}
-                                    type="button"
-                                    disabled={isPending}
-                                    onClick={() =>
-                                        handlePageChange(
-                                            page
-                                        )
-                                    }
-                                    className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold transition ${
-                                        pagination.page ===
-                                        page
-                                            ? "bg-slate-950 text-white shadow-sm"
-                                            : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                                    }`}
-                                >
-                                    {page}
-                                </button>
-                            ))}
+                            {getPaginationPages(
+                                pagination.page,
+                                pagination.totalPages
+                            ).map((page, index) => {
+
+                                if (page === "...") {
+                                    return (
+                                        <span
+                                            key={`ellipsis-${index}`}
+                                            className="flex h-9 min-w-9 items-center justify-center px-2 text-sm font-semibold text-slate-400"
+                                        >
+                                            ...
+                                        </span>
+                                    );
+                                }
+
+                                return (
+                                    <button
+                                        key={page}
+                                        type="button"
+                                        disabled={isPending}
+                                        onClick={() =>
+                                            handlePageChange(page)
+                                        }
+                                        className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold transition ${pagination.page === page
+                                                ? "bg-slate-950 text-white shadow-sm"
+                                                : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                                            }`}
+                                    >
+                                        {page}
+                                    </button>
+                                );
+                            })}
 
                         </div>
 
@@ -857,11 +909,10 @@ export default function BrandPage({
                                     pagination.page + 1
                                 )
                             }
-                            className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
-                                pagination.hasNextPage
+                            className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${pagination.hasNextPage
                                     ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
                                     : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
-                            }`}
+                                }`}
                         >
                             Next
                         </button>

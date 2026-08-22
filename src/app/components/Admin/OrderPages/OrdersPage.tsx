@@ -186,6 +186,55 @@ export default function OrdersPage({
         );
     }
 
+    const getPaginationPages = (
+        currentPage: number,
+        totalPages: number
+    ): (number | "...")[] => {
+        const maxVisiblePages = 4;
+
+        if (totalPages <= maxVisiblePages) {
+            return Array.from(
+                { length: totalPages },
+                (_, index) => index + 1
+            );
+        }
+
+        // First pages
+        if (currentPage <= 2) {
+            return [
+                1,
+                2,
+                3,
+                4,
+                "...",
+                totalPages,
+            ];
+        }
+
+        // Last pages
+        if (currentPage >= totalPages - 1) {
+            return [
+                1,
+                "...",
+                totalPages - 3,
+                totalPages - 2,
+                totalPages - 1,
+                totalPages,
+            ];
+        }
+
+        // Middle pages
+        return [
+            1,
+            "...",
+            currentPage - 1,
+            currentPage,
+            currentPage + 1,
+            "...",
+            totalPages,
+        ];
+    };
+
     return (
         <div className="w-full px-6">
 
@@ -327,9 +376,9 @@ export default function OrdersPage({
 
                                                                 <span
                                                                     className={`h-2 w-2 shrink-0 rounded-full ${notification.type ===
-                                                                            "REFUND"
-                                                                            ? "bg-amber-500"
-                                                                            : "bg-red-500"
+                                                                        "REFUND"
+                                                                        ? "bg-amber-500"
+                                                                        : "bg-red-500"
                                                                         }`}
                                                                 />
 
@@ -371,9 +420,9 @@ export default function OrdersPage({
 
                                                         <span
                                                             className={`text-[10px] uppercase tracking-[0.12em] ${notification.type ===
-                                                                    "REFUND"
-                                                                    ? "text-amber-600"
-                                                                    : "text-red-600"
+                                                                "REFUND"
+                                                                ? "text-amber-600"
+                                                                : "text-red-600"
                                                                 }`}
                                                         >
                                                             Needs Review
@@ -479,7 +528,7 @@ export default function OrdersPage({
                                             <span
                                                 className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wide ${statusStyles[
                                                     order.status as keyof typeof statusStyles
-                                                    ]
+                                                ]
                                                     }`}
                                             >
                                                 {order.status}
@@ -566,7 +615,7 @@ export default function OrdersPage({
                                         <span
                                             className={`mt-2 inline-block rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wide ${paymentStyles[
                                                 order.paymentStatus as keyof typeof paymentStyles
-                                                ]
+                                            ]
                                                 }`}
                                         >
                                             {
@@ -695,8 +744,8 @@ export default function OrdersPage({
                                 )
                             }
                             className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${pagination.hasPreviousPage
-                                    ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
-                                    : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
+                                ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
+                                : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
                                 }`}
                         >
                             Previous
@@ -706,34 +755,39 @@ export default function OrdersPage({
 
                         <div className="flex flex-wrap items-center gap-1">
 
-                            {Array.from(
-                                {
-                                    length:
-                                        pagination.totalPages,
-                                },
-                                (_, index) =>
-                                    index + 1
-                            ).map((page) => (
+                            {getPaginationPages(
+                                pagination.page,
+                                pagination.totalPages
+                            ).map((page, index) => {
 
-                                <button
-                                    key={page}
-                                    type="button"
-                                    disabled={isPending}
-                                    onClick={() =>
-                                        handlePageChange(
-                                            page
-                                        )
-                                    }
-                                    className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold transition ${pagination.page ===
-                                            page
-                                            ? "bg-slate-950 text-white shadow-sm"
-                                            : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                                        }`}
-                                >
-                                    {page}
-                                </button>
+                                if (page === "...") {
+                                    return (
+                                        <span
+                                            key={`ellipsis-${index}`}
+                                            className="flex h-9 min-w-9 items-center justify-center px-2 text-sm font-semibold text-slate-400"
+                                        >
+                                            ...
+                                        </span>
+                                    );
+                                }
 
-                            ))}
+                                return (
+                                    <button
+                                        key={page}
+                                        type="button"
+                                        disabled={isPending}
+                                        onClick={() =>
+                                            handlePageChange(page)
+                                        }
+                                        className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold transition ${pagination.page === page
+                                                ? "bg-slate-950 text-white shadow-sm"
+                                                : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                                            }`}
+                                    >
+                                        {page}
+                                    </button>
+                                );
+                            })}
 
                         </div>
 
@@ -751,8 +805,8 @@ export default function OrdersPage({
                                 )
                             }
                             className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${pagination.hasNextPage
-                                    ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
-                                    : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
+                                ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
+                                : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
                                 }`}
                         >
                             Next

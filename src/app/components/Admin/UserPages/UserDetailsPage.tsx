@@ -31,7 +31,6 @@ type UserProfile = {
     createdAt: string;
     updatedAt: string;
     emailVerified: string | null;
-
 };
 
 type UserAddress = {
@@ -83,18 +82,22 @@ type UserDetail = {
     orders: UserOrder[];
 };
 
-const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-    }).format(value);
-
 const formatDate = (date: string) =>
     new Date(date).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
     });
+
+const roleStyles = {
+    ADMIN: "bg-purple-100 text-purple-700",
+    USER: "bg-slate-200 text-slate-700",
+} as const;
+
+const verificationStyles = {
+    verified: "bg-green-100 text-green-700",
+    unverified: "bg-amber-100 text-amber-700",
+} as const;
 
 export default function UserDetailPage({ id }: Props) {
     const [user, setUser] = useState<UserDetail | null>(null);
@@ -107,7 +110,9 @@ export default function UserDetailPage({ id }: Props) {
             const data = await res.json();
 
             if (!res.ok) {
-                toast.error(data.message || "Failed to load user");
+                toast.error(
+                    data.message || "Failed to load user"
+                );
                 return;
             }
 
@@ -132,23 +137,31 @@ export default function UserDetailPage({ id }: Props) {
     if (loading) {
         return (
             <section className="w-full px-6 py-20">
-                <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
 
-                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-neutral-200 border-t-black" />
+                <div className="mx-auto max-w-2xl border border-slate-200 bg-white px-12 py-20 text-center shadow-sm">
 
-                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-neutral-500">
-                        Loading User
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
+
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-slate-950" />
+
+                    </div>
+
+                    <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
+                        User
                     </p>
 
-                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em]">
+                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em] text-slate-900">
                         Please Wait
                     </h2>
 
-                    <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
-                        We're retrieving your User details.
+                    <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-slate-500">
+                        We're processing your request.
+                        Please wait while we're retrieving
+                        your user details.
                     </p>
 
                 </div>
+
             </section>
         );
     }
@@ -156,6 +169,7 @@ export default function UserDetailPage({ id }: Props) {
     if (!user) {
         return (
             <section className="w-full px-6 py-20">
+
                 <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
 
                     <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-neutral-200 text-3xl">
@@ -171,24 +185,38 @@ export default function UserDetailPage({ id }: Props) {
                     </h2>
 
                     <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
-                        The User you're looking for doesn't exist or you don't have
-                        permission to view it.
+                        The user you're looking for doesn't
+                        exist or you don't have permission
+                        to view it.
                     </p>
 
-                    <Link
-                        href="/admin/user"
-                        className="mt-10 inline-flex border border-black px-8 py-3 text-xs uppercase tracking-[0.12em] transition hover:bg-black hover:text-white"
-                    >
-                        Back to User
-                    </Link>
+                    <div className="mt-9 flex items-center justify-center">
+
+                        <Link
+                            href="/admin/user"
+                            className="group inline-flex h-11 items-center justify-center gap-3 border border-black bg-black px-6 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-white hover:text-black"
+                        >
+                            <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+                                +
+                            </span>
+
+                            Back to Users
+                        </Link>
+
+                    </div>
 
                 </div>
+
             </section>
         );
     }
 
     const profile = user.profile;
     const statistics = user.statistics;
+
+    const isVerified = Boolean(
+        profile.emailVerified
+    );
 
     return (
         <section className="w-full px-6">
@@ -197,27 +225,44 @@ export default function UserDetailPage({ id }: Props) {
 
             <Link
                 href="/admin/user"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
+                className="group mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-950"
             >
-                ← Back to Users
-            </Link>
 
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm transition group-hover:-translate-x-0.5 group-hover:border-slate-300">
+                    ←
+                </span>
+
+                Back to Users
+
+            </Link>
 
             {/* HEADER */}
 
-            <div className="mt-8 flex flex-col gap-6 border-b border-neutral-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="mb-10 flex flex-col gap-6 border-b border-neutral-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
 
-                <div>
+                <div className="min-w-0">
 
-                    <p className="text-xs uppercase tracking-[0.25em] text-neutral-500">
-                        User
-                    </p>
+                    {/* Breadcrumb */}
 
-                    <div className="mt-4 flex items-center gap-5">
+                    <div className="mb-3 flex items-center gap-3">
 
-                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-neutral-200 bg-neutral-100">
+                        <span className="h-px w-8 bg-slate-950" />
+
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
+                            Store / Users
+                        </p>
+
+                    </div>
+
+
+                    {/* Profile */}
+
+                    <div className="flex items-center gap-5">
+
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-50 shadow-sm">
 
                             {profile.image ? (
+
                                 <Image
                                     src={profile.image}
                                     alt={profile.name}
@@ -225,19 +270,23 @@ export default function UserDetailPage({ id }: Props) {
                                     height={64}
                                     className="h-full w-full object-cover"
                                 />
+
                             ) : (
-                                <UserRound className="h-7 w-7 text-neutral-400" />
+
+                                <UserRound className="h-7 w-7 text-slate-400" />
+
                             )}
 
                         </div>
 
-                        <div>
 
-                            <h1 className="text-2xl font-medium tracking-[0.08em]">
+                        <div className="min-w-0">
+
+                            <h1 className="truncate text-2xl font-light uppercase tracking-[0.08em] text-slate-950 sm:text-3xl">
                                 {profile.name}
                             </h1>
 
-                            <p className="mt-1 text-sm text-neutral-500">
+                            <p className="mt-2 text-xs text-slate-500">
                                 @{profile.username}
                             </p>
 
@@ -246,48 +295,69 @@ export default function UserDetailPage({ id }: Props) {
                     </div>
 
 
-                    {/* User Stats */}
+                    {/* Metadata */}
 
-                    <div className="mt-6 grid grid-cols-2 gap-8 border-t border-neutral-200 pt-6 md:grid-cols-4">
+                    <div className="mt-7 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-slate-200 pt-6 sm:grid-cols-4">
 
-                        <div>
-                            <p className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
+                        {/* User ID */}
+
+                        <div className="min-w-0">
+
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                                 User ID
                             </p>
 
-                            <p className="mt-2 break-all text-xs text-neutral-800">
+                            <p className="mt-2 break-all text-xs text-slate-700">
                                 {profile.id}
                             </p>
+
                         </div>
 
+
+                        {/* Email */}
+
+                        <div className="min-w-0">
+
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                Email
+                            </p>
+
+                            <p className="mt-2 break-all text-xs text-slate-700">
+                                {profile.email}
+                            </p>
+
+                        </div>
+
+
+                        {/* Orders */}
+
                         <div>
-                            <p className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
+
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                                 Orders
                             </p>
 
-                            <p className="mt-2 text-xs text-neutral-800">
-                                {statistics.orders}
+                            <p className="mt-2 text-xs text-slate-700">
+                                {statistics.orders} Products
                             </p>
+
                         </div>
 
-                        <div>
-                            <p className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
-                                Total Spent
-                            </p>
 
-                            <p className="mt-2 text-xs text-neutral-800">
-                                {formatCurrency(statistics.totalSpent)}
-                            </p>
-                        </div>
+                        {/* Joined */}
 
                         <div>
-                            <p className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
+
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                                 Joined
                             </p>
 
-                            <p className="mt-2 text-xs text-neutral-800">
-                                {formatDate(profile.createdAt)}
+                            <p className="mt-2 text-xs text-slate-700">
+                                {formatDate(
+                                    profile.createdAt
+                                )}
                             </p>
+
                         </div>
 
                     </div>
@@ -297,24 +367,23 @@ export default function UserDetailPage({ id }: Props) {
 
                 {/* Status */}
 
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
 
                     <span
-                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${profile.role === "ADMIN"
-                                ? "bg-purple-100 text-purple-700"
-                                : "bg-slate-200 text-slate-700"
-                            }`}
+                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${roleStyles[
+                            profile.role
+                        ]}`}
                     >
                         {profile.role}
                     </span>
 
                     <span
-                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${profile.emailVerified
-                                ? "bg-green-100 text-green-700"
-                                : "bg-amber-100 text-amber-700"
+                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${isVerified
+                                ? verificationStyles.verified
+                                : verificationStyles.unverified
                             }`}
                     >
-                        {profile.emailVerified
+                        {isVerified
                             ? "Verified"
                             : "Unverified"}
                     </span>
@@ -332,10 +401,13 @@ export default function UserDetailPage({ id }: Props) {
 
                 <div className="space-y-8">
 
-                    <UserAddresses addresses={user.addresses} />
+                    <UserAddresses
+                        addresses={user.addresses}
+                    />
 
-                    <UserOrders orders={user.orders} />
-
+                    <UserOrders
+                        orders={user.orders}
+                    />
 
                 </div>
 
@@ -344,19 +416,31 @@ export default function UserDetailPage({ id }: Props) {
 
                 <div className="space-y-8">
 
-                    <UserInformation user={profile} />
+                    <UserInformation
+                        user={profile}
+                    />
 
                     <AccountStatistics
-                        totalOrders={statistics.orders}
-                        totalSpent={statistics.totalSpent}
+                        totalOrders={
+                            statistics.orders
+                        }
+                        totalSpent={
+                            statistics.totalSpent
+                        }
                     />
 
                     <UserAdminActions
                         userId={profile.id}
                         role={profile.role}
-                        accountDeletionStatus={profile.accountDeletionStatus}
-                        accountDeletionReason={profile.accountDeletionReason}
-                        accountDeletionRequestedAt={profile.accountDeletionRequestedAt}
+                        accountDeletionStatus={
+                            profile.accountDeletionStatus
+                        }
+                        accountDeletionReason={
+                            profile.accountDeletionReason
+                        }
+                        accountDeletionRequestedAt={
+                            profile.accountDeletionRequestedAt
+                        }
                     />
 
                 </div>
