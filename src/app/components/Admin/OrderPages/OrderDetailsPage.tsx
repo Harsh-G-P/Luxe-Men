@@ -116,10 +116,10 @@ export default function AdminOrderDetail({ id }: Props) {
     useEffect(() => {
         fetchOrderDetail();
         const interval = setInterval(() => {
-        fetchOrderDetail();
-    }, 10000);
+            fetchOrderDetail();
+        }, 10000);
 
-    return () => clearInterval(interval);
+        return () => clearInterval(interval);
 
     }, [id]);
 
@@ -140,23 +140,27 @@ export default function AdminOrderDetail({ id }: Props) {
         );
     };
 
+
     if (loading) {
         return (
             <section className="w-full px-6 py-20">
-                <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
+                <div className="mx-auto max-w-2xl border border-slate-200 bg-white px-12 py-20 text-center shadow-sm">
 
-                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-neutral-200 border-t-black" />
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-slate-950" />
+                    </div>
 
-                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-neutral-500">
-                        Loading Order
+                    <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
+                        Order
                     </p>
 
-                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em]">
+                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em] text-slate-900">
                         Please Wait
                     </h2>
 
-                    <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
-                        We're retrieving your order details.
+                    <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-slate-500">
+                        We're processing your request.
+                        Please wait while We're retrieving your order details.
                     </p>
 
                 </div>
@@ -186,12 +190,21 @@ export default function AdminOrderDetail({ id }: Props) {
                         permission to view it.
                     </p>
 
-                    <Link
-                        href="/admin/orders"
-                        className="mt-10 inline-flex border border-black px-8 py-3 text-xs uppercase tracking-[0.12em] transition hover:bg-black hover:text-white"
-                    >
-                        Back to Orders
-                    </Link>
+                    <div className="mt-9 flex items-center justify-center">
+
+                        <Link
+                            href="/admin/orders"
+                            className="group inline-flex h-11 items-center justify-center gap-3 border border-black bg-black px-6 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-white hover:text-black"
+                        >
+                            <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+                                +
+                            </span>
+
+                            Back to Orders
+
+                        </Link>
+
+                    </div>
 
                 </div>
             </section>
@@ -203,59 +216,83 @@ export default function AdminOrderDetail({ id }: Props) {
 
             <Link
                 href="/admin/orders"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
+                className="group mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-950"
             >
-                ← Back to Orders
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm transition group-hover:-translate-x-0.5 group-hover:border-slate-300">
+                    ←
+                </span>
+
+                Back to Orders
             </Link>
 
-            <div className="mt-8 flex flex-col gap-6 border-b border-neutral-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="mb-10 flex flex-col gap-6 border-b border-neutral-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
 
-                <div>
+                <div className="min-w-0">
 
-                    <p className="text-xs uppercase tracking-[0.25em] text-neutral-500">
-                        Order
-                    </p>
+                    <div className="mb-3 flex items-center gap-3">
+                        <span className="h-px w-8 bg-slate-950" />
 
-                    <h1 className="mt-3 font-medium tracking-[0.12em]">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
+                            Store / Orders
+                        </p>
+                    </div>
+
+                    <h1 className="text-2xl font-light uppercase tracking-[0.08em] text-slate-950 sm:text-3xl">
                         {order.orderNumber}
                     </h1>
 
-                    <p className="mt-2 text-xs text-neutral-500">
-                        Placed on{" "} {new Date(order.createdAt).toLocaleString("en-US", {
+                    <p className="mt-2 text-xs text-slate-500">
+                        Placed on{" "}
+                        {new Date(order.createdAt).toLocaleString("en-US", {
                             dateStyle: "long",
                             timeStyle: "short",
                         })}
                     </p>
-                    <div className="mt-6 grid grid-cols-3 gap-8 border-t border-neutral-200 pt-6">
 
-                        <div>
-                            <p className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
+                    <div className="mt-7 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-slate-200 pt-6 sm:grid-cols-3">
+
+                        {/* Order ID */}
+
+                        <div className="min-w-0">
+
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                                 Order ID
                             </p>
 
-                            <p className="mt-2 break-all text-xs text-neutral-800">
+                            <p className="mt-2 break-all text-xs text-slate-700">
                                 {order.id}
                             </p>
+
                         </div>
 
+
+                        {/* Items */}
+
                         <div>
-                            <p className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
+
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                                 Items
                             </p>
 
-                            <p className="mt-2 text-xs text-neutral-800">
+                            <p className="mt-2 text-xs text-slate-700">
                                 {order.items.length} Products
                             </p>
+
                         </div>
 
+
+                        {/* Payment */}
+
                         <div>
-                            <p className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
+
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                                 Payment
                             </p>
 
-                            <p className="mt-2 text-xs text-neutral-800">
+                            <p className="mt-2 text-xs font-medium text-slate-700">
                                 {order.paymentMethod}
                             </p>
+
                         </div>
 
                     </div>

@@ -132,7 +132,7 @@ export default function ProductPage({
 
             {/* Header */}
 
-            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mb-10 flex flex-col gap-6 border-b border-slate-200 pb-8 lg:flex-row lg:items-start lg:justify-between">
 
                 <div>
 
