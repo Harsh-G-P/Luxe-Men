@@ -1,85 +1,176 @@
 "use client";
 
-import {
-    Clock3,
-    ShieldCheck,
-    Lock,
-    BadgeCheck,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
-const features = [
+const whychoose = [
     {
-        icon: Clock3,
-        title: "Fast Delivery",
+        image: "/images/ch3.jpg",
+        number: "01",
+        title: "Considered Delivery",
         description:
-            "Quick and reliable shipping to get your order to you as soon as possible.",
+            "Reliable shipping, carefully handled from our door to yours.",
     },
     {
-        icon: ShieldCheck,
-        title: "Secure Payments",
+        image: "/images/ch5.jpg",
+        number: "02",
+        title: "Trusted Payments",
         description:
-            "Your transactions are protected with trusted payment methods.",
+            "Secure transactions through reliable and protected payment methods.",
     },
     {
-        icon: Lock,
-        title: "Secure Checkout",
+        image: "/images/ch2.jpg",
+        number: "03",
+        title: "Private & Secure",
         description:
-            "Shop confidently with encrypted and trusted payment methods.",
-    },
-    {
-        icon: BadgeCheck,
-        title: "Premium Quality",
-        description:
-            "Crafted with high-quality materials for lasting comfort.",
+            "Your information remains protected throughout every step of your purchase.",
     },
 ];
 
-export default function WhyChooseUs() {
+export default function WhyChoose() {
     return (
-        <section className="bg-neutral-50 py-16 md:py-24">
-            <div className="mx-auto max-w-7xl px-5 md:px-6">
-                {/* Heading */}
-                <div className="mb-12 text-center md:mb-16">
-                    <p className="mb-3 text-xs font-medium uppercase tracking-[0.3em] text-gray-500 md:text-sm md:tracking-[0.35em]">
-                        Why Choose Us
-                    </p>
+        <section className="relative overflow-hidden bg-[#f3eee5] px-4 py-20 text-[#2b2521] md:px-6 md:py-28 lg:px-8">
 
-                    <h2 className="text-3xl font-bold text-black md:text-5xl">
-                        Premium Shopping Experience
-                    </h2>
+            {/* Outer Frame */}
+            <div className="pointer-events-none absolute inset-4 md:inset-6 lg:inset-8">
+                <div className="absolute -inset-0.5 border border-[#8c8172]/15 blur-[2px]" />
+                <div className="absolute inset-0 border border-[#8c8172]/10" />
 
-                    <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-gray-500 md:max-w-2xl md:text-lg">
-                        We combine premium quality, secure shopping, and
-                        exceptional service to deliver the best experience.
-                    </p>
+                <div className="absolute left-0 top-0 h-5 w-5 border-l border-t border-[#8c8172]/40" />
+                <div className="absolute right-0 top-0 h-5 w-5 border-r border-t border-[#8c8172]/40" />
+                <div className="absolute bottom-0 left-0 h-5 w-5 border-b border-l border-[#8c8172]/40" />
+                <div className="absolute bottom-0 right-0 h-5 w-5 border-b border-r border-[#8c8172]/40" />
+            </div>
+
+            <div className="relative mx-auto max-w-7xl px-6 py-10 md:px-10 md:py-14 lg:px-16 lg:py-16">
+
+                {/* Header */}
+                <div className="mb-14 flex flex-col justify-between gap-8 md:mb-16 md:flex-row md:items-end">
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.7 }}
+                    >
+                        <p className="mb-5 text-[9px] font-bold uppercase tracking-[0.5em] text-[#81776d]">
+                            Why Choose Us
+                        </p>
+
+                        <h2 className="max-w-2xl text-4xl font-light leading-[0.95] tracking-[-0.045em] text-[#302923] sm:text-5xl lg:text-7xl">
+                            Details that
+                            <br />
+                            <span className="text-[#8c8172]">
+                                make the difference..
+                            </span>
+                        </h2>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.15, duration: 0.7 }}
+                        className="max-w-xs"
+                    >
+                        <p className="mb-5 text-sm leading-6 text-[#81776d]">
+                            Thoughtful design, dependable service, and quality
+                            that stays with you beyond the first impression.
+                        </p>
+
+                        <Link
+                            href="/contact"
+                            className="group inline-flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.35em] text-[#302923]"
+                        >
+                            Discover More
+
+                            <span className="flex h-8 w-8 items-center justify-center border border-[#8c8172]/30 transition-colors duration-300 group-hover:border-[#8c8172]/70">
+                                <ArrowUpRight
+                                    size={14}
+                                    strokeWidth={1}
+                                    className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                                />
+                            </span>
+                        </Link>
+                    </motion.div>
                 </div>
 
-                {/* Cards */}
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 md:gap-6">
-                    {features.map((feature) => {
-                        const Icon = feature.icon;
+                {/* Lookbook Images */}
+                <div className="grid gap-4 md:grid-cols-3 md:gap-5">
+                    {whychoose.map((item, index) => (
+                        <motion.div
+                            key={item.title}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{
+                                delay: index * 0.12,
+                                duration: 0.7,
+                            }}
+                            className="group"
+                        >
+                            <Link href="/contact" className="block">
 
-                        return (
-                            <div
-                                key={feature.title}
-                                className="group rounded-3xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:border-black hover:shadow-xl md:p-8"
-                            >
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black text-white transition-transform duration-300 group-hover:scale-110 md:h-16 md:w-16">
-                                    <Icon size={26} className="md:hidden" />
-                                    <Icon size={30} className="hidden md:block" />
+                                <div className="relative aspect-3/4 overflow-hidden bg-[#e8e0d5]">
+                                    <Image
+                                        src={item.image}
+                                        alt={item.title}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 33vw"
+                                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                                    />
+
+                                    <div className="absolute inset-0 bg-[#2b2521]/0 transition-colors duration-500 group-hover:bg-[#2b2521]/10" />
+
+                                    <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between p-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                                        <span className="text-[9px] uppercase tracking-[0.3em] text-white">
+                                            Explore
+                                        </span>
+
+                                        <span className="flex h-8 w-8 items-center justify-center border border-white/40 text-white">
+                                            <ArrowUpRight
+                                                size={14}
+                                                strokeWidth={1}
+                                            />
+                                        </span>
+                                    </div>
                                 </div>
 
-                                <h3 className="mt-5 text-lg font-semibold text-black md:mt-6 md:text-xl">
-                                    {feature.title}
-                                </h3>
+                                <div className="flex items-center justify-between border-b border-[#8c8172]/15 py-4">
+                                    <div>
+                                        <p className="text-xs tracking-wide text-[#3a332d]">
+                                            {item.title}
+                                        </p>
 
-                                <p className="mt-3 text-sm leading-6 text-gray-500 md:text-base md:leading-7">
-                                    {feature.description}
-                                </p>
-                            </div>
-                        );
-                    })}
+                                        <p className="mt-1 text-[8px] uppercase tracking-[0.3em] text-[#8b8075]">
+                                            {item.number}
+                                        </p>
+
+                                        <p className="mt-1 text-[8px] uppercase tracking-[0.3em] text-[#81776d]">
+                                            {item.description}
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </Link>
+                        </motion.div>
+                    ))}
                 </div>
+
+                {/* Bottom */}
+                <div className="mt-12 flex items-center justify-between border-t border-[#8c8172]/15 pt-5 text-[8px] uppercase tracking-[0.35em] text-[#8b8075]">
+                    <span>The Art of Refinement</span>
+
+                    <Link
+                        href="/contact"
+                        className="transition-colors hover:text-[#8c8172]"
+                    >
+                        Explore All
+                    </Link>
+                </div>
+
             </div>
         </section>
     );

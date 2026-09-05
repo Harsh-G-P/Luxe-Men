@@ -151,7 +151,6 @@ export default async function ProductPage({ slug }: Props) {
             </section>
 
             <ProductSection
-                label="You May Also Like"
                 title="Related Products"
                 subtitle="Discover more premium products selected just for you."
                 products={relatedProducts}

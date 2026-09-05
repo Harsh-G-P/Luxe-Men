@@ -1,19 +1,98 @@
 @import "tailwindcss";
 
+:root {
+    --luxury-bg: #faf9f6;
+    --luxury-text: #302923;
+    --luxury-muted: #81776c;
+    --luxury-accent: #8c7552;
+}
+
+
+/* =========================================
+   GLOBAL
+========================================= */
 
 body {
-    background-color: whitesmoke;
+    background-color: var(--luxury-bg);
+    color: var(--luxury-text);
+
+    font-family: var(--font-geist-sans), sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
+
+
+/* =========================================
+   BRAND / HEADINGS
+========================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-luxury), serif;
+    font-weight: 400;
+
+    letter-spacing: 0.015em;
+    line-height: 1;
+
+    color: var(--luxury-text);
+}
+
+
+/* =========================================
+   BODY TEXT
+========================================= */
+
+p {
+    font-family: var(--font-geist-sans), sans-serif;
+    color: var(--luxury-muted);
+}
+
+
+/* =========================================
+   UI
+========================================= */
+
+button,
+input,
+textarea,
+select {
+    font-family: var(--font-geist-sans), sans-serif;
+}
+
+
+/* =========================================
+   FILE INPUT
+========================================= */
 
 input[type="file"] {
     display: none;
 }
 
+
+/* =========================================
+   NO SCROLLBAR
+========================================= */
+
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 .no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+/* =========================================
+   SELECTION
+========================================= */
+
+::selection {
+    background: var(--luxury-accent);
+    color: #ffffff;
 }

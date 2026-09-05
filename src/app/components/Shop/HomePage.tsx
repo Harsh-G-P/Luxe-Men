@@ -1,49 +1,14 @@
 import prisma from "@/app/lib/prisma";
-import FeaturedCollections from "./Home/FeatureCollections";
 import Hero from "./Home/Hero";
-import PromoBanner from "./Home/PromoBanner";
 import ProductSection from "./Home/ProductSection";
 import WhyChooseUs from "./Home/WhyChooseUs";
-import Newsletter from "./Home/Newsletter";
+import Ourstory from "./Home/Ourstory";
+import LookbookPreview from "./Home/LookbookPreview";
+import PromoBanner from "./Home/PromoBanner";
 
 
 export default async function HomePage() {
-    
-    const categories = await prisma.category.findMany({
-        orderBy: {
-            createdAt: "desc"
-        }
-    })
 
-    const featured = (
-        await prisma.product.findMany({
-            where: {
-                isFeatured: true,
-                isActive: true,
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-            take: 4,
-            select: {
-                id: true,
-                title: true,
-                slug: true,
-                price: true,
-                images: true,
-                brand: {
-                    select: {
-                        title: true,
-                    },
-                },
-            },
-        })
-    ).map((product) => ({
-        ...product,
-        price: Number(product.price),
-        images: product.images as string[],
-    }));
-    
     const bestseller = (
         await prisma.product.findMany({
             where: {
@@ -73,7 +38,7 @@ export default async function HomePage() {
         images: product.images as string[],
     }));
 
-    const newarriavl = (
+    const newArrival = (
         await prisma.product.findMany({
             where: {
                 isActive: true,
@@ -81,7 +46,7 @@ export default async function HomePage() {
             orderBy: {
                 createdAt: "desc",
             },
-            take: 4,
+            take: 1,
             select: {
                 id: true,
                 title: true,
@@ -102,28 +67,20 @@ export default async function HomePage() {
     }));
 
 
+
     return (
         <div>
             <Hero />
-            <FeaturedCollections categories={categories} />
-            <ProductSection label="Featured"
-                title="Featured Products"
-                subtitle="Handpicked styles selected to define modern men's fashion."
-                viewAllHref="/collections" products={featured} />
-            <PromoBanner />
-            <ProductSection label="Best Sellers"
-                title="Customer Favorites"
-                subtitle="Our most-loved pieces chosen by thousands of customers." viewAllHref="/collections?sort=bestseller"
-                products={bestseller} />
+            <PromoBanner product={newArrival[0]} />
+            <Ourstory />
             <ProductSection
-                label="New"
-                title="New Arrivals"
-                subtitle="Fresh styles just added to our latest collection."
-                products={newarriavl}
-                viewAllHref="/collections?sort=new"
+                title="Signature Pieces"
+                subtitle="A considered selection of pieces that define the collection."
+                viewAllHref="/collections?sort=bestseller"
+                products={bestseller}
             />
+            <LookbookPreview />
             <WhyChooseUs />
-            <Newsletter />
         </div>
     );
 }
