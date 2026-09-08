@@ -63,14 +63,8 @@ export default function PromoBanner({ product }: Props) {
                 <div className="w-full max-w-350">
 
                     <div
-                        className="
-        relative grid items-center
-        min-[1024px]:grid-cols-[1.15fr_0.75fr]
-        min-[1400px]:grid-cols-[1.15fr_0.75fr_0.9fr]
-    "
+                        className=" relative grid items-center min-[1024px]:grid-cols-[1.15fr_0.75fr] min-[1400px]:grid-cols-[1.15fr_0.75fr_0.9fr]"
                     >
-
-
 
                         {/* LEFT IMAGE */}
                         <motion.div
@@ -118,13 +112,7 @@ export default function PromoBanner({ product }: Props) {
 
 
                                     <div
-                                        className="
-                    absolute left-0 top-1/2 z-0
-                    h-[calc(100%-15px)]
-                    w-full
-                    -translate-y-1/2
-                    overflow-hidden
-                "
+                                        className=" absolute left-0 top-1/2 z-0 h-[calc(100%-15px)] w-full -translate-y-1/2 overflow-hidden"
                                     >
 
                                         {/* Normal image */}
@@ -133,13 +121,7 @@ export default function PromoBanner({ product }: Props) {
                                             alt={product.title}
                                             fill
                                             sizes="310px"
-                                            className="
-                        object-cover
-                        transition-opacity
-                        duration-700
-                        ease-in-out
-                        group-hover:opacity-0
-                    "
+                                            className=" object-cover transition-opacity duration-700 ease-in-out group-hover:opacity-0"
                                         />
 
                                         {/* Hover image */}
@@ -148,53 +130,29 @@ export default function PromoBanner({ product }: Props) {
                                             alt={product.title}
                                             fill
                                             sizes="310px"
-                                            className="
-                        object-cover
-                        opacity-0
-                        transition-opacity
-                        duration-700
-                        ease-in-out
-                        group-hover:opacity-100
-                    "
+                                            className=" object-cover opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100"
                                         />
 
                                     </div>
 
 
-
                                     {/* DESKTOP BORDERS */}
-
 
                                     <div className="pointer-events-none absolute inset-0 z-10 hidden md:block">
 
                                         <div className="absolute inset-0 border border-black/20" />
 
                                         <div
-                                            className="
-                        absolute left-1/2 top-1/2
-                        h-[calc(100%-15px)]
-                        w-[calc(100%+14px)]
-                        -translate-x-1/2
-                        -translate-y-1/2
-                        border border-black/20
-                    "
+                                            className=" absolute left-1/2 top-1/2 h-[calc(100%-15px)] w-[calc(100%+14px)] -translate-x-1/2 -translate-y-1/2 border border-black/20"
                                         />
 
                                     </div>
 
 
-
                                     {/* MOBILE BORDER */}
 
-
                                     <div
-                                        className="
-        pointer-events-none
-        absolute
-        inset-0
-        z-20
-        md:hidden
-    "
+                                        className=" pointer-events-none absolute inset-0 z-20 md:hidden"
                                     >
                                         <svg
                                             className="absolute inset-0 h-full w-full"
@@ -206,10 +164,7 @@ export default function PromoBanner({ product }: Props) {
 
                                             {/* TOP LINE */}
                                             <path
-                                                d="
-                M 60 20
-                H 940
-            "
+                                                d=" M 60 20 H 940"
                                                 stroke="#000"
                                                 strokeOpacity="0.25"
                                                 strokeWidth="1"
@@ -218,12 +173,7 @@ export default function PromoBanner({ product }: Props) {
 
                                             {/* TOP LEFT STEP */}
                                             <path
-                                                d="
-                M 60 20
-                V 45
-                H 20
-                V 665
-            "
+                                                d=" M 60 20 V 45 H 20 V 665"
                                                 stroke="#000"
                                                 strokeOpacity="0.25"
                                                 strokeWidth="1"
@@ -232,12 +182,7 @@ export default function PromoBanner({ product }: Props) {
 
                                             {/* TOP RIGHT STEP + RIGHT VERTICAL */}
                                             <path
-                                                d="
-                M 940 20
-                V 45
-                H 980
-                V 665
-            "
+                                                d=" M 940 20 V 45 H 980 V 665"
                                                 stroke="#000"
                                                 strokeOpacity="0.25"
                                                 strokeWidth="1"
@@ -246,10 +191,7 @@ export default function PromoBanner({ product }: Props) {
 
                                             {/* BOTTOM LEFT CURVE */}
                                             <path
-                                                d="
-                M 20 665
-                C 55 665 80 680 80 705
-            "
+                                                d=" M 20 665 C 55 665 80 680 80 705"
                                                 stroke="#000"
                                                 strokeOpacity="0.25"
                                                 strokeWidth="1"
@@ -258,10 +200,7 @@ export default function PromoBanner({ product }: Props) {
 
                                             {/* BOTTOM LINE */}
                                             <path
-                                                d="
-                M 80 705
-                H 920
-            "
+                                                d=" M 80 705 H 920"
                                                 stroke="#000"
                                                 strokeOpacity="0.25"
                                                 strokeWidth="1"
@@ -270,10 +209,7 @@ export default function PromoBanner({ product }: Props) {
 
                                             {/* BOTTOM RIGHT CURVE */}
                                             <path
-                                                d="
-                M 920 705
-                C 920 680 945 665 980 665
-            "
+                                                d=" M 920 705 C 920 680 945 665 980 665"
                                                 stroke="#000"
                                                 strokeOpacity="0.25"
                                                 strokeWidth="1"
@@ -283,93 +219,38 @@ export default function PromoBanner({ product }: Props) {
                                         </svg>
                                     </div>
 
-
-
                                     {/* TOP NOTCH - DESKTOP ONLY */}
 
                                     <div
-                                        className="
-        pointer-events-none
-        absolute left-1/2 top-0 z-20
-        hidden
-        h-3 w-7
-        -translate-x-1/2
-        rounded-b-full
-        border-x border-b border-black/10
-        bg-[#faf9f6]
-        md:block
-    "
+                                        className=" pointer-events-none absolute left-1/2 top-0 z-20 hidden h-3 w-7 -translate-x-1/2 rounded-b-full border-x border-b border-black/10 bg-[#faf9f6] md:block"
                                     />
-
 
 
                                     {/* TOP DECORATIVE ICON - DESKTOP ONLY */}
 
                                     <div
-                                        className="
-        absolute left-1/2 top-10 z-20
-        hidden
-        h-11 w-11
-        -translate-x-1/2
-        items-center justify-center
-        rounded-full
-        bg-[repeating-conic-gradient(from_0deg,rgba(0,0,0,0.4)_0deg_3deg,transparent_3deg_10deg)]
-        p-px
-        transition-all duration-500
-        group-hover:scale-75
-        group-hover:opacity-0
-        md:flex
-    "
+                                        className=" absolute left-1/2 top-10 z-20 hidden h-11 w-11 -translate-x-1/2 items-center justify-center rounded-full bg-[repeating-conic-gradient(from_0deg,rgba(0,0,0,0.4)_0deg_3d transparent_3deg_10deg)] p-px transition-all duration-500 group-hover:scale-75 group-hover:opacity-0 md:flex"
                                     >
                                         <div className="flex h-full w-full items-center justify-center rounded-full bg-[#faf9f6]">
                                             <span className="relative h-5 w-4">
                                                 <span
-                                                    className="
-                    absolute left-1/2 top-0
-                    h-3 w-3
-                    -translate-x-1/2
-                    rounded-full
-                    border border-black
-                "
+                                                    className=" absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 rounded-full border border-black"
                                                 />
 
                                                 <span
-                                                    className="
-                    absolute left-1/2 top-3
-                    h-2 w-px
-                    -translate-x-1/2
-                    bg-black
-                "
+                                                    className=" absolute left-1/2 top-3 h-2 w-px -translate-x-1/2 bg-black"
                                                 />
                                             </span>
                                         </div>
                                     </div>
 
-
-
-
                                     {/* PRODUCT INFORMATION */}
-
-
                                     <div
-                                        className="
-                    absolute bottom-6 left-5 right-5 z-20
-                    text-center
-                    transition-all duration-500
-                    group-hover:-translate-y-16
-                    group-hover:opacity-0
-                "
+                                        className=" absolute bottom-6 left-5 right-5 z-20 text-center transition-all duration-500 group-hover:-translate-y-16 group-hover:opacity-0"
                                     >
 
                                         <h3
-                                            className="
-                        mx-auto max-w-[85%]
-                        text-[14px] font-medium
-                        leading-snug
-                        tracking-[-0.01em]
-                        text-black
-                        sm:text-md
-                    "
+                                            className=" mx-auto max-w-[85%] text-[14px] font-medium leading-snug tracking-[-0.01em] text-black sm:text-md"
                                         >
                                             {product.title}
                                         </h3>
@@ -388,21 +269,9 @@ export default function PromoBanner({ product }: Props) {
 
                                     </div>
 
-
-
                                     {/* HOVER ACTIONS */}
-
-
                                     <div
-                                        className="
-                    absolute bottom-6 left-5 right-5 z-30
-                    flex items-center gap-3
-                    translate-y-4
-                    opacity-0
-                    transition-all duration-500
-                    group-hover:translate-y-0
-                    group-hover:opacity-100
-                "
+                                        className=" absolute bottom-6 left-5 right-5 z-30 flex items-center gap-3 translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
                                     >
 
                                         {/* VIEW DETAILS */}
@@ -413,18 +282,7 @@ export default function PromoBanner({ product }: Props) {
                                             <div className="pointer-events-none absolute inset-0 z-30 border border-black/20" />
 
                                             <div
-                                                className="
-                            absolute left-1/2 top-1/2 z-10
-                            h-[calc(100%-8px)]
-                            w-[calc(100%+8px)]
-                            -translate-x-1/2
-                            -translate-y-1/2
-                            border border-black/20
-                            bg-[#faf9f6]
-                            transition-all duration-500
-                            group-hover/view:h-full
-                            group-hover/view:w-full
-                        "
+                                                className=" absolute left-1/2 top-1/2 z-10 h-[calc(100%-8px)] w-[calc(100%+8px)] -translate-x-1/2 -translate-y-1/2 border border-black/20 bg-[#faf9f6] transition-all duration-500 group-hover/view:h-full group-hover/view:w-full"
                                             />
 
                                             <span className="relative z-40 text-[11px] tracking-wide text-black">
@@ -459,8 +317,6 @@ export default function PromoBanner({ product }: Props) {
                             </div>
                         </motion.div>
 
-
-
                         {/* RIGHT CONTENT */}
                         <motion.div
                             initial={{ opacity: 0, x: 30 }}
@@ -469,14 +325,7 @@ export default function PromoBanner({ product }: Props) {
                                 delay: 0.3,
                                 duration: 0.8,
                             }}
-                            className="
-        relative z-10
-        px-3 pt-12
-        min-[1024px]:col-span-2
-        min-[1400px]:col-span-1
-        min-[1400px]:pl-28
-        min-[1400px]:pt-0
-    "
+                            className=" relative z-10 px-3 pt-12 min-[1024px]:col-span-2 min-[1400px]:col-span-1 min-[1400px]:pl-28 min-[1400px]:pt-0"
                         >
 
 

@@ -164,7 +164,7 @@ export default function Ourstory() {
                                     ease: [0.22, 1, 0.36, 1],
                                 }}
                                 className="
-                                    max-w-[620px]
+                                    max-w-155
                                     font-serif
                                     text-[2.7rem]
                                     font-light

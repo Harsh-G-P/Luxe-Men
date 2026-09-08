@@ -372,7 +372,7 @@ function ProductCard({ product }: { product: Product }) {
                             group/view
                             relative
                             flex
-                            h-13
+                            h-12
                             flex-1
                             items-center
                             justify-center
@@ -411,7 +411,7 @@ function ProductCard({ product }: { product: Product }) {
                         </div>
 
                         <span
-                            className=" relative z-40 text-[10px] font-medium uppercase tracking-[0.18em] text-[#302923] sm:text-xs xl:text-sm"
+                            className=" relative z-40 text-[10px] font-medium uppercase tracking-[0.18em] text-[#302923] "
                         >
                             VIEW DETAILS
                         </span>
@@ -442,8 +442,6 @@ function ProductCard({ product }: { product: Product }) {
                             shrink-0
                             items-center
                             justify-center
-                            xl:h-15
-                            xl:w-15
                         "
                     >
                         <div className="absolute inset-0 z-0 bg-[#faf9f6]" />
