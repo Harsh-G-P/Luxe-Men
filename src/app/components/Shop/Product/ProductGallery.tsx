@@ -1,409 +1,266 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type Props = {
     images: string[];
     title: string;
 };
 
-
 export default function ProductGallery({
     images,
     title,
 }: Props) {
+    const [scrollProgress, setScrollProgress] = useState(0);
 
+    const mobileScrollRef = useRef<HTMLDivElement>(null);
 
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isMobile, setIsMobile] = useState(false);
-    const [showAllThumbnails, setShowAllThumbnails] = useState(false);
+    if (!images || images.length === 0) {
+        return null;
+    }
 
+    // =========================================
+    // MOBILE SCROLL
+    // =========================================
 
-    const [zoomed, setZoomed] = useState<{
-        [key: number]: {
-            active: boolean;
-            originX?: number;
-            originY?: number;
+    const handleMobileScroll = () => {
+        const container = mobileScrollRef.current;
+
+        if (!container) return;
+
+        const maxScroll =
+            container.scrollWidth - container.clientWidth;
+
+        if (maxScroll <= 0) {
+            setScrollProgress(0);
+            return;
         }
-    }>({});
 
+        const progress =
+            (container.scrollLeft / maxScroll) * 100;
 
-
-    useEffect(() => {
-
-        const resize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-
-        resize();
-
-        window.addEventListener(
-            "resize",
-            resize
-        );
-
-        return () => window.removeEventListener(
-            "resize",
-            resize
-        );
-
-    }, []);
-
-
-
-    const prevImage = () => {
-
-        setCurrentIndex(prev =>
-            prev === 0
-                ? images.length - 1
-                : prev - 1
-        );
-
+        setScrollProgress(progress);
     };
 
+    // =========================================
+    // DESKTOP IMAGE PATTERN
+    //
+    // 1 | 2
+    //   3
+    // 4 | 5
+    //   6
+    // 7 | 8
+    //   9
+    // =========================================
 
-    const nextImage = () => {
+    const rows: {
+        images: string[];
+        startIndex: number;
+        fullWidth: boolean;
+    }[] = [];
 
-        setCurrentIndex(prev =>
-            prev === images.length - 1
-                ? 0
-                : prev + 1
-        );
+    let index = 0;
+    let row = 0;
 
-    };
+    while (index < images.length) {
+        const fullWidth = row % 2 === 1;
 
+        if (fullWidth) {
+            rows.push({
+                images: [images[index]],
+                startIndex: index,
+                fullWidth: true,
+            });
 
+            index += 1;
+        } else {
+            rows.push({
+                images: images.slice(index, index + 2),
+                startIndex: index,
+                fullWidth: false,
+            });
 
-    const handleZoom = (
-        index: number,
-        e: React.MouseEvent<HTMLDivElement>
-    ) => {
+            index += 2;
+        }
 
-        const rect =
-            e.currentTarget.getBoundingClientRect();
-
-
-        const originX =
-            ((e.clientX - rect.left) / rect.width) * 100;
-
-
-        const originY =
-            ((e.clientY - rect.top) / rect.height) * 100;
-
-        setZoomed(prev => {
-
-            const existing = prev[index];
-
-            return {
-                ...prev,
-                [index]: {
-                    active: !existing?.active,
-                    originX,
-                    originY
-                }
-            }
-
-        });
-
-
-    };
-
-
-    const mainImages = isMobile
-        ?
-        [images[currentIndex]]
-        :
-        currentIndex === 0
-            ?
-            [images[0]]
-            :
-            [
-                images[currentIndex - 1],
-                images[currentIndex]
-            ];
-
-    const maxVisible = 4;
+        row++;
+    }
 
     return (
+        <div className="mt-5 w-full">
 
-        <div className="w-full">
+            {/* =====================================================
+                DESKTOP GALLERY
+            ====================================================== */}
 
-            {/* IMAGE AREA */}
-            <div
-                className=" relative w-full md:h-[72vh] h-[62vh] flex justify-center items-center gap-1 overflow-hidden select-none "
-            >
-                {
-                    mainImages.map((img, index) => (
+            <div className="hidden w-full px-5 py-5 md:block lg:px-6">
 
+                {rows.map((row, rowIndex) => (
+                    <div
+                        key={rowIndex}
+                        className={`
+                            mb-2
+                            grid
+                            gap-2
+                            ${
+                                row.fullWidth
+                                    ? "grid-cols-1"
+                                    : "grid-cols-2"
+                            }
+                        `}
+                    >
+                        {row.images.map(
+                            (image, imageIndex) => {
+                                const actualIndex =
+                                    row.startIndex +
+                                    imageIndex;
+
+                                return (
+                                    <div
+                                        key={actualIndex}
+                                        className={`
+                                            relative
+                                            overflow-hidden
+                                            bg-[#f5f4f1]
+                                            ${
+                                                row.fullWidth
+                                                    ? "aspect-4/3"
+                                                    : "aspect-3/4"
+                                            }
+                                        `}
+                                    >
+                                        <Image
+                                            src={image}
+                                            alt={`${title}-${actualIndex}`}
+                                            fill
+                                            priority={
+                                                actualIndex < 3
+                                            }
+                                            draggable={false}
+                                            sizes={
+                                                row.fullWidth
+                                                    ? "100vw"
+                                                    : "50vw"
+                                            }
+                                            className="
+                                                object-cover
+                                            "
+                                        />
+                                    </div>
+                                );
+                            }
+                        )}
+                    </div>
+                ))}
+
+            </div>
+
+            {/* =====================================================
+                MOBILE HORIZONTAL GALLERY
+            ====================================================== */}
+
+            <div className="w-full md:hidden">
+
+                <div
+                    ref={mobileScrollRef}
+                    onScroll={handleMobileScroll}
+                    className="
+                        flex
+                        w-full
+                        overflow-x-auto
+                        scroll-smooth
+                        snap-x
+                        snap-mandatory
+                        overscroll-x-contain
+                        [&::-webkit-scrollbar]:hidden
+                        [-ms-overflow-style:none]
+                        scrollbar-none
+                    "
+                >
+                    {images.map((image, index) => (
                         <div
                             key={index}
-                            className=" relative w-full h-full overflow-hidden cursor-zoom-in "
-                            onClick={(e) => handleZoom(index, e)}
+                            className="
+                                relative
+                                w-full
+                                min-w-full
+                                shrink-0
+                                snap-center
+                                overflow-hidden
+                                bg-[#f5f4f1]
+                            "
                         >
+                            <div className="relative aspect-3/4 w-full">
 
+                                <Image
+                                    src={image}
+                                    alt={`${title}-${index}`}
+                                    fill
+                                    priority={index === 0}
+                                    draggable={false}
+                                    sizes="100vw"
+                                    className="
+                                        object-cover
+                                    "
+                                />
 
-                            <Image
-                                src={img}
-                                alt={`${title}-${index}`}
-                                fill
-                                loading="eager"
-                                draggable={false}
-                                sizes=" (max-width:768px)100vw, 50vw "
-                                className=" object-cover transition-transform duration-300 "
-
-                                style={{
-                                    transform:
-                                        zoomed[index]?.active
-                                            ?
-                                            "scale(3)"
-                                            :
-                                            "scale(1)",
-                                    transformOrigin:
-                                        zoomed[index]
-                                            ?
-                                            `${zoomed[index].originX}% ${zoomed[index].originY}%`
-                                            :
-                                            "center"
-                                }}
-
-                            />
-
-
-                        </div>
-
-
-                    ))
-                }
-
-                {/* MOBILE */}
-                {
-                    isMobile && (
-
-                        <>
-
-                            <div
-                                className=" absolute bottom-4 right-2 text-xs "
-                            >
-                                {currentIndex + 1}/{images.length}
-                            </div>
-
-
-
-                            <div
-                                className=" absolute bottom-2 left-2 right-2 h-0.5 bg-black/30 "
-                            >
+                                {/* IMAGE NUMBER */}
 
                                 <div
-                                    className=" h-full bg-black transition-all "
-                                    style={{ width: `${((currentIndex + 1) / images.length) * 100}%` }}
-                                />
-
-                            </div>
-
-
-
-                            <button
-                                onClick={prevImage}
-                                className=" absolute left-2 top-1/2 -translate-y-1/2 bg-zinc-300 p-2 rounded-full "
-                            >
-
-                                <ChevronLeft
-                                    size={22}
-                                    className="text-white"
-                                />
-
-                            </button>
-
-
-
-                            <button
-                                onClick={nextImage}
-                                className=" absolute right-2 top-1/2 -translate-y-1/2 bg-zinc-300 p-2 rounded-full "
-                            >
-
-                                <ChevronRight
-                                    size={22}
-                                    className="text-white"
-                                />
-
-                            </button>
-
-
-                        </>
-
-                    )
-                }
-
-                {/* DESKTOP THUMBNAILS */}
-                {
-                    !isMobile && (
-
-                        <div
-                            className=" absolute bottom-8 right-4 flex items-center "
-                        >
-
-
-                            <div className="flex gap-1">
-
-
-                                {
-                                    (showAllThumbnails
-                                        ? images
-                                        : images.slice(0, maxVisible)
-                                    )
-                                        .map((img, index) => {
-
-
-                                            if (
-                                                currentIndex > 0 &&
-                                                index === currentIndex - 1
-                                            ) {
-
-                                                return (
-
-                                                    <div
-                                                        key={index}
-                                                        onClick={() => setCurrentIndex(index)}
-
-                                                        className=" h-9 w-20 flex overflow-hidden border rounded cursor-pointer "
-
-                                                    >
-
-                                                        <Image
-                                                            src={images[currentIndex - 1]}
-                                                            alt=""
-                                                            width={24}
-                                                            height={48}
-                                                            className=" object-cover w-1/2 "
-                                                        />
-
-
-                                                        <Image
-                                                            src={images[currentIndex]}
-                                                            alt=""
-                                                            width={24}
-                                                            height={48}
-                                                            className=" object-cover w-1/2 "
-                                                        />
-
-                                                    </div>
-
-                                                )
-
-                                            }
-
-
-
-                                            if (
-                                                currentIndex > 0 && index === currentIndex
-                                            )
-                                                return null;
-
-
-
-                                            return (
-
-                                                <div
-                                                    key={index}
-                                                    onClick={() => setCurrentIndex(index)}
-                                                    className=" relative w-7 h-9 border rounded overflow-hidden cursor-pointer "
-                                                >
-
-                                                    <Image
-                                                        src={img}
-                                                        alt=""
-                                                        fill
-                                                        sizes="28px"
-                                                        className=" object-cover "
-
-                                                    />
-
-
-                                                    {
-                                                        currentIndex !== index &&
-
-                                                        <div
-                                                            className=" absolute inset-0 bg-black/30"
-                                                        />
-
-                                                    }
-
-
-                                                </div>
-
-
-                                            )
-
-                                        })
-
-                                }
-
-
-
-                                {
-                                    !showAllThumbnails &&
-                                    images.length > maxVisible &&
-
-                                    <div
-                                        onClick={() => setShowAllThumbnails(true)}
-                                        className=" w-7 h-9 bg-gray-200 flex items-center justify-center text-xs font-bold cursor-pointer "
-                                    >
-                                        +{images.length - maxVisible}
-
-                                    </div>
-
-                                }
-
-
-                            </div>
-
-
-
-                            <div className="flex gap-1 ml-2">
-
-
-                                <button
-                                    onClick={prevImage}
-                                    className=" bg-zinc-300 p-2 rounded-full"
-
+                                    className="
+                                        pointer-events-none
+                                        absolute
+                                        bottom-4
+                                        right-4
+                                        bg-white/80
+                                        px-2
+                                        py-1
+                                        text-[10px]
+                                        font-medium
+                                        tracking-wide
+                                        text-black
+                                    "
                                 >
-
-                                    <ChevronLeft
-                                        size={12}
-                                        className="text-white"
-                                    />
-
-                                </button>
-
-
-
-                                <button
-                                    onClick={nextImage}
-                                    className=" bg-zinc-300 p-2 rounded-full "
-                                >
-
-                                    <ChevronRight
-                                        size={12}
-                                        className="text-white"
-                                    />
-
-                                </button>
-
+                                    {index + 1} / {images.length}
+                                </div>
 
                             </div>
-
-
                         </div>
+                    ))}
+                </div>
 
-                    )
-                }
+                {/* =================================================
+                    MOBILE SCROLL PROGRESS
+                ================================================== */}
+
+                <div
+                    className="
+                        mx-3
+                        mt-3
+                        h-px
+                        bg-black/10
+                    "
+                >
+                    <div
+                        className="
+                            h-px
+                            bg-black
+                            transition-[width]
+                            duration-150
+                            ease-out
+                        "
+                        style={{
+                            width: `${Math.max(
+                                scrollProgress,
+                                2
+                            )}%`,
+                        }}
+                    />
+                </div>
 
             </div>
 
         </div>
-
     );
-
 }

@@ -3,247 +3,318 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
+type SectionKey = "details" | "material" | "commitment";
 
 export default function ProductAccordion() {
-
-    const [openSections, setOpenSections] =
-        useState({
-            details: false,
-            material: false,
-            commitment: false,
-        });
-
-    type SectionKey = "details" | "material" | "commitment";
+    const [openSections, setOpenSections] = useState({
+        details: false,
+        material: false,
+        commitment: false,
+    });
 
     const toggle = (key: SectionKey) => {
-        setOpenSections(prev => ({
+        setOpenSections((prev) => ({
             ...prev,
             [key]: !prev[key],
         }));
     };
 
-
-
     const contentVariants = {
-
         hidden: {
             height: 0,
-            opacity: 0
+            opacity: 0,
         },
-
         visible: {
             height: "auto",
-            opacity: 1
+            opacity: 1,
         },
-
         exit: {
             height: 0,
-            opacity: 0
-        }
-
+            opacity: 0,
+        },
     };
 
-
     return (
+        <div
+            className="
+                w-full
+                max-w-2xl
+                space-y-7
 
-        <div className=" mt-10 space-y-10 max-w-2xl">
+                sm:space-y-8
 
+                md:space-y-9
+
+                lg:space-y-10
+            "
+        >
             {/* PRODUCT DETAILS */}
-
-            <div className=" relative group mb-10">
-
+            <div className="relative group">
                 <button
+                    type="button"
                     onClick={() => toggle("details")}
-                    className=" w-full flex justify-between items-center text-xs tracking-widest font-semibold pb-3"
+                    className="
+                        flex
+                        w-full
+                        px-3
+                        items-center
+                        justify-between
+                        text-left
+                        text-[9px]
+                        font-semibold
+                        tracking-[0.22em]
+                        sm:text-[10px]
+                        sm:tracking-widest
+                    "
                 >
-                    PRODUCT DETAILS
+                    <span>PRODUCT DETAILS</span>
 
-                    <span className=" text-2xl font-medium">
-                        {
-                            openSections.details
-                                ?
-                                "˰"
-                                :
-                                "˯"
-                        }
+                    <span
+                        className="
+                            ml-4
+                            text-2xl
+                            font-light
+                            leading-none
+                            sm:text-3xl
+                        "
+                    >
+                        {openSections.details ? "˰" : "˯"}
                     </span>
-
                 </button>
 
+                {/* LINE */}
                 <span
-                    className={` absolute -bottom-5 left-0 h-px bg-black transition-all duration-500 ease-in-out
-                    ${openSections.details
-                            ?
-                            "w-full"
-                            :
-                            "w-0 group-hover:w-full"
+                    className={`
+                        absolute
+                        -bottom-4
+                        left-0
+                        h-px
+                        bg-black
+                        transition-all
+                        duration-500
+                        ease-in-out
+
+                        sm:-bottom-5
+
+                        ${openSections.details
+                            ? "w-full"
+                            : "w-0 group-hover:w-full"
                         }
                     `}
-
                 />
 
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
+                    {openSections.details && (
+                        <motion.ul
+                            variants={contentVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            transition={{
+                                duration: 0.45,
+                                ease: [0.4, 0, 0.2, 1],
+                            }}
+                            className="
+                                mt-6
+                                ml-4
+                                list-disc
+                                space-y-1.5
+                                overflow-hidden
+                                text-[9px]
+                                leading-5
+                                text-gray-600
+                                sm:mt-7
+                                sm:text-[10px]
+                                sm:leading-6
+                            "
+                        >
+                            <li>Refined tailored silhouette</li>
 
-                    {
-                        openSections.details && (
+                            <li>Premium Italian wool blend</li>
 
-                            <motion.ul
-                                variants={contentVariants}
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                transition={{duration: .45, ease: [0.4, 0, 0.2, 1]}}
-                                className=" overflow-hidden mt-4 list-disc ml-5 text-xs text-gray-700 space-y-1"
-                            >
+                            <li>Structured shoulders and notch lapel</li>
 
-                                <li>
-                                    Handcrafted luxury finish
-                                </li>
+                            <li>Concealed button fastening</li>
 
-                                <li>
-                                    Elegant silhouette
-                                </li>
+                            <li>Fully lined interior</li>
 
-                                <li>
-                                    Premium quality fabric
-                                </li>
+                            <li>Timeless charcoal finish</li>
 
-                            </motion.ul>
-
-                        )
-                    }
-
-
+                            <li>Designed for sophisticated everyday wear</li>
+                        </motion.ul>
+                    )}
                 </AnimatePresence>
-
             </div>
 
             {/* MATERIAL & CARE */}
-
-            <div className=" relative group mb-10">
-
+            <div className="relative group">
                 <button
+                    type="button"
                     onClick={() => toggle("material")}
-                    className=" w-full flex justify-between items-center text-xs tracking-widest font-semibold pb-3"
+                    className="
+                        flex
+                        w-full
+                        px-3
+                        items-center
+                        justify-between
+                        text-left
+                        text-[9px]
+                        font-semibold
+                        tracking-[0.22em]
+                        sm:text-[10px]
+                        sm:tracking-widest
+                    "
                 >
-                    MATERIAL & CARE
+                    <span>MATERIAL & CARE</span>
 
-                    <span className=" text-2xl font-medium">
-
-                        {
-                            openSections.material
-                                ?
-                                "˰"
-                                :
-                                "˯"
-                        }
-
+                    <span
+                        className="
+                            ml-4
+                            text-2xl
+                            font-light
+                            leading-none
+                            sm:text-3xl
+                        "
+                    >
+                        {openSections.material ? "˰" : "˯"}
                     </span>
-
                 </button>
 
-
-
+                {/* LINE */}
                 <span
-                    className={` absolute -bottom-5 left-0 h-px bg-black transition-all duration-500
+                    className={`
+                        absolute
+                        -bottom-4
+                        left-0
+                        h-px
+                        bg-black
+                        transition-all
+                        duration-500
 
-                    ${openSections.material
-                            ?
-                            "w-full"
-                            :
-                            "w-0 group-hover:w-full"
+                        sm:-bottom-5
+
+                        ${openSections.material
+                            ? "w-full"
+                            : "w-0 group-hover:w-full"
                         }
                     `}
-
                 />
 
-                <AnimatePresence>
-
-                    {
-                        openSections.material && (
-
-                            <motion.p
-                                variants={contentVariants}
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                transition={{duration: .45}}
-
-                                className=" overflow-hidden mt-4 text-xs text-gray-700"
-                            >
-                                Made with high-quality fabric.
-                                Dry clean only. Store in a cool dry place.
-
-                            </motion.p>
-
-                        )
-                    }
-
+                <AnimatePresence initial={false}>
+                    {openSections.material && (
+                        <motion.p
+                            variants={contentVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            transition={{
+                                duration: 0.45,
+                                ease: [0.4, 0, 0.2, 1],
+                            }}
+                            className="
+                                mt-6
+                                ml-4
+                                list-disc
+                                space-y-1.5
+                                overflow-hidden
+                                text-[9px]
+                                leading-5
+                                text-gray-600
+                                sm:mt-7
+                                sm:text-[10px]
+                                sm:leading-6
+                            "
+                        >
+                            Crafted from a premium Italian wool blend selected for its softness, warmth, and refined drape. The fabric is designed to retain its structure while providing comfortable movement. Professional dry cleaning is recommended. Store on a quality hanger in a cool, dry place.
+                        </motion.p>
+                    )}
                 </AnimatePresence>
-
             </div>
 
             {/* OUR COMMITMENT */}
-
-            <div className=" relative group mb-10">
-
+            <div className="relative group">
                 <button
+                    type="button"
                     onClick={() => toggle("commitment")}
-                    className=" w-full flex justify-between items-center text-xs tracking-widest font-semibold pb-3"
+                    className="
+                        flex
+                        w-full
+                        px-3
+                        items-center
+                        justify-between
+                        text-left
+                        text-[9px]
+                        font-semibold
+                        tracking-[0.22em]
+                        sm:text-[10px]
+                        sm:tracking-widest
+                    "
                 >
-                    OUR COMMITMENT
+                    <span>OUR COMMITMENT</span>
 
-                    <span className=" text-2xl font-medium">
-                        {
-                            openSections.commitment
-                                ?
-                                "˰"
-                                :
-                                "˯"
-                        }
-
+                    <span
+                        className="
+                            ml-4
+                            text-2xl
+                            font-light
+                            leading-none
+                            sm:text-3xl
+                        "
+                    >
+                        {openSections.commitment ? "˰" : "˯"}
                     </span>
-
                 </button>
 
+                {/* LINE */}
                 <span
-                    className={` absolute -bottom-5 left-0 h-px bg-black transition-all duration-500
+                    className={`
+                        absolute
+                        -bottom-4
+                        left-0
+                        h-px
+                        bg-black
+                        transition-all
+                        duration-500
 
-                    ${openSections.commitment
-                            ?
-                            "w-full"
-                            :
-                            "w-0 group-hover:w-full"
+                        sm:-bottom-5
+
+                        ${openSections.commitment
+                            ? "w-full"
+                            : "w-0 group-hover:w-full"
                         }
                     `}
                 />
 
-                <AnimatePresence>
-
-                    {
-                        openSections.commitment && (
-
-                            <motion.p
-                                variants={contentVariants}
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                transition={{duration: .45}}
-                                className="overflow-hidden mt-4 text-xs text-gray-700"
-                                >
-                                We focus on sustainable craftsmanship
-                                and responsible production.
-
-                            </motion.p>
-
-                        )
-                    }
-
+                <AnimatePresence initial={false}>
+                    {openSections.commitment && (
+                        <motion.p
+                            variants={contentVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            transition={{
+                                duration: 0.45,
+                                ease: [0.4, 0, 0.2, 1],
+                            }}
+                            className="
+                                mt-6
+                                ml-4
+                                list-disc
+                                space-y-1.5
+                                overflow-hidden
+                                text-[9px]
+                                leading-5
+                                text-gray-600
+                                sm:mt-7
+                                sm:text-[10px]
+                                sm:leading-6
+                            "
+                        >
+                            We believe luxury is defined by lasting quality, thoughtful design, and responsible craftsmanship. Each piece is created with careful attention to materials, construction, and timeless appeal—made to be worn beautifully season after season.
+                        </motion.p>
+                    )}
                 </AnimatePresence>
-
             </div>
-
         </div>
-
     );
 }

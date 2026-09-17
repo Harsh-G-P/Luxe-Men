@@ -4,62 +4,67 @@ type Props = {
     brand: string;
     title: string;
     price: number;
-    description: string;
-    stock: number;
 };
 
 export default function ProductInfo({
     title,
     price,
     brand,
-    description,
-    stock
 }: Props) {
     return (
         <div className="space-y-8">
-
-            <div>
-                <p className="text-[11px] uppercase tracking-[0.3em] text-gray-500 md:text-xs md:tracking-[0.35em]">
-                    {brand}
-                </p>
-            </div>
-
             {/* Title + Price */}
             <div>
+                {/* Brand */}
+                <p
+                    className="
+                        mb-5
+                        text-[9px]
+                        uppercase
+                        tracking-[0.28em]
+                        text-gray-500
+                        sm:mb-6
+                        sm:text-xs
+                        sm:tracking-[0.3em]
+                        md:text-sm
+                        md:tracking-[0.35em]
+                    "
+                >
+                    {brand}
+                </p>
 
+                {/* Product Title */}
                 <h1
-                    className=" text-sm font-serif tracking-wide text-black"
+                    className="
+                        text-2xl
+                        font-serif
+                        font-light
+                        leading-tight
+                        tracking-wide
+                        text-black
+                        sm:text-3xl
+                        md:text-4xl
+                    "
                 >
                     {title}
                 </h1>
 
-                <div
-                    className=" mt-3 flex items-center gap-3 text-sm text-gray-600"
+                {/* Price */}
+                <span
+                    className="
+                        mt-4
+                        block
+                        text-sm
+                        font-serif
+                        tracking-wide
+                        text-black
+                        sm:mt-5
+                        sm:text-base
+                    "
                 >
-                    <span>
-                        ${price}
-                    </span>
-
-                </div>
-
+                    ${price}
+                </span>
             </div>
-
-            {/* Description */}
-            <p
-                className=" max-w-xl text-xs leading-relaxed text-gray-600"
-            >
-                {description}
-            </p>
-
-            {/* Stock */}
-            {stock <= 0 && (
-                <p
-                    className=" text-xs text-red-500"
-                >
-                    Out of stock
-                </p>
-            )}
-
         </div>
     );
 }

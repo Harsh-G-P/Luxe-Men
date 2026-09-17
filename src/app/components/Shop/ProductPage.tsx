@@ -33,53 +33,77 @@ export default async function ProductPage({ slug }: Props) {
 
     if (!product) {
         return (
-            <section className="flex min-h-[80vh] items-center justify-center px-6">
-                <div className="mx-auto max-w-lg text-center">
+            <section className="relative flex min-h-[80vh] items-center justify-center overflow-hidden bg-[#f8f7f4] px-6">
 
-                    <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-gray-200">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-10 w-10 text-gray-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={1.5}
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z"
-                            />
-                        </svg>
+                {/* Subtle background number */}
+                <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute select-none font-serif text-[16rem] font-light leading-none text-black/2.5 md:text-[24rem]"
+                >
+                    404
+                </span>
+
+                <div className="relative z-10 mx-auto max-w-2xl text-center">
+
+                    {/* Brand */}
+                    <p className="text-[9px] font-medium uppercase tracking-[0.55em] text-gray-400">
+                        LUXE MEN
+                    </p>
+
+                    {/* Fine divider */}
+                    <div className="mx-auto mt-6 flex items-center justify-center gap-3">
+                        <span className="h-px w-8 bg-black/20" />
+                        <span className="h-1 w-1 rounded-full bg-black" />
+                        <span className="h-px w-8 bg-black/20" />
                     </div>
 
-                    <p className="mb-3 text-xs font-medium uppercase tracking-[0.3em] text-gray-400">
-                        404 Error
+                    {/* Error label */}
+                    <p className="mt-10 text-[9px] font-medium uppercase tracking-[0.4em] text-gray-400">
+                        404 · Piece Not Found
                     </p>
 
-                    <h1 className="text-4xl font-semibold tracking-tight text-black md:text-5xl">
-                        Product Not Found
+                    {/* Heading */}
+                    <h1 className="mt-5 font-serif text-4xl font-light leading-[1.1] tracking-tight text-black sm:text-5xl md:text-6xl">
+                        A Piece Worth
+                        <br />
+                        <span className="italic">Discovering</span>
                     </h1>
 
-                    <p className="mx-auto mt-6 max-w-md text-base leading-7 text-gray-500">
-                        Sorry, the product you're looking for doesn't exist,
-                        may have been removed, or the link is no longer valid.
+                    {/* Description */}
+                    <p className="mx-auto mt-7 max-w-md text-[13px] leading-7 text-gray-500">
+                        The piece you are looking for is no longer available,
+                        or the link may have changed. Discover something
+                        equally considered from our collection.
                     </p>
 
-                    <div className="mt-10 flex justify-center">
+                    {/* CTA */}
+                    <div className="mt-10">
                         <Link
                             href="/collections"
-                            className="rounded-full bg-black px-8 py-3 text-sm font-medium tracking-wide text-white transition hover:opacity-90"
+                            className="group inline-flex items-center gap-6 border border-black bg-black px-10 py-4 text-[9px] font-medium uppercase tracking-[0.3em] text-white transition-all duration-500 hover:bg-transparent hover:text-black"
                         >
-                            Explore Collection
+                            <span>Explore Collection</span>
+
+                            <span className="text-sm font-light transition-transform duration-500 group-hover:translate-x-1">
+                                →
+                            </span>
                         </Link>
+                    </div>
+
+                    {/* Bottom brand detail */}
+                    <div className="mt-14 flex items-center justify-center gap-4 text-[8px] uppercase tracking-[0.35em] text-gray-400">
+                        <span>Timeless</span>
+                        <span className="h-0.5 w-0.5 rounded-full bg-gray-300" />
+                        <span>Refined</span>
+                        <span className="h-0.5 w-0.5 rounded-full bg-gray-300" />
+                        <span>Luxe Men</span>
                     </div>
 
                 </div>
             </section>
         );
     }
-
+    
     const formattedProduct = {
         ...product,
         price: Number(product.price),
@@ -137,18 +161,70 @@ export default async function ProductPage({ slug }: Props) {
     return (
         <div className="w-full">
 
+            {/* ================================================= */}
+            {/* PRODUCT AREA */}
+            {/* ================================================= */}
+
             <section className="w-full">
-                <ProductGallery
-                    images={formattedProduct.images}
-                    title={formattedProduct.title}
-                />
+
+                {/* ================= DESKTOP ================= */}
+                <div className="hidden md:grid md:grid-cols-2">
+
+                    {/* ========================================= */}
+                    {/* LEFT - PRODUCT IMAGES */}
+                    {/* ========================================= */}
+
+                    <div className="w-full">
+                        <ProductGallery
+                            images={formattedProduct.images}
+                            title={formattedProduct.title}
+                        />
+                    </div>
+
+
+                    {/* ========================================= */}
+                    {/* RIGHT - PRODUCT DETAILS */}
+                    {/* ========================================= */}
+
+                    <div className="relative w-full">
+                        <div className="sticky top-16">
+                            <ProductDetails
+                                product={formattedProduct}
+                                totalStock={totalStock}
+                            />
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                {/* ================= MOBILE ================= */}
+
+                <div className="md:hidden">
+
+                    {/* Gallery */}
+                    <ProductGallery
+                        images={formattedProduct.images}
+                        title={formattedProduct.title}
+                    />
+
+                    {/* Details */}
+                    <section className="w-full bg-white px-5 py-12">
+                        <ProductDetails
+                            product={formattedProduct}
+                            totalStock={totalStock}
+                        />
+                    </section>
+
+                </div>
+
             </section>
-            <section className="w-full px-5 py-16 md:px-20 bg-white">
-                <ProductDetails
-                    product={formattedProduct}
-                    totalStock={totalStock}
-                />
-            </section>
+
+
+            {/* ================================================= */}
+            {/* RELATED PRODUCTS */}
+            {/* ================================================= */}
 
             <ProductSection
                 title="Related Products"
@@ -156,6 +232,8 @@ export default async function ProductPage({ slug }: Props) {
                 products={relatedProducts}
                 viewAllHref="/collections?sort=new"
             />
+
         </div>
     );
+
 }

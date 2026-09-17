@@ -125,7 +125,7 @@ function ProductCard({ product }: { product: Product }) {
                         pointer-events-none
                         absolute
                         inset-0
-                        z-20
+                        z-0
                         xl:hidden
                     "
                 >
@@ -307,7 +307,7 @@ function ProductCard({ product }: { product: Product }) {
                         bottom-7
                         left-5
                         right-5
-                        z-20
+                        z-0
                         text-center
                         opacity-100
                         transition-all
@@ -500,30 +500,26 @@ export default function ProductSection({
     return (
         <section className="mt-10 bg-[#faf9f6] py-14 sm:mt-14 sm:py-16 md:mt-16 md:py-20 lg:mt-20 lg:py-24">
             <div className="mx-auto max-w-440 px-4 sm:px-6 lg:px-8">
+                {/* HEADER */}
 
-                {/* =========================================
-                LUXURY SECTION HEADER
-                OUTER ONLY
-            ========================================== */}
+                <div className="mb-10 sm:mb-12 md:mb-14">
 
-                <div className="mb-10 sm:mb-12 md:mb-14 lg:mb-16">
+                    {/* Small label */}
+                    <div className="mb-4 flex items-center justify-center gap-3">
+                        <span className="h-px w-6 bg-[#b7a895]/50 sm:w-10" />
 
-                    {/* Small top label */}
-                    <div className="mb-5 flex items-center justify-center gap-3 sm:mb-6">
-                        <span className="h-px w-8 bg-black/20 sm:w-12" />
-
-                        <span className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#81776d] sm:text-[10px]">
+                        <span className=" text-[8px] font-medium uppercase tracking-[0.3em] text-[#9b8d7d] sm:text-[9px]">
                             Collection
                         </span>
 
-                        <span className="h-px w-8 bg-black/20 sm:w-12" />
+                        <span className="h-px w-6 bg-[#b7a895]/50 sm:w-10" />
                     </div>
 
+
                     {/* Title */}
-                    <div className="mx-auto max-w-5xl text-center">
-                        <h2
-                            className=" mx-auto max-w-4xl text-[34px] font-light leading-[0.98] tracking-[-0.045em] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[76px]"
-                        >
+                    <div className="mx-auto max-w-3xl text-center">
+
+                        <h2 className=" mx-auto max-w-2xl text-[28px] font-light leading-[1.1] tracking-tight text-[#302923] sm:text-4xl md:text-5xl lg:text-[52px]">
                             {(() => {
                                 const words = title.trim().split(" ");
                                 const middle = Math.ceil(words.length / 2);
@@ -534,7 +530,7 @@ export default function ProductSection({
                                             {words.slice(0, middle).join(" ")}{" "}
                                         </span>
 
-                                        <span className="text-[#c2a882]">
+                                        <span className="text-[#b9a17e]">
                                             {words.slice(middle).join(" ")}
                                         </span>
                                     </>
@@ -542,106 +538,71 @@ export default function ProductSection({
                             })()}
                         </h2>
 
-                        <p
-                            className=" mx-auto mt-5 max-w-2xl text-sm font-light leading-6 tracking-[0.01em] sm:mt-6 sm:text-base sm:leading-7 md:max-w-3xl md:text-lg lg:text-xl"
-                        >
-                            {(() => {
-                                const words = subtitle.trim().split(" ");
-                                const middle = Math.ceil(words.length / 2);
 
-                                return (
-                                    <>
-                                        <span className="text-[#c2a882]">
-                                            {words.slice(0, middle).join(" ")}{" "}
-                                        </span>
-
-                                        <span className="text-[#302923]">
-                                            {words.slice(middle).join(" ")}
-                                        </span>
-                                    </>
-                                );
-                            })()}
+                        {/* Subtitle */}
+                        <p className=" mx-auto mt-4 max-w-xl text-[12px] font-light leading-5 tracking-[0.02em] text-[#71685f] sm:mt-5 sm:text-sm sm:leading-6">
+                            {subtitle}
                         </p>
+
                     </div>
 
 
-                    {/* DESKTOP HEADER ACTION */}
+                    <div className=" mt-7 hidden items-center justify-between border-y border-[#302923]/10 py-3.5 md:flex lg:mt-8">
 
-                    <div
-                        className="
-                        mt-8
-                        hidden
-                        items-center
-                        justify-between
-                        border-y
-                        border-black/10
-                        py-4
-                        md:flex
-                        lg:mt-10
-                        lg:py-5
-                    "
-                    >
-                        {/* Left side */}
+                        {/* Left */}
                         <div className="flex items-center gap-3">
-                            <span className="h-px w-8 bg-black/30" />
 
-                            <span className="text-[10px] uppercase tracking-[0.28em] text-black/45">
+                            <span className="h-px w-6 bg-[#302923]/25" />
+
+                            <span className=" text-[8px] font-medium uppercase tracking-[0.28em] text-[#81776d]">
                                 Selected Pieces
                             </span>
+
                         </div>
 
-                        <Link
-                            href="/collections"
-                            className="group inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.35em] text-[#302923]"
-                        >
-                            Shop All Products
 
-                            <span className="flex h-8 w-8 items-center justify-center border border-[#8c8172]/30 transition-colors duration-300 group-hover:border-[#8c8172]/70">
-                                <ArrowUpRight
-                                    size={14}
-                                    strokeWidth={1}
-                                    className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                                />
-                            </span>
-                        </Link>
-                    </div>
-
-                    {/*  MOBILE HEADER BUTTON */}
-
-                    <div className="mt-7 flex justify-center md:hidden">
+                        {/* Right */}
                         <Link
                             href={viewAllHref}
-                            className="
-                            group
-                            flex
-                            h-12
-                            w-full
-                            max-w-70
-                            items-center
-                            justify-center
-                            gap-3
-                            border
-                            border-black/20
-                            px-5
-                            text-[10px]
-                            font-medium
-                            uppercase
-                            tracking-[0.2em]
-                            text-black
-                            transition-all
-                            duration-300
-                            active:bg-black
-                            active:text-white
-                        "
+                            className=" group inline-flex items-center gap-2.5 text-[8px] font-medium uppercase tracking-[0.3em] text-[#302923]"
                         >
-                            <span>Shop All Products</span>
 
-                            <span className="text-base transition-transform duration-300 group-active:translate-x-1">
+                            Shop All Products
+
+                            <span className=" flex h-7 w-7 items-center justify-center border border-[#8c8172]/30 transition-all duration-300 group-hover:border-[#8c8172]/60">
+                                <ArrowUpRight
+                                    size={12}
+                                    strokeWidth={1}
+                                    className=" transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                                />
+                            </span>
+
+                        </Link>
+
+                    </div>
+
+
+                    <div className="mt-6 flex justify-center md:hidden">
+
+                        <Link
+                            href={viewAllHref}
+                            className=" group inline-flex h-10 min-w-48 items-center justify-center gap-2.5 border border-[#302923]/15 px-5 text-[8px] font-medium uppercase tracking-[0.25em] text-[#302923] transition-all duration-300 active:bg-[#302923] active:text-white"
+                        >
+
+                            <span>
+                                Shop All Products
+                            </span>
+
+                            <span className=" text-sm font-light transition-transform duration-300 group-active:translate-x-1">
                                 ↗
                             </span>
+
                         </Link>
+
                     </div>
+
                 </div>
+
 
 
                 {/* MOBILE */}
