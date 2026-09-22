@@ -145,7 +145,7 @@ export default function Ourstory() {
                                 className="mb-8 flex items-center gap-4"
                             >
                                 <span className="text-[9px] tracking-[0.3em] text-[#6d706f]">
-                                    01
+                                    ⨴⨵
                                 </span>
 
                                 <span className="h-px w-10 bg-[#a99d8e]/30" />

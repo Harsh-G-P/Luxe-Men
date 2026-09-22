@@ -50,7 +50,7 @@ export default function Hero() {
                     <div className="mb-4 flex items-center gap-3 sm:mb-6 sm:gap-4">
 
                         <span className="font-serif text-[10px] italic text-white/35 sm:text-xs">
-                            01
+                            ⨴⨵
                         </span>
 
                         <span className="h-px w-6 bg-white/30 sm:w-10" />
@@ -110,7 +110,7 @@ export default function Hero() {
                         </div>
 
                         <span className="text-[7px] uppercase tracking-[0.35em] text-white/25">
-                            Menswear
+                            Luxe Men
                         </span>
 
                     </div>
@@ -130,7 +130,7 @@ export default function Hero() {
                     </span>
 
                     <span className="font-serif text-lg italic text-white/25">
-                        MM
+                        LM
                     </span>
 
                 </div>

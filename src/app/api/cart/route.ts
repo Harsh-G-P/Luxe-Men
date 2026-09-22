@@ -170,27 +170,44 @@ export async function GET() {
         }
 
         const items = cart.items.map((item) => {
-            const price = Number(item.variant?.price ?? item.product.price);
+            const price = Number(
+                item.variant?.price ?? item.product.price
+            );
+
+            const stock = item.variant?.stock ?? 0;
+
+            const isOutOfStock = !item.variant || stock <= 0;
+            const exceedsStock =
+                !isOutOfStock && item.quantity > stock;
 
             return {
                 id: item.id,
                 quantity: item.quantity,
+
                 product: {
                     id: item.product.id,
                     title: item.product.title,
                     slug: item.product.slug,
                     images: item.product.images,
                 },
+
                 variant: item.variant
                     ? {
                         id: item.variant.id,
                         sku: item.variant.sku,
                         attributes: item.variant.attributes,
-                        stock: item.variant.stock,
+                        stock,
                     }
                     : null,
+
                 price,
                 total: price * item.quantity,
+
+                stock,
+                isOutOfStock,
+                exceedsStock,
+                isAvailable:
+                    !isOutOfStock && !exceedsStock,
             };
         });
 
