@@ -257,7 +257,7 @@ export default function Ourstory() {
                                 className="mt-10"
                             >
                                 <Link
-                                    href="/collections"
+                                    href="/about"
                                     className="
                                         group/shop
                                         relative

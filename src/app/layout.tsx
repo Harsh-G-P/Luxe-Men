@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import ScrollRestoration from "./components/ScrollRestore";
 import {
     Marcellus,
+    Bodoni_Moda,
     Geist,
     Geist_Mono,
 } from "next/font/google";
@@ -15,6 +16,13 @@ const luxuryFont = Marcellus({
     variable: "--font-luxury",
     subsets: ["latin"],
     weight: "400",
+});
+
+const storyFont = Bodoni_Moda({
+    variable: "--font-story",
+    subsets: ["latin"],
+    weight: ["400", "500"],
+    style: ["normal", "italic"],
 });
 
 const geistSans = Geist({
@@ -42,7 +50,8 @@ export default function RootLayout({
     return (
        <html
     lang="en"
-    className={`${luxuryFont.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    className={`${luxuryFont.variable} ${storyFont.variable}
+ ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
 >
 
 
