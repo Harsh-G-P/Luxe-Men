@@ -7,17 +7,17 @@ import { ArrowUpRight } from "lucide-react";
 
 const lookbookItems = [
     {
-        image: "/images/l1.jpg",
+        image: "/images/l10.jpg",
         title: "Form I",
         number: "Look 01",
     },
     {
-        image: "/images/l2.jpg",
+        image: "/images/l_1.jpg",
         title: "Form II",
         number: "Look 02",
     },
     {
-        image: "/images/l3.jpg",
+        image: "/images/l6.jpg",
         title: "Form III",
         number: "Look 03",
     },
