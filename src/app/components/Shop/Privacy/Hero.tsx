@@ -1,57 +1,86 @@
-import Link from "next/link";
+import Image from "next/image";
 
 export default function Hero() {
     return (
-        <section className="relative py-10 w-full overflow-hidden">
+        <section className="relative h-[80vh] min-h-155 overflow-hidden bg-[#171614]">
 
-            <div className="relative -mx-5 md:-mx-20 mb-24 h-100 overflow-hidden md:h-130">
+            {/* Background Image */}
+            <Image
+                src="/images/privacy3.jpg"
+                alt="Luxe Men Privacy Policy"
+                fill
+                priority
+                className="object-cover object-[center_35%]"
+                sizes="100vw"
+            />
 
-                {/* Background Video */}
-                <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="absolute inset-0 h-full w-full object-cover"
-                >
-                    <source src="/videos/footer.mp4" type="video/mp4" />
-                </video>
+            {/* Elegant overlay */}
+            <div className="absolute inset-0 bg-black/30" />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/40" />
+            {/* Subtle bottom gradient */}
+            <div className="absolute inset-0 bg-linear-to-t from-black/65 via-transparent to-black/10" />
 
-                {/* Content */}
-                <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
+            {/* Content */}
+            <div className="relative flex h-full flex-col items-center justify-end px-6 pb-14 text-center text-white md:pb-16">
 
-                    <div className="mb-6 flex items-center gap-2 text-sm text-gray-300">
-                        <Link
-                            href="/"
-                            className="transition hover:text-white"
-                        >
-                            Home
-                        </Link>
+                {/* LABEL */}
+                <span className="text-[7px] font-medium uppercase tracking-[0.5em] text-white/70">
+                    Privacy &amp; Trust
+                </span>
 
-                        <span>/</span>
+                {/* HEADING */}
+                <h1 className="mt-5 font-serif text-[52px] font-light leading-[0.92] tracking-[-0.045em] sm:text-[60px] md:text-[78px] lg:text-[92px]">
+                    Your Privacy,
+                    <br />
+                    <span className="italic text-white/65">
+                        Our Commitment.
+                    </span>
+                </h1>
 
-                        <span className="font-medium text-white">
+                {/* Divider */}
+                <div className="mt-6 flex items-center gap-3 sm:mt-7 sm:gap-4">
+                    <span className="h-px w-8 bg-white/30 sm:w-12" />
+
+                    <span className="h-1 w-1 rotate-45 border border-[#c0a76b]/70" />
+
+                    <span className="h-px w-8 bg-white/30 sm:w-12" />
+                </div>
+
+                {/* DESCRIPTION */}
+                <p className="mt-5 hidden max-w-120 text-[10px] leading-[1.9] tracking-[0.035em] text-white/50 sm:mt-6 sm:block sm:text-[11px]">
+                    We respect the trust you place in LUXE MEN and are
+                    committed to protecting your personal information.
+                    <br className="hidden md:block" />
+                    Discover how your information is collected and protected.
+                </p>
+
+                {/* META + BRAND */}
+                <div className="mt-7 flex items-center gap-6 sm:mt-8 sm:gap-8">
+
+                    <div className="flex items-center gap-3">
+                        <span className="h-px w-5 bg-white/35" />
+
+                        <span className="text-[7px] uppercase tracking-[0.35em] text-white/40">
                             Privacy Policy
                         </span>
                     </div>
 
-                    <p className="mb-4 text-md uppercase tracking-[0.35em]">
-                        LUXE MEN
-                    </p>
+                    <span className="text-[7px] uppercase tracking-[0.35em] text-white/45">
+                        Luxe Men
+                    </span>
 
-                    <h1 className="font-serif text-4xl uppercase tracking-wide md:text-6xl">
-                        Privacy Policy
-                    </h1>
+                </div>
 
-                    <p className="mx-auto mt-5 max-w-2xl text-md leading-7 text-white/80">
-                        Your trust is part of the LUXE MEN experience. Learn how
-                        we collect, protect, and responsibly use your personal
-                        information while delivering a secure and seamless
-                        shopping journey.
-                    </p>
+                {/* Explore */}
+                <div className="mt-9 flex flex-col items-center gap-3">
+
+                    <span className="relative h-8 w-px overflow-hidden bg-white/15">
+                        <span className="absolute left-0 top-0 h-3 w-px bg-white/60 animate-[scrollLine_2s_ease-in-out_infinite]" />
+                    </span>
+
+                    <span className="animate-[fadePulse_2s_ease-in-out_infinite] text-[7px] uppercase tracking-[0.45em] text-white/65">
+                        Read Below
+                    </span>
 
                 </div>
 
