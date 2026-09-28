@@ -7,23 +7,20 @@ const cards = [
     {
         title: "Order Tracking",
         description:
-            "Track your order from dispatch to delivery and stay updated with shipping progress every step of the way.",
+            "Follow your order from our atelier to your door with complete visibility throughout its journey.",
         video: "/videos/contact4.mp4",
-        href: "#",
     },
     {
         title: "Complimentary Shipping",
         description:
-            "Enjoy premium delivery with secure packaging and reliable shipping designed for a seamless shopping experience.",
+            "Every order is presented with considered packaging and delivered with care to create a seamless experience.",
         video: "/videos/contact5.mp4",
-        href: "#",
     },
     {
         title: "Product Care",
         description:
-            "Discover practical care recommendations to help preserve the quality, appearance, and longevity of your garments.",
+            "Discover considered care guidance created to preserve the character, texture, and quality of your pieces.",
         video: "/videos/contact3.mp4",
-        href: "#",
     },
 ];
 
@@ -31,22 +28,22 @@ const drawerContent = {
     "Order Tracking": [
         "Track your order from dispatch to delivery.",
         "Receive updates throughout the shipping journey.",
-        "International tracking available.",
-        "Delivery confirmation after arrival.",
+        "International tracking is available.",
+        "Delivery confirmation is provided after arrival.",
     ],
 
     "Complimentary Shipping": [
-        "Complimentary worldwide shipping.",
-        "Premium secure packaging.",
-        "Express delivery options available.",
-        "Estimated delivery times depend on destination.",
+        "Complimentary shipping on eligible orders.",
+        "Each piece is carefully and securely packaged.",
+        "Express delivery options may be available.",
+        "Delivery times vary according to destination.",
     ],
 
     "Product Care": [
-        "Store garments in a cool and dry environment.",
-        "Avoid direct exposure to sunlight.",
-        "Follow recommended cleaning instructions.",
-        "Professional care helps maintain quality.",
+        "Store garments in a cool, dry environment.",
+        "Keep delicate fabrics away from direct sunlight.",
+        "Follow the individual care label for each piece.",
+        "Professional cleaning is recommended when appropriate.",
     ],
 };
 
@@ -54,123 +51,227 @@ export default function ContactCards() {
     const [openCard, setOpenCard] = useState<
         keyof typeof drawerContent | null
     >(null);
+
     return (
-        <section className="px-5 py-20 md:px-20">
+        <section className="bg-[#f7f5f1] px-5 py-18">
 
-            <div className="mb-20 text-center">
+            {/* Section Header */}
+            <div className="mx-auto mb-20 max-w-2xl text-center">
 
-                <p className="mb-3 text-xs uppercase tracking-[0.35em] text-gray-400">
-                    Support
+                <div className="mb-7 flex items-center justify-center gap-4">
+                    <span className="h-px w-10 bg-[#b49a68]/50" />
+
+                    <span className="h-1.5 w-1.5 rotate-45 border border-[#b49a68]" />
+
+                    <span className="h-px w-10 bg-[#b49a68]/50" />
+                </div>
+
+                <p className="text-[9px] font-medium uppercase tracking-[0.5em] text-[#9b8050]">
+                    Client Services
                 </p>
 
-                <h2 className="font-serif text-4xl md:text-5xl">
-                    How Can We Help?
+                <h2 className="mt-6  font-serif text-5xl font-light leading-[0.95] tracking-[-0.045em] text-[#191816] md:text-6xl">
+                    Considered
+                    <br />
+                    <span className="italic text-[#77736b]">
+                        With Care.
+                    </span>
                 </h2>
+
+
+                <p className="mx-auto mt-7 max-w-md text-[11px] leading-7 tracking-[0.035em] text-[#858078]">
+                    From the moment you place an order to the care of your
+                    collection, every detail is considered.
+                </p>
 
             </div>
 
-            <div className="mx-auto grid max-w-7xl grid-cols-1 justify-items-center gap-12 md:grid-cols-2 md:max-w-4xl xl:max-w-7xl xl:grid-cols-3">
+            {/* Cards */}
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-14 md:grid-cols-2 xl:grid-cols-3">
 
                 {cards.map((card, index) => (
-                    <motion.div
+                    <motion.article
                         key={card.title}
-                        initial={{ opacity: 0, y: 40 }}
+                        initial={{ opacity: 0, y: 35 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, margin: "-80px" }}
                         transition={{
-                            duration: 0.6,
-                            delay: index * 0.15,
+                            duration: 0.8,
+                            delay: index * 0.12,
+                            ease: [0.22, 1, 0.36, 1],
                         }}
-                        className="w-full max-w-sm"
+                        className="group"
                     >
-                        <div className="group block">
 
-                            <div className="relative h-88 overflow-hidden">
+                        {/* Media */}
+                        <div className="relative aspect-4/5 overflow-hidden bg-[#dedbd4]">
 
-                                <video
-                                    autoPlay
-                                    muted
-                                    loop
-                                    playsInline
-                                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                                >
-                                    <source src={card.video} type="video/mp4" />
-                                </video>
+                            <video
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                preload="metadata"
+                                className="h-full w-full object-cover transition-transform duration-1400 ease-out group-hover:scale-[1.035]"
+                            >
+                                <source src={card.video} type="video/mp4" />
+                            </video>
 
-                                <div className="absolute inset-0 bg-black/50 transition duration-500 group-hover:bg-black/60" />
+                            {/* Soft luxury overlay */}
+                            <div className="absolute inset-0 bg-linear-to-t from-black/25 via-transparent to-black/5" />
 
+                            {/* Number */}
+                            <div className="absolute left-5 top-5">
+                                <span className="text-[8px] tracking-[0.3em] text-white/75">
+                                    0{index + 1}
+                                </span>
                             </div>
 
-                            <div className="pt-6 text-center">
-
-                                <h3 className="font-serif text-md font-bold">
-                                    {card.title}
-                                </h3>
-
-                                <p className="mx-auto mt-5 max-w-xs text-xs leading-5 text-gray-600">
-                                    {card.description}
-                                </p>
-
-                                <button
-                                    onClick={() => setOpenCard(card.title as keyof typeof drawerContent)}
-                                    className="mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.35em] transition"
-                                >
-                                    Discover
-                                    <span className="transition duration-300 group-hover:translate-x-2">
-                                        →
-                                    </span>
-                                </button>
-
+                            {/* Bottom label */}
+                            <div className="absolute bottom-5 left-5">
+                                <span className="text-[8px] uppercase tracking-[0.4em] text-white/80">
+                                    Luxe Men
+                                </span>
                             </div>
 
                         </div>
-                    </motion.div>
+
+                        {/* Content */}
+                        <div className="pt-7 text-center">
+
+                            <h3 className="font-serif text-xl font-light tracking-[-0.01em] text-[#25231f]">
+                                {card.title}
+                            </h3>
+
+                            <p className="mx-auto mt-4 max-w-xs text-[11px] leading-6 tracking-[0.02em] text-[#858078]">
+                                {card.description}
+                            </p>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setOpenCard(
+                                        card.title as keyof typeof drawerContent
+                                    )
+                                }
+                                className="group/button mt-7 inline-flex items-center gap-4 text-[8px] uppercase tracking-[0.45em] text-[#403d37]"
+                            >
+                                <span className="border-b border-[#b49a68] pb-1 transition-colors group-hover/button:text-[#9b8050]">
+                                    Discover More
+                                </span>
+
+                                <span className="text-sm transition-transform duration-300 group-hover/button:translate-x-1">
+                                    →
+                                </span>
+                            </button>
+
+                        </div>
+
+                    </motion.article>
                 ))}
 
             </div>
 
+            {/* Side Drawer */}
             <AnimatePresence>
                 {openCard && (
                     <>
+                        {/* Backdrop */}
                         <motion.div
-                            className="fixed inset-0 z-40 backdrop-blur-sm"
+                            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[3px]"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
+                            transition={{ duration: 0.35 }}
                             onClick={() => setOpenCard(null)}
                         />
 
-                        <motion.div
+                        {/* Drawer */}
+                        <motion.aside
                             initial={{ x: "100%" }}
                             animate={{ x: 0 }}
                             exit={{ x: "100%" }}
-                            transition={{ duration: 0.5 }}
-                            className="fixed right-0 top-0 z-50 h-full w-137.5 bg-white p-8 shadow-xl"
+                            transition={{
+                                duration: 0.55,
+                                ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="fixed right-0 top-0 z-50 h-full w-full max-w-lg overflow-y-auto bg-[#f7f5f1] px-7 py-8 shadow-2xl sm:px-12"
                         >
 
+                            {/* Close */}
                             <button
+                                type="button"
                                 onClick={() => setOpenCard(null)}
-                                className="ml-auto block text-gray-500"
+                                className="ml-auto flex h-9 w-9 items-center justify-center rounded-full border border-[#d4cfc5] text-[#77736b] transition hover:border-[#9b8050] hover:text-[#9b8050]"
+                                aria-label="Close"
                             >
-                                ✕
+                                <span className="text-lg leading-none">
+                                    ×
+                                </span>
                             </button>
 
-                            <h2 className="mt-8 text-xs font-semibold uppercase tracking-[0.3em]">
-                                {openCard}
-                            </h2>
+                            {/* Drawer Header */}
+                            <div className="mt-16">
 
-                            <div className="mt-10 border-t">
-                                {drawerContent[openCard].map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="cursor-pointer border-b px-4 py-5 text-sm transition-colors hover:bg-black hover:text-white"
-                                    >
-                                        {item}
-                                    </div>
-                                ))}
+                                <p className="text-[8px] uppercase tracking-[0.5em] text-[#9b8050]">
+                                    Client Services
+                                </p>
+
+                                <h2 className="mt-5 font-serif text-4xl font-light tracking-[-0.03em] text-[#191816]">
+                                    {openCard}
+                                </h2>
+
+                                <div className="mt-7 h-px w-12 bg-[#b49a68]" />
+
                             </div>
 
-                        </motion.div>
+                            {/* Information */}
+                            <div className="mt-10 border-t border-[#d8d4cc]">
+
+                                {drawerContent[openCard].map(
+                                    (item, index) => (
+                                        <motion.div
+                                            key={item}
+                                            initial={{
+                                                opacity: 0,
+                                                x: 15,
+                                            }}
+                                            animate={{
+                                                opacity: 1,
+                                                x: 0,
+                                            }}
+                                            transition={{
+                                                delay:
+                                                    0.15 + index * 0.08,
+                                                duration: 0.4,
+                                            }}
+                                            className="flex gap-5 border-b border-[#d8d4cc] py-6"
+                                        >
+                                            <span className="pt-1 text-[8px] tracking-[0.2em] text-[#b49a68]">
+                                                0{index + 1}
+                                            </span>
+
+                                            <p className="text-[12px] leading-6 tracking-[0.02em] text-[#68645d]">
+                                                {item}
+                                            </p>
+                                        </motion.div>
+                                    )
+                                )}
+
+                            </div>
+
+                            {/* Drawer Footer */}
+                            <div className="mt-16 flex items-center gap-4">
+
+                                <span className="h-px w-10 bg-[#d0cbc1]" />
+
+                                <span className="text-[7px] uppercase tracking-[0.5em] text-[#aaa59c]">
+                                    Luxe Men
+                                </span>
+
+                            </div>
+
+                        </motion.aside>
                     </>
                 )}
             </AnimatePresence>

@@ -7,22 +7,22 @@ const faqs = [
     {
         question: "How long does shipping take?",
         answer:
-            "Orders are typically processed within 1–2 business days and delivered within 3–7 business days depending on your location.",
+            "Orders are carefully prepared within 1-2 business days. Once dispatched, delivery typically takes 3-7 business days depending on your destination.",
     },
     {
-        question: "Do you ship internationally?",
+        question: "Do you offer international delivery?",
         answer:
-            "Yes. International shipping is available for selected countries. Shipping costs are calculated during checkout.",
+            "Yes. We offer international delivery to selected destinations. Available shipping options and rates are presented during checkout.",
     },
     {
-        question: "How can I contact customer service?",
+        question: "How may I contact your Client Advisors?",
         answer:
-            "Our Client Advisors are available to assist with product information, orders, and general inquiries through phone and email support.",
+            "Our Client Advisors are available to assist with orders, product information, styling inquiries, and any other questions through our dedicated contact channels.",
     },
     {
-        question: "How should I care for my products?",
+        question: "How should I care for my purchase?",
         answer:
-            "Each item includes care recommendations to help maintain the quality, appearance, and longevity of your purchase.",
+            "Every piece is accompanied by individual care recommendations. Following these guidelines will help preserve its texture, finish, and character for years to come.",
     },
 ];
 
@@ -30,72 +30,164 @@ export default function ContactFAQ() {
     const [open, setOpen] = useState<number | null>(0);
 
     return (
-        <section className="px-5 py-20 md:px-20">
+        <section className="bg-[#f7f5f1] px-5 py-24 md:px-10 md:py-32">
 
             <div className="mx-auto max-w-4xl">
 
-                <div className="mb-16 text-center">
+                {/* Header */}
+                <div className="mb-20 text-center">
 
-                    <p className="mb-3 text-xs uppercase tracking-[0.35em] text-gray-400">
-                        FAQ
+                    <div className="mb-6 flex items-center justify-center gap-4">
+                        <span className="h-px w-10 bg-[#b49a68]/50" />
+
+                        <span className="h-1.5 w-1.5 rotate-45 border border-[#b49a68]" />
+
+                        <span className="h-px w-10 bg-[#b49a68]/50" />
+                    </div>
+
+                    <p className="mb-5 text-[9px] font-medium uppercase tracking-[0.5em] text-[#9b8a6a]">
+                        Client Services
                     </p>
 
-                    <h2 className="font-serif text-4xl md:text-5xl">
-                        Frequently Asked Questions
+                    <h2 className="font-serif text-4xl font-light tracking-[-0.03em] text-[#191816] md:text-6xl">
+                        Frequently Asked
+                        <br />
+                        <span className="italic text-[#77736b]">
+                            Questions.
+                        </span>
                     </h2>
 
+                    <p className="mx-auto mt-6 max-w-md text-[11px] leading-7 tracking-[0.04em] text-[#8a8780]">
+                        Everything you need to know about your experience
+                        with Luxe Men.
+                    </p>
+
                 </div>
 
-                <div className="border-t border-gray-200">
+                {/* FAQ */}
+                <div className="border-t border-[#d8d4cc]">
 
-                    {faqs.map((faq, index) => (
-                        <div
-                            key={faq.question}
-                            className="border-b border-gray-200"
-                        >
-                            <button
-                                onClick={() =>
-                                    setOpen(open === index ? null : index)
-                                }
-                                className="flex w-full items-center justify-between py-7 text-left"
+                    {faqs.map((faq, index) => {
+                        const isOpen = open === index;
+
+                        return (
+                            <div
+                                key={faq.question}
+                                className="border-b border-[#d8d4cc]"
                             >
-                                <span className="text-base font-medium">
-                                    {faq.question}
-                                </span>
 
-                                <span className="text-2xl">
-                                    {open === index ? "−" : "+"}
-                                </span>
-                            </button>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setOpen(isOpen ? null : index)
+                                    }
+                                    className="group flex w-full items-center justify-between py-7 text-left md:py-8"
+                                    aria-expanded={isOpen}
+                                >
 
-                            <AnimatePresence>
+                                    <div className="flex items-center gap-5">
 
-                                {open === index && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{
-                                            height: "auto",
-                                            opacity: 1,
-                                        }}
-                                        exit={{
-                                            height: 0,
-                                            opacity: 0,
-                                        }}
-                                        transition={{ duration: 0.35 }}
-                                        className="overflow-hidden"
+                                        <span className="text-[9px] tracking-[0.25em] text-[#b49a68]">
+                                            0{index + 1}
+                                        </span>
+
+                                        <span
+                                            className={`font-serif text-lg font-light tracking-[-0.01em] transition-colors duration-300 md:text-xl ${isOpen
+                                                    ? "text-[#9b8050]"
+                                                    : "text-[#25231f] group-hover:text-[#9b8050]"
+                                                }`}
+                                        >
+                                            {faq.question}
+                                        </span>
+
+                                    </div>
+
+                                    {/* Luxury plus icon */}
+                                    <span
+                                        className={`relative ml-6 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ${isOpen
+                                                ? "rotate-45 border-[#b49a68] bg-[#b49a68]"
+                                                : "border-[#cfcac0] group-hover:border-[#b49a68]"
+                                            }`}
                                     >
-                                        <p className="pb-7 pr-10 text-sm leading-8 text-gray-600">
-                                            {faq.answer}
-                                        </p>
-                                    </motion.div>
-                                )}
+                                        <span
+                                            className={`absolute h-px w-2.5 ${isOpen
+                                                    ? "bg-white"
+                                                    : "bg-[#77736b]"
+                                                }`}
+                                        />
 
-                            </AnimatePresence>
+                                        <span
+                                            className={`absolute h-2.5 w-px ${isOpen
+                                                    ? "bg-white"
+                                                    : "bg-[#77736b]"
+                                                }`}
+                                        />
+                                    </span>
 
-                        </div>
-                    ))}
+                                </button>
+
+                                <AnimatePresence initial={false}>
+                                    {isOpen && (
+                                        <motion.div
+                                            initial={{
+                                                height: 0,
+                                                opacity: 0,
+                                            }}
+                                            animate={{
+                                                height: "auto",
+                                                opacity: 1,
+                                            }}
+                                            exit={{
+                                                height: 0,
+                                                opacity: 0,
+                                            }}
+                                            transition={{
+                                                height: {
+                                                    duration: 0.4,
+                                                    ease: [0.22, 1, 0.36, 1],
+                                                },
+                                                opacity: {
+                                                    duration: 0.25,
+                                                },
+                                            }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="pb-8 pl-9 pr-12 md:pl-14 md:pr-20">
+
+                                                <div className="mb-5 h-px w-8 bg-[#b49a68]/40" />
+
+                                                <p className="max-w-2xl text-[12px] leading-7 tracking-wide text-[#77736f]">
+                                                    {faq.answer}
+                                                </p>
+
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
+                            </div>
+                        );
+                    })}
 
                 </div>
+
+                {/* Bottom Closing */}
+                <div className="mt-20 flex items-center justify-center gap-4">
+
+                    <span className="h-px w-16 bg-[#d8d4cc]" />
+
+                    <span className="h-1.5 w-1.5 rotate-45 border border-[#b49a68]" />
+
+                    <span className="text-[8px] uppercase tracking-[0.5em] text-[#aaa59c]">
+                        Luxe Men
+                    </span>
+
+                    <span className="h-1.5 w-1.5 rotate-45 border border-[#b49a68]" />
+
+                    <span className="h-px w-16 bg-[#d8d4cc]" />
+
+                </div>
+
 
             </div>
 
