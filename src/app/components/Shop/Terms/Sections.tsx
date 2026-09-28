@@ -43,59 +43,113 @@ const sections = [
 
 export default function Sections() {
     return (
-        <section className="px-6 pb-32 md:px-20">
+        <section className="bg-[#f8f6f1] px-5 pb-32 md:px-12 lg:px-20">
 
-            <div className="mx-auto max-w-4xl">
+            <div className="mx-auto max-w-5xl">
 
                 {/* Intro */}
-                <div className="mb-20 text-center">
+                <div className="pb-20 text-center md:pb-28">
 
-                    <p className="text-[11px] uppercase tracking-[0.4em] text-gray-500">
+                    {/* Decorative Mark */}
+                    <div className="mb-8 flex items-center justify-center gap-4">
+                        <span className="h-px w-12 bg-[#b49a68]/50" />
+
+                        <span className="h-1.5 w-1.5 rotate-45 border border-[#b49a68]" />
+
+                        <span className="h-px w-12 bg-[#b49a68]/50" />
+                    </div>
+
+                    <p className="text-[8px] font-medium uppercase tracking-[0.6em] text-[#9b8050]">
                         Legal Information
                     </p>
 
-                    <h2 className="mt-5 font-serif text-3xl md:text-4xl">
-                        Terms That Protect
+                    <h2 className="mt-6 font-serif text-4xl font-light leading-[1.05] tracking-[-0.04em] text-[#201f1b] md:text-6xl">
+                        Terms of
                         <br />
-                        Every Experience
+                        <span className="italic text-[#77736b]">
+                            Elegance.
+                        </span>
                     </h2>
 
-                    <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-gray-600">
-                        These Terms & Conditions outline the rules governing the
-                        use of the LUXE MEN website, products, and services. By
-                        using our website, you agree to these terms and our
-                        commitment to providing a secure and transparent shopping
-                        experience.
+                    <p className="mx-auto mt-8 max-w-2xl text-[11px] leading-7 tracking-wide text-[#858078]">
+                        These Terms & Conditions establish the principles
+                        governing your experience with LUXE MEN. By visiting
+                        our website, you acknowledge and agree to the terms
+                        outlined below.
                     </p>
+
+                    {/* Last Updated */}
+                    <div className="mt-8 flex items-center justify-center gap-3">
+                        <span className="h-px w-5 bg-[#d2cdc3]" />
+
+                        <span className="text-[7px] uppercase tracking-[0.4em] text-[#aaa59c]">
+                            Last Updated · 2026
+                        </span>
+
+                        <span className="h-px w-5 bg-[#d2cdc3]" />
+                    </div>
 
                 </div>
 
-                {/* Sections */}
-                <div>
+                {/* Legal Sections */}
+                <div className="border-t border-[#d8d3ca]">
+
                     {sections.map((section, index) => (
-                        <div
+                        <article
                             key={section.title}
-                            className="group grid gap-6 border-t border-gray-200 py-12 px-6 transition-all duration-500 hover:bg-black md:grid-cols-[60px_1fr]"
+                            className="group grid border-b border-[#d8d3ca] py-10 transition-colors duration-500 hover:bg-[#f3f0e9] md:grid-cols-[110px_1fr] md:py-12"
                         >
-                            <span className="font-serif text-lg text-gray-300 transition-colors duration-500 group-hover:text-white">
-                                {(index + 1).toString().padStart(2, "0")}
-                            </span>
 
-                            <div className="transition-all duration-500 group-hover:translate-x-3">
+                            {/* Number */}
+                            <div className="mb-5 md:mb-0">
 
-                                <h3 className="font-serif text-xl transition-colors duration-500 group-hover:text-white md:text-2xl">
+                                <span className="font-serif text-xl font-light text-[#b49a68]">
+                                    {(index + 1)
+                                        .toString()
+                                        .padStart(2, "0")}
+                                </span>
+
+                                <div className="mt-3 h-px w-7 bg-[#d1c8b8] transition-all duration-500 group-hover:w-12 group-hover:bg-[#9b8050]" />
+
+                            </div>
+
+                            {/* Content */}
+                            <div className="max-w-3xl">
+
+                                <h3 className="font-serif text-2xl font-light tracking-[-0.02em] text-[#292722] transition-colors duration-300 md:text-3xl">
                                     {section.title}
                                 </h3>
 
-                                <div className="mt-5 h-px w-12 bg-gray-300 transition-all duration-500 group-hover:w-180 group-hover:bg-white" />
-
-                                <p className="mt-5 max-w-3xl text-sm leading-7 text-gray-600 transition-colors duration-500 group-hover:text-white/80">
+                                <p className="mt-5 text-[11px] leading-7 tracking-[0.02em] text-[#77736b]">
                                     {section.content}
                                 </p>
 
                             </div>
-                        </div>
+
+                        </article>
                     ))}
+
+                </div>
+
+                {/* Closing */}
+                <div className="pt-20 text-center md:pt-24">
+
+                    <div className="flex items-center justify-center gap-4">
+                        <span className="h-px w-10 bg-[#d4cfc5]" />
+
+                        <span className="h-1 w-1 rotate-45 border border-[#b49a68]" />
+
+                        <span className="h-px w-10 bg-[#d4cfc5]" />
+                    </div>
+
+                    <p className="mt-7 font-serif text-xl italic text-[#77736b]">
+                        Crafted with consideration.
+                    </p>
+
+                    <p className="mt-3 text-[7px] uppercase tracking-[0.55em] text-[#aaa59c]">
+                        LUXE MEN · EST. 2026
+                    </p>
+
                 </div>
 
             </div>
