@@ -43,48 +43,113 @@ export default function VerifyEmailForm() {
     }, [searchParams])
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
-            <div className="bg-white shadow-md rounded-xl p-8 w-full max-w-md text-center">
+        <div className="min-h-screen bg-[#f7f6f2] px-5 py-12 text-[#111111] sm:px-8">
 
-                {loading ? (
-                    <>
-                        <h1 className="text-2xl font-bold">
-                            Verifying Email...
-                        </h1>
+            <div className="flex min-h-[calc(100vh-6rem)] items-center justify-center">
 
-                        <p className="text-gray-500 mt-3">
-                            Please wait
-                        </p>
-                    </>
-                ) : success ? (
-                    <>
-                        <h1 className="text-2xl font-bold text-green-600">
-                            Email Verified
-                        </h1>
+                <div className="w-full max-w-md text-center">
 
-                        <p className="mt-3 text-gray-600">
-                            {message}
+                    {/* Brand */}
+                    <div className="mb-14">
+
+                        <p className="text-[10px] uppercase tracking-[0.55em] text-black/40">
+                            LUXE MEN
                         </p>
 
-                        <Link
-                            href="/login"
-                            className="inline-block mt-6 bg-black text-white px-5 py-2 rounded-md"
-                        >
-                            Login
-                        </Link>
-                    </>
-                ) : (
-                    <>
-                        <h1 className="text-2xl font-bold text-red-600">
-                            Verification Failed
-                        </h1>
+                        <div className="mt-6 flex items-center justify-center gap-4">
+                            <span className="h-px w-10 bg-black/15" />
 
-                        <p className="mt-3 text-gray-600">
-                            {message}
+                            <span className="text-[8px] uppercase tracking-[0.35em] text-black/30">
+                                Account Verification
+                            </span>
+
+                            <span className="h-px w-10 bg-black/15" />
+                        </div>
+
+                    </div>
+
+                    {/* Loading */}
+                    {loading ? (
+                        <>
+
+                            <div className="mx-auto mb-8 h-px w-16 bg-black/20" />
+
+                            <h1 className="font-serif text-4xl tracking-tight sm:text-5xl">
+                                Verifying Email
+                            </h1>
+
+                            <p className="mt-5 text-sm leading-6 text-black/45">
+                                Please wait while we verify your email address.
+                            </p>
+
+                            <div className="mx-auto mt-10 h-px w-8 animate-pulse bg-black/30" />
+
+                        </>
+
+                    ) : success ? (
+                        <>
+
+                            <div className="mx-auto mb-8 flex h-12 w-12 items-center justify-center border border-black/15">
+                                <span className="text-lg">✓</span>
+                            </div>
+
+                            <h1 className="font-serif text-4xl tracking-tight sm:text-5xl">
+                                Email Verified
+                            </h1>
+
+                            <p className="mx-auto mt-5 max-w-sm text-sm leading-7 text-black/45">
+                                {message}
+                            </p>
+
+                            <Link
+                                href="/login"
+                                className="mt-10 inline-block bg-[#111111] px-10 py-4 text-[10px] font-medium uppercase tracking-[0.35em] text-white transition-colors duration-300 hover:bg-black"
+                            >
+                                Continue to Sign In
+                            </Link>
+
+                        </>
+
+                    ) : (
+                        <>
+
+                            <div className="mx-auto mb-8 flex h-12 w-12 items-center justify-center border border-red-200">
+                                <span className="text-sm text-red-500">×</span>
+                            </div>
+
+                            <h1 className="font-serif text-4xl tracking-tight sm:text-5xl">
+                                Verification Failed
+                            </h1>
+
+                            <p className="mx-auto mt-5 max-w-sm text-sm leading-7 text-black/45">
+                                {message}
+                            </p>
+
+                            <Link
+                                href="/login"
+                                className="mt-10 inline-block text-sm text-black transition-all duration-300 hover:underline hover:underline-offset-8"
+                            >
+                                Return to Sign In
+                            </Link>
+
+                        </>
+                    )}
+
+                    {/* Bottom Brand */}
+                    <div className="mt-20">
+
+                        <div className="mx-auto mb-5 h-px w-12 bg-black/10" />
+
+                        <p className="text-[9px] uppercase tracking-[0.5em] text-black/25">
+                            Est. 2026 · LUXE MEN
                         </p>
-                    </>
-                )}
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
-    )
+    );
 }
