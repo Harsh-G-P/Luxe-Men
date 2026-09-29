@@ -1,9 +1,9 @@
 
 import prisma from "@/app/lib/prisma";
-import ProductSection from "./Home/ProductSection";
 import ProductGallery from "./Product/ProductGallery";
 import Link from "next/link";
 import ProductDetails from "./Product/ProductDetails";
+import ProductSection from "./Product/ProductSection";
 
 
 type Props = {

@@ -1,275 +1,167 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
 export default function Hero() {
     return (
-        <section className="relative min-h-180 overflow-hidden bg-[#090a0b] text-[#eeeae2] md:h-[90vh]">
+        <section className="relative h-[62vh] min-h-155 overflow-hidden bg-[#171613] text-[#f4f0e8] sm:h-[88vh] md:h-[95vh] md:min-h-170">
 
-            <div className="pointer-events-none absolute inset-4 z-30 md:inset-6 lg:inset-8">
+            {/* Editorial Image */}
+            <Image
+                src="/images/hero1.jpg"
+                alt="Luxe Men — The Collection"
+                fill
+                priority
+                sizes="100vw"
+                className="
+                    object-cover
+                    object-[62%_center]
+                    sm:object-[center_65%]
+                    md:object-[center_70%]
+                "
+            />
 
-                {/* OUTSIDE — soft blue/gray transparent border */}
-                <div
-                    className=" absolute -inset-0.5 border border-[#8fa6b8]/20 blur-[2px]"
-                />
+            {/* Cinematic overlays */}
+            <div className="absolute inset-0 bg-black/25" />
 
-                {/* OUTSIDE — very subtle sharp edge */}
-                <div
-                    className=" absolute inset-0 border border-[#8fa6b8]/10"
-                />
+            {/* Mobile: stronger bottom readability */}
+            <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-black/10" />
 
+            {/* Desktop side gradient */}
+            <div className="absolute inset-0 hidden bg-linear-to-r from-black/60 via-black/15 to-transparent md:block" />
 
-                {/* CENTER VERTICAL */}
-                <div className="absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-[#91a0ad]/20 md:block" />
+            {/* Fine frame */}
+            <div className="pointer-events-none absolute inset-3 border border-white/15 sm:inset-5 md:inset-7 lg:inset-9" />
 
+            {/* Content */}
+            <div className="relative z-10 flex h-full items-end px-6 pb-16 text-center sm:px-10 sm:pb-20 md:items-end md:px-20 md:pb-24 md:text-left lg:px-28">
 
-                {/* TOP CENTER NOTCH */}
-                <div className="absolute left-1/2 top-0 h-5 w-10 -translate-x-1/2 bg-[#090a0b]" />
+                <div className="w-full max-w-2xl mx-auto md:mx-0">
 
-                <div className="absolute left-1/2 top-0 h-5 w-10 -translate-x-1/2 border-x border-[#91a0ad]/25" />
-
-                <div className="absolute left-1/2 top-5 h-px w-10 -translate-x-1/2 bg-[#91a0ad]/25" />
-
-
-                {/* BOTTOM CENTER NOTCH */}
-                <div className="absolute bottom-0 left-1/2 h-5 w-10 -translate-x-1/2 bg-[#090a0b]" />
-
-                <div className="absolute bottom-0 left-1/2 h-5 w-10 -translate-x-1/2 border-x border-[#91a0ad]/25" />
-
-                <div className="absolute bottom-5 left-1/2 h-px w-10 -translate-x-1/2 bg-[#91a0ad]/25" />
+                    {/* Eyebrow */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7 }}
+                        className="mb-5 flex items-center justify-center gap-3 sm:mb-7 sm:gap-4 md:justify-start"
+                    >
+                        <span className="hidden h-px w-10 bg-[#c4aa79] md:block" />
 
 
-                {/* CORNERS */}
-                <div className="absolute left-0 top-0 h-6 w-6 border-l border-t border-[#aeb9c3]/40" />
+                        <span className="text-[7px] uppercase tracking-[0.45em] text-white/65 sm:text-[8px] sm:tracking-[0.55em]">
+                            The New Collection
+                        </span>
+                    </motion.div>
 
-                <div className="absolute right-0 top-0 h-6 w-6 border-r border-t border-[#aeb9c3]/40" />
+                    {/* Heading */}
+                    <motion.h1
+                        initial={{ opacity: 0, y: 25 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            delay: 0.1,
+                            duration: 0.9,
+                            ease: [0.22, 1, 0.36, 1],
+                        }}
+                        className=" mx-auto max-w-82.5 font-serif text-[48px] font-light leading-[0.9] tracking-[-0.045em] sm:max-w-lg sm:text-[62px] md:mx-0 md:text-[82px] lg:text-[96px]"
+                    >
+                        Quietly
+                        <br />
+                        <span className="italic text-white/65">
+                            Exceptional.
+                        </span>
+                    </motion.h1>
 
-                <div className="absolute bottom-0 left-0 h-6 w-6 border-b border-l border-[#aeb9c3]/40" />
+                    {/* Description */}
+                    <motion.p
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            delay: 0.25,
+                            duration: 0.8,
+                        }}
+                        className=" mx-auto mt-5 max-w-72.5 text-[10px] leading-[1.8] tracking-[0.035em] text-white/60 sm:mt-7 sm:max-w-md sm:text-xs md:mx-0"
+                    >
+                        Refined essentials designed with intention.
+                        Exceptional materials, considered silhouettes,
+                        and a timeless approach to modern menswear.
+                    </motion.p>
 
-                <div className="absolute bottom-0 right-0 h-6 w-6 border-b border-r border-[#aeb9c3]/40" />
+                    {/* Divider */}
+                    <motion.div
+                        initial={{ opacity: 0, scaleX: 0 }}
+                        animate={{ opacity: 1, scaleX: 1 }}
+                        transition={{
+                            delay: 0.4,
+                            duration: 0.8,
+                        }}
+                        className=" mx-auto mt-6 h-px w-14 origin-center bg-white/25 sm:mt-8 sm:w-20 md:mx-0 md:origin-left"
+                    />
 
+                    {/* CTA */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            delay: 0.5,
+                            duration: 0.7,
+                        }}
+                        className="mt-7 flex justify-center sm:mt-10 md:justify-start"
+                    >
+                        <Link
+                            href="/collections"
+                            className="group/shop relative flex h-12 w-fit min-w-43 items-center justify-center gap-3 px-6 sm:h-14 sm:min-w-48 sm:px-7"
+                        >
+                            <span className="absolute inset-0 border border-white/20 transition-all duration-500 group-hover/shop:border-white/45" />
+
+                            <span
+                                className=" absolute left-1/2 top-1/2 h-[calc(100%-8px)] w-[calc(100%+8px)] -translate-x-1/2 -translate-y-1/2 border border-white/20 transition-all duration-500 group-hover/shop:h-full group-hover/shop:w-full group-hover/shop:border-white/40"
+                            />
+
+                            <span className="relative text-[9px] font-medium uppercase tracking-[0.18em] text-[#d5cec4] transition-colors duration-300 group-hover/shop:text-white sm:text-[10px]">
+                                Explore Collection
+                            </span>
+
+                            <span className="relative text-[#b9aa96] transition-transform duration-500 group-hover/shop:translate-x-1">
+                                →
+                            </span>
+                        </Link>
+                    </motion.div>
+
+                </div>
             </div>
 
 
-            {/* MAIN */}
-            <div className="relative z-10 h-full p-4 md:p-6 lg:p-8">
+            {/* Bottom metadata */}
+            <div className="absolute bottom-5 right-6 z-20 hidden items-center gap-4 md:flex lg:right-12">
+                <span className="text-[7px] uppercase tracking-[0.45em] text-white/35">
+                    LUXE MEN
+                </span>
 
-                <div className="grid h-full grid-cols-1 md:grid-cols-2">
+                <span className="h-px w-7 bg-white/20" />
 
-                    {/* LEFT — CONTENT */}
-                    <div className="relative flex items-center px-8 py-28 sm:px-12 md:px-12 lg:px-16 xl:px-24">
+                <span className="text-[7px] uppercase tracking-[0.45em] text-white/35">
+                    EST. 2026
+                </span>
+            </div>
 
-                        <div className="relative z-30 max-w-xl">
+            {/* Mobile brand mark */}
+            <div className="absolute right-6 top-6 z-20 sm:right-8 sm:top-8 md:hidden">
+                <span className="text-[7px] uppercase tracking-[0.45em] text-white/45">
+                    LUXE MEN
+                </span>
+            </div>
 
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6 }}
-                                className="mb-8 flex items-center gap-4"
-                            >
-                                <span className="text-[15px] tracking-[0.3em] text-[#6d706f]">
-                                    ★
-                                </span>
+            {/* Scroll indicator */}
+            <div className="absolute bottom-10 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex">
+                <span className="text-[7px] uppercase tracking-[0.5em] text-white/40">
+                    Discover
+                </span>
 
-                                <span className="h-px w-10 bg-[#a99d8e]/30" />
-
-                                <span className="text-[9px] uppercase tracking-[0.35em] text-[#777a79]">
-                                    The Collection
-                                </span>
-                            </motion.div>
-
-                            <motion.h1
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    delay: 0.1,
-                                    duration: 0.9,
-                                    ease: [0.22, 1, 0.36, 1],
-                                }}
-                                className=" max-w-155 font-serif text-[2.8rem] font-light leading-[0.96] tracking-[-0.035em] text-[#e7e0d7] sm:text-5xl md:text-[3.5rem] lg:text-[4.1rem] xl:text-[4.6rem]"
-                            >
-                                Defined by
-                                <br />
-
-                                <span className="text-[#a99d8e]">
-                                    simplicity.
-                                </span>
-                            </motion.h1>
-
-                            <motion.p
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    delay: 0.2,
-                                    duration: 0.7,
-                                }}
-                                className=" mt-8 max-w-md text-[13px] leading-7 text-[#8e9190] md:text-sm"
-                            >
-                                A considered collection shaped by precision, quality,
-                                and an uncompromising eye for detail.
-                            </motion.p>
-
-                            <motion.div
-                                initial={{ opacity: 0, scaleX: 0 }}
-                                animate={{ opacity: 1, scaleX: 1 }}
-                                transition={{
-                                    delay: 0.3,
-                                    duration: 0.7,
-                                }}
-                                className=" mt-9 origin-left border-t border-[#a99d8e]/15"
-                            />
-
-                            <motion.p
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    delay: 0.35,
-                                    duration: 0.7,
-                                }}
-                                className=" mt-5 max-w-sm font-serif text-sm italic leading-6 text-[#6f716f]"
-                            >
-                                “Nothing unnecessary. Nothing overlooked.”
-                            </motion.p>
-
-                            <motion.div
-                                initial={{ opacity: 0, y: 15 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    delay: 0.55,
-                                    duration: 0.7,
-                                }}
-                                className="mt-10"
-                            >
-                                <Link
-                                    href="/collections"
-                                    className="
-                                        group/shop
-                                        relative
-                                        flex
-                                        h-16
-                                        w-fit
-                                        min-w-48
-                                        items-center
-                                        justify-center
-                                        gap-3
-                                        px-7
-                                    "
-                                >
-
-                                    {/* Transparent background */}
-                                    <div className="absolute inset-0 bg-transparent" />
-
-                                    {/* BUTTON BORDERS */}
-                                    <div className="pointer-events-none absolute inset-0">
-
-                                        {/* Inner border */}
-                                        <div
-                                            className="
-                                                absolute
-                                                left-1/2
-                                                top-1/2
-                                                h-[calc(100%-10px)]
-                                                w-[calc(100%+10px)]
-                                                -translate-x-1/2
-                                                -translate-y-1/2
-                                                border
-                                                border-white/25
-                                                transition-[width,height,border-color]
-                                                duration-500
-                                                ease-in-out
-                                                group-hover/shop:h-full
-                                                group-hover/shop:w-full
-                                                group-hover/shop:border-white/50
-                                            "
-                                        />
-
-                                        {/* Outer border */}
-                                        <div className="absolute inset-0 border border-white/20" />
-
-                                    </div>
-
-                                    {/* Text */}
-                                    <span
-                                        className="
-                                            relative
-                                        text-[12px]
-                                        font-medium
-                                        uppercase
-                                        tracking-[0.2em]
-                                        text-[#c9c0b5]
-                                        transition-colors
-                                        duration-300
-                                        group-hover/story:text-white
-                                        "
-                                    >
-                                        Explore Collection
-                                    </span>
-
-                                    {/* Arrow */}
-                                    <span
-                                        className="
-                                            relative
-                                            z-40
-                                            text-[#aeb9c3]
-                                            transition-all
-                                            duration-300
-                                            group-hover/shop:rotate-180
-                                            group-hover/shop:text-[#eeeae2]
-                                        "
-                                    >
-                                        ❀
-                                    </span>
-
-                                </Link>
-                            </motion.div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div className="relative hidden h-full overflow-hidden md:block">
-
-                        <video
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            className="absolute inset-0 h-full w-full object-cover"
-                        >
-                            <source
-                                src="/videos/h2.mp4"
-                                type="video/mp4"
-                            />
-                        </video>
-
-                        {/* Cinematic dark layer */}
-                        <div className="absolute inset-0 bg-black/20" />
-
-                    </div>
-
-                    <div className="relative h-[55vh] min-h-105 overflow-hidden md:hidden">
-
-                        <video
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            className="absolute inset-0 h-full w-full object-cover"
-                        >
-                            <source
-                                src="/videos/h2.mp4"
-                                type="video/mp4"
-                            />
-                        </video>
-
-                        <div className="absolute inset-0 bg-black/20" />
-
-                    </div>
-
-                </div>
-
+                <span className="relative h-7 w-px overflow-hidden bg-white/10">
+                    <span className="absolute left-0 top-0 h-2.5 w-px animate-[scrollLine_2.8s_ease-in-out_infinite] bg-white/60" />
+                </span>
             </div>
 
         </section>

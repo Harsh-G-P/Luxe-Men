@@ -27,7 +27,7 @@ export default function PromoBanner({ product }: Props) {
     const secondImage = product.images[1] || product.images[0];
 
     return (
-        <main className="min-h-screen bg-[#f5f3ef] text-[#171717]">
+        <main className="min-h-screen bg-[#f3eee5] text-[#171717]">
 
             {/* =========================================
                 MAIN EDITORIAL SECTION

@@ -498,7 +498,7 @@ export default function ProductSection({
     };
 
     return (
-        <section className="mt-10 bg-[#faf9f6] py-14 sm:mt-14 sm:py-16 md:mt-16 md:py-20 lg:mt-20 lg:py-24">
+        <section className=" bg-[#f1eee6] py-14 sm:py-16 md:py-20 lg:py-24">
             <div className="mx-auto max-w-440 px-4 sm:px-6 lg:px-8">
                 {/* HEADER */}
 

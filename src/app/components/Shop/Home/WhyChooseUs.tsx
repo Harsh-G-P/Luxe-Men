@@ -14,14 +14,14 @@ const whychoose = [
             "Reliable shipping, carefully handled from our door to yours.",
     },
     {
-        image: "/images/ch5.jpg",
+        image: "/images/w3.jpg",
         number: "02",
         title: "Trusted Payments",
         description:
             "Secure transactions through reliable and protected payment methods.",
     },
     {
-        image: "/images/ch2.jpg",
+        image: "/images/w1.jpg",
         number: "03",
         title: "Private & Secure",
         description:
@@ -59,13 +59,27 @@ export default function WhyChoose() {
                             Why Choose Us
                         </p>
 
-                        <h2 className="max-w-2xl text-4xl font-light leading-[0.95] tracking-[-0.045em] text-[#302923] sm:text-5xl lg:text-7xl">
-                            Details that
-                            <br />
-                            <span className="text-[#8c8172]">
-                                make the difference..
-                            </span>
-                        </h2>
+                        <h2
+    className="
+        max-w-2xl
+        font-serif
+        text-4xl
+        font-light
+        leading-[0.98]
+        tracking-[-0.04em]
+        text-[#302923]
+        sm:text-4xl
+        md:text-5xl
+        lg:text-6xl
+    "
+>
+    More than clothing.
+    <br />
+    <span className="text-[#8c8172]">
+        A standard of its own.
+    </span>
+</h2>
+
                     </motion.div>
 
                     <motion.div
