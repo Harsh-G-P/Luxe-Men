@@ -11,7 +11,7 @@ export default function Footer() {
     <footer className="bg-black text-white">
       <FooterNewsletter />
 
-      <div className="mx-auto max-w-7xl px-8 py-20 grid gap-16 lg:grid-cols-3">
+      <div className="mx-auto max-w-7xl md:px-8 px-18 py-20 grid gap-16 lg:grid-cols-3">
         <div className="space-y-16">
           <FooterLinks />
           <FooterSupport />
