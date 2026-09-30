@@ -41,112 +41,184 @@ export default function PackagingStep({ packagingData,
     const selectStyles = {
         control: (base: any, state: any) => ({
             ...base,
-            minHeight: 52,
+            minHeight: "54px",
+            height: "54px",
             borderRadius: 0,
-            borderColor: state.isFocused ? "#000" : "#d4d4d4",
+            border: state.isFocused
+                ? "1px solid #9b8150"
+                : "1px solid #d4cfc5",
+            backgroundColor: "#faf9f6",
             boxShadow: "none",
-            backgroundColor: "#fff",
             cursor: "pointer",
+            paddingLeft: "8px",
+            transition: "border-color 300ms ease",
+
             "&:hover": {
-                borderColor: "#000",
+                borderColor: "#9b8150",
             },
         }),
 
         valueContainer: (base: any) => ({
             ...base,
-            padding: "0 16px",
+            padding: "0 12px",
         }),
 
         placeholder: (base: any) => ({
             ...base,
-            color: "#737373",
-            fontSize: "14px",
+            color: "#aaa49b",
+            fontSize: "9px",
+            textTransform: "uppercase",
+            letterSpacing: "0.25em",
         }),
 
         singleValue: (base: any) => ({
             ...base,
-            color: "#171717",
-            fontSize: "14px",
-        }),
-
-        menu: (base: any) => ({
-            ...base,
-            borderRadius: 0,
-            border: "1px solid #e5e5e5",
-            boxShadow: "0 12px 24px rgba(0,0,0,.08)",
-            overflow: "hidden",
-        }),
-
-        option: (base: any, state: any) => ({
-            ...base,
-            backgroundColor: state.isSelected
-                ? "#000"
-                : state.isFocused
-                    ? "#f5f5f5"
-                    : "#fff",
-            color: state.isSelected ? "#fff" : "#171717",
-            cursor: "pointer",
-            padding: "14px 16px",
-            fontSize: "14px",
+            color: "#34312c",
+            fontSize: "10px",
+            letterSpacing: "0.08em",
         }),
 
         indicatorSeparator: () => ({
             display: "none",
         }),
 
-        dropdownIndicator: (base: any) => ({
+        dropdownIndicator: (base: any, state: any) => ({
             ...base,
-            color: "#555",
+            color: "#9b8150",
+            paddingRight: "16px",
+            transition: "transform 300ms ease",
+
+            transform: state.selectProps.menuIsOpen
+                ? "rotate(180deg)"
+                : "rotate(0deg)",
+
             "&:hover": {
-                color: "#000",
+                color: "#9b8150",
             },
         }),
+
+        menu: (base: any) => ({
+            ...base,
+            marginTop: "4px",
+            borderRadius: 0,
+            border: "1px solid #d4cfc5",
+            backgroundColor: "#faf9f6",
+            boxShadow: "0 15px 35px rgba(28, 27, 24, 0.08)",
+            overflow: "hidden",
+            zIndex: 50,
+        }),
+
         menuList: (base: any) => ({
             ...base,
-            maxHeight: 200, // adjust (180-250px)
-            padding: 0,
 
+            /*
+             * Four options visible.
+             * Additional options scroll vertically.
+             */
+            maxHeight: "176px",
+            overflowY: "auto",
+            padding: "6px 0",
+
+            /* Firefox */
+            scrollbarWidth: "thin",
+            scrollbarColor: "#c8b78e transparent",
+
+            /* Chrome / Edge / Safari */
             "&::-webkit-scrollbar": {
-                width: "6px",
+                width: "4px",
+            },
+
+            "&::-webkit-scrollbar-track": {
+                background: "transparent",
             },
 
             "&::-webkit-scrollbar-thumb": {
-                background: "#c5c5c5",
-                borderRadius: "999px",
+                backgroundColor: "#c8b78e",
             },
 
             "&::-webkit-scrollbar-thumb:hover": {
-                background: "#888",
+                backgroundColor: "#9b8150",
+            },
+        }),
+
+        option: (base: any, state: any) => ({
+            ...base,
+
+            minHeight: "41px",
+            padding: "14px 18px",
+
+            backgroundColor: state.isSelected
+                ? "#f1eee7"
+                : state.isFocused
+                    ? "#f5f2eb"
+                    : "#faf9f6",
+
+            color: state.isSelected
+                ? "#9b8150"
+                : "#34312c",
+
+            fontSize: "9px",
+            lineHeight: "13px",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+
+            cursor: "pointer",
+            transition: "all 200ms ease",
+
+            "&:active": {
+                backgroundColor: "#eee9df",
             },
         }),
     };
+
     return (
-        <section className="mt-14">
+        <section className="mt-14 text-[#1c1b18]">
 
-            <div className="mb-8 flex items-center gap-5">
+            {/* SECTION HEADER */}
+            <div className="mb-9 flex items-start gap-5">
 
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black">
-                    2
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-[#9b8150] text-[12px] text-[#9b8150]">
+                    02
                 </div>
 
-                <h2 className="text-2xl uppercase tracking-[0.18em]">
-                    Packaging & Gifting
-                </h2>
+                <div>
+                    <p className="text-[8px] uppercase tracking-[0.45em] text-[#9b8150]">
+                        The Presentation
+                    </p>
+
+                    <h2 className="mt-2 font-serif text-[28px] leading-none tracking-tight">
+                        Packaging & Gifting
+                    </h2>
+
+                    <p className="mt-3 max-w-lg text-[10px] leading-5 text-[#8b867d]">
+                        Every piece is presented with the same attention to detail
+                        as the garment itself.
+                    </p>
+                </div>
 
             </div>
 
-            <div className="space-y-6">
+            {/* PACKAGING OPTIONS */}
+            <div className="space-y-5">
 
-                {/* Signature */}
+                {/* SIGNATURE BOX */}
                 <label
-                    className={`flex cursor-pointer items-start justify-between border p-8 transition max-md:flex-col max-md:gap-6 max-md:p-5 ${packagingData.option === "Signature Box"
-                        ? "border-black"
-                        : "border-neutral-300"
+                    className={`group relative flex cursor-pointer items-start justify-between overflow-hidden border p-7 transition-all duration-500 max-md:flex-col max-md:gap-7 max-md:p-5 ${packagingData.option === "Signature Box"
+                            ? "border-[#9b8150] bg-[#f4f1e9]"
+                            : "border-[#d8d3c9] bg-[#faf9f6] hover:border-[#b7aa91]"
                         }`}
                 >
 
+                    {/* ACTIVE ACCENT */}
+                    <span
+                        className={`absolute left-0 top-0 h-full w-0.5 bg-[#9b8150] transition-transform duration-500 ${packagingData.option === "Signature Box"
+                                ? "scale-y-100"
+                                : "scale-y-0"
+                            }`}
+                    />
+
                     {/* LEFT */}
-                    <div className="flex items-start gap-5">
+                    <div className="flex min-w-0 items-start gap-5">
 
                         <input
                             type="radio"
@@ -157,41 +229,54 @@ export default function PackagingStep({ packagingData,
                                     option: "Signature Box"
                                 })
                             }
-                            className="mt-1 h-4 w-4 accent-black"
+                            className="mt-1 h-4 w-4 cursor-pointer accent-[#9b8150]"
                         />
 
                         <div>
-                            <h3 className="text-sm">
+
+                            <div className="flex items-center gap-3">
+
+                                <p className="text-[8px] uppercase tracking-[0.35em] text-[#9b8150]">
+                                    Presentation I
+                                </p>
+
+                            </div>
+
+                            <h3 className="mt-2 font-serif text-[18px] tracking-tight text-[#25231f]">
                                 Signature Box
                             </h3>
 
-                            <p className="text-xs leading-7 text-neutral-500">
-                                Your item comes in a box wrapped with a matching fabric ribbon.
+                            <p className="mt-3 max-w-md text-[10px] leading-5 text-[#858077]">
+                                Your purchase is presented in our signature box,
+                                finished with a coordinating fabric ribbon and
+                                prepared for an exceptional unboxing experience.
                             </p>
+
                         </div>
 
                     </div>
 
-                    {/* RIGHT */}
-                    <div className="flex gap-2 max-md:w-full max-md:justify-center">
 
-                        <div className="relative h-32 w-32 overflow-hidden border max-md:h-24 max-md:w-24">
+                    {/* IMAGES */}
+                    <div className="flex shrink-0 gap-2 max-md:w-full max-md:justify-center">
+
+                        <div className="relative h-32 w-32 overflow-hidden border border-[#d3cec3] bg-[#e9e5dc] max-md:h-24 max-md:w-24">
                             <Image
                                 src="/images/signature1.jpg"
                                 alt="Signature Box"
                                 fill
                                 sizes="(max-width: 768px) 96px, 128px"
-                                className="object-cover"
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                         </div>
 
-                        <div className="relative h-32 w-32 overflow-hidden border max-md:h-24 max-md:w-24">
+                        <div className="relative h-32 w-32 overflow-hidden border border-[#d3cec3] bg-[#e9e5dc] max-md:h-24 max-md:w-24">
                             <Image
                                 src="/images/signature2.jpg"
                                 alt="Signature Box"
                                 fill
                                 sizes="(max-width: 768px) 96px, 128px"
-                                className="object-cover"
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                         </div>
 
@@ -199,16 +284,24 @@ export default function PackagingStep({ packagingData,
 
                 </label>
 
-                {/* Boutique */}
+                {/* SIGNATURE BOX + BAG */}
                 <label
-                    className={`flex cursor-pointer items-start justify-between border p-8 transition max-md:flex-col max-md:gap-6 max-md:p-5 ${packagingData.option === "Signature Box + Bag"
-                        ? "border-black"
-                        : "border-neutral-300"
+                    className={`group relative flex cursor-pointer items-start justify-between overflow-hidden border p-7 transition-all duration-500 max-md:flex-col max-md:gap-7 max-md:p-5 ${packagingData.option === "Signature Box + Bag"
+                            ? "border-[#9b8150] bg-[#f4f1e9]"
+                            : "border-[#d8d3c9] bg-[#faf9f6] hover:border-[#b7aa91]"
                         }`}
                 >
 
+                    {/* ACTIVE ACCENT */}
+                    <span
+                        className={`absolute left-0 top-0 h-full w-0.5 bg-[#9b8150] transition-transform duration-500 ${packagingData.option === "Signature Box + Bag"
+                                ? "scale-y-100"
+                                : "scale-y-0"
+                            }`}
+                    />
+
                     {/* LEFT */}
-                    <div className="flex items-start gap-5">
+                    <div className="flex min-w-0 items-start gap-5">
 
                         <input
                             type="radio"
@@ -219,41 +312,50 @@ export default function PackagingStep({ packagingData,
                                     option: "Signature Box + Bag"
                                 })
                             }
-                            className="mt-1 h-4 w-4 accent-black"
+                            className="mt-1 h-4 w-4 cursor-pointer accent-[#9b8150]"
                         />
 
                         <div>
-                            <h3 className="text-sm font-medium">
-                                Signature Box and Boutique Shopping Bag
+
+                            <p className="text-[8px] uppercase tracking-[0.35em] text-[#9b8150]">
+                                Presentation II
+                            </p>
+
+                            <h3 className="mt-2 font-serif text-[18px] leading-6 tracking-tight text-[#25231f]">
+                                Signature Box & Boutique Bag
                             </h3>
 
-                            <p className="text-xs leading-7 text-neutral-500">
-                                Select this option to receive the shopping bag in addition to the signature box.
+                            <p className="mt-3 max-w-md text-[10px] leading-5 text-[#858077]">
+                                Includes our signature presentation box together
+                                with the LUXE MEN boutique shopping bag, prepared
+                                for gifting or collection.
                             </p>
+
                         </div>
 
                     </div>
 
-                    {/* RIGHT */}
-                    <div className="flex gap-2 max-md:w-full max-md:justify-center">
 
-                        <div className="relative h-32 w-32 overflow-hidden border max-md:h-24 max-md:w-24">
+                    {/* IMAGES */}
+                    <div className="flex shrink-0 gap-2 max-md:w-full max-md:justify-center">
+
+                        <div className="relative h-32 w-32 overflow-hidden border border-[#d3cec3] bg-[#e9e5dc] max-md:h-24 max-md:w-24">
                             <Image
                                 src="/images/signature3.jpg"
-                                alt="Signature Box"
+                                alt="Signature Box and Boutique Bag"
                                 fill
                                 sizes="(max-width: 768px) 96px, 128px"
-                                className="object-cover"
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                         </div>
 
-                        <div className="relative h-32 w-32 overflow-hidden border max-md:h-24 max-md:w-24">
+                        <div className="relative h-32 w-32 overflow-hidden border border-[#d3cec3] bg-[#e9e5dc] max-md:h-24 max-md:w-24">
                             <Image
                                 src="/images/signature4.jpg"
-                                alt="Signature Box"
+                                alt="Signature Box and Boutique Bag"
                                 fill
                                 sizes="(max-width: 768px) 96px, 128px"
-                                className="object-cover"
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                         </div>
 
@@ -263,121 +365,208 @@ export default function PackagingStep({ packagingData,
 
             </div>
 
-            <div className="mt-5">
+            {/* PACKAGING NOTE */}
+            <div className="mt-6 border-t border-[#d8d3c9] pt-5">
 
-                <p className="text-xs mb-3 font-light">We will try to meet your preferences, but some options may not be suitable for all items. Product packaging may vary from the image(s) and include special protection or limited edition collection options.</p>
+                <div className="flex gap-3">
 
-                <label className="flex items-center gap-3 text-xs">
-                    <input
-                        type="checkbox"
-                        checked={removeInvoice}
-                        onChange={(e) => setRemoveInvoice(e.target.checked)}
-                        className=" h-4 w-4 accent-black cursor-pointer"
-                    />
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-[#9b8150]" />
 
-                    Remove price from invoice
-                </label>
-
-
-                <label className="mt-4 flex items-center gap-3 text-xs">
-                    <input
-                        type="checkbox"
-                        checked={giftMessageEnabled}
-                        onChange={(e) => setGiftMessageEnabled(e.target.checked)}
-                        className="h-4 w-4 cursor-pointer accent-black"
-                    />
-
-                    Add Gift Message
-                </label>
-
-                <AnimatePresence>
-                    {giftMessageEnabled && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.35 }}
-                            className="mt-8 overflow-hidden"
-                        >
-                            <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-
-                                {/* LEFT */}
-                                <div>
-                                    <h3 className="mb-5 text-xs tracking-[0.25em] uppercase">
-                                        Gift Message
-                                    </h3>
-
-                                    <div className="relative max-w-md border border-gray-300">
-
-                                        <textarea
-                                            maxLength={200}
-                                            value={giftMessage}
-                                            onChange={(e) => {
-                                                setGiftMessage(e.target.value);
-                                                setPackagingData({
-                                                    ...packagingData,
-                                                    giftMessage: e.target.value
-                                                });
-                                            }}
-                                            placeholder="Write your personal message here"
-                                            className="h-62 w-full resize-none bg-white p-4 text-center text-base font-light placeholder:text-gray-300 focus:outline-none"
-                                        />
-
-                                        <div className="absolute bottom-3 left-0 w-full text-center text-xs text-gray-500">
-                                            <div className="mx-auto mb-2 h-2 w-2 rotate-45 bg-gray-400"></div>
-                                            {200 - giftMessage.length} Characters left
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                {/* RIGHT */}
-                                <div className="flex justify-center pt-8">
-                                    <Image
-                                        src="/images/gift.png"
-                                        alt="Gift Message"
-                                        width={650}
-                                        height={500}
-                                        className="w-full object-contain"
-                                    />
-                                </div>
-
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                <div className="mt-8">
-                    <h3 className="mb-3 text-xs uppercase tracking-[0.25em]">
-                        Delivery Instructions
-                    </h3>
-
-                    <Select
-                        instanceId="delivery-notes"
-                        options={noteOptions}
-                        styles={selectStyles}
-                        isSearchable={false}
-                        placeholder="Select delivery instructions"
-                        value={
-                            noteOptions.find(
-                                (option) => option.value === packagingData.notes
-                            ) || null
-                        }
-                        onChange={(selected) =>
-                            setPackagingData({
-                                ...packagingData,
-                                notes: selected?.value ?? "",
-                            })
-                        }
-                    />
-
-                    <p className="mt-2 text-xs text-neutral-500">
-                        Optional instructions for the courier.
+                    <p className="max-w-2xl text-[9px] leading-5 tracking-[0.02em] text-[#8a857c]">
+                        Presentation is carefully selected according to the nature
+                        of your purchase. Packaging may vary slightly and may
+                        include seasonal, limited-edition or protective elements
+                        to ensure your order arrives impeccably presented.
                     </p>
+
                 </div>
 
             </div>
 
+            {/* PREFERENCES */}
+            <div className="mt-8 space-y-5 border-y border-[#d8d3c9] py-7">
+
+                {/* REMOVE PRICE */}
+                <label className="group flex cursor-pointer items-center gap-4">
+
+                    <input
+                        type="checkbox"
+                        checked={removeInvoice}
+                        onChange={(e) => setRemoveInvoice(e.target.checked)}
+                        className="h-4 w-4 cursor-pointer accent-[#9b8150]"
+                    />
+
+                    <div>
+                        <p className="text-[10px] uppercase tracking-[0.22em] text-[#4f4b44]">
+                            Conceal Pricing
+                        </p>
+
+                        <p className="mt-1 text-[9px] text-[#99938a]">
+                            Remove pricing information from the enclosed invoice.
+                        </p>
+                    </div>
+
+                </label>
+
+
+                {/* GIFT MESSAGE */}
+                <label className="group flex cursor-pointer items-center gap-4">
+
+                    <input
+                        type="checkbox"
+                        checked={giftMessageEnabled}
+                        onChange={(e) => setGiftMessageEnabled(e.target.checked)}
+                        className="h-4 w-4 cursor-pointer accent-[#9b8150]"
+                    />
+
+                    <div>
+                        <p className="text-[10px] uppercase tracking-[0.22em] text-[#4f4b44]">
+                            Include a Personal Message
+                        </p>
+
+                        <p className="mt-1 text-[9px] text-[#99938a]">
+                            Add a handwritten-style message to accompany your gift.
+                        </p>
+                    </div>
+
+                </label>
+
+            </div>
+
+            {/* GIFT MESSAGE */}
+            <AnimatePresence>
+                {giftMessageEnabled && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        className="overflow-hidden"
+                    >
+
+                        <div className="grid grid-cols-1 gap-10 border-b border-[#d8d3c9] py-8 lg:grid-cols-2">
+
+                            {/* MESSAGE */}
+                            <div>
+
+                                <div className="mb-5 flex items-center gap-4">
+
+                                    <span className="h-px w-7 bg-[#b99a62]" />
+
+                                    <h3 className="text-[8px] uppercase tracking-[0.4em] text-[#9b8150]">
+                                        A Note From You
+                                    </h3>
+
+                                </div>
+
+                                <div className="relative max-w-md overflow-hidden border border-[#d4cfc5] bg-[#faf9f6]">
+
+                                    <textarea
+                                        maxLength={200}
+                                        value={giftMessage}
+                                        onChange={(e) => {
+                                            setGiftMessage(e.target.value);
+
+                                            setPackagingData({
+                                                ...packagingData,
+                                                giftMessage: e.target.value
+                                            });
+                                        }}
+                                        placeholder="Write your personal message..."
+                                        className="
+                                        h-56
+                                        w-full
+                                        resize-none
+                                        bg-transparent
+                                        p-5
+                                        text-[12px]
+                                        leading-6
+                                        text-[#33312d]
+                                        outline-none
+                                        placeholder:text-[#b0aba2]
+                                    "
+                                    />
+
+                                    <div className="flex items-center justify-between border-t border-[#ded9d0] px-5 py-3">
+
+                                        <span className="text-[7px] uppercase tracking-[0.25em] text-[#aaa49b]">
+                                            LUXE MEN · PERSONAL NOTE
+                                        </span>
+
+                                        <span className="text-[8px] text-[#969087]">
+                                            {200 - giftMessage.length} remaining
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            {/* GIFT IMAGE */}
+                            <div className="flex items-center justify-center p-5">
+
+                                <Image
+                                    src="/images/gift.png"
+                                    alt="Gift presentation"
+                                    width={650}
+                                    height={500}
+                                    className="h-full max-h-64 w-full object-contain mix-blend-multiply"
+                                />
+
+                            </div>
+
+                        </div>
+
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* DELIVERY INSTRUCTIONS */}
+            <div className="mt-8">
+
+                <div className="mb-4">
+
+                    <p className="text-[8px] uppercase tracking-[0.4em] text-[#9b8150]">
+                        Final Arrangements
+                    </p>
+
+                    <h3 className="mt-2 font-serif text-[19px] tracking-tight">
+                        Delivery Instructions
+                    </h3>
+
+                    <p className="mt-2 text-[9px] leading-5 text-[#99938a]">
+                        Let us know if there are any particular considerations
+                        for the arrival of your order.
+                    </p>
+
+                </div>
+
+                <Select
+                    instanceId="delivery-notes"
+                    options={noteOptions}
+                    styles={selectStyles}
+                    isSearchable={false}
+                    placeholder="Select delivery preference"
+                    value={
+                        noteOptions.find(
+                            (option) => option.value === packagingData.notes
+                        ) || null
+                    }
+                    onChange={(selected) =>
+                        setPackagingData({
+                            ...packagingData,
+                            notes: selected?.value ?? "",
+                        })
+                    }
+                />
+
+
+
+            </div>
+
+            {/* CONTINUE */}
             <button
                 type="button"
                 onClick={() => {
@@ -389,31 +578,61 @@ export default function PackagingStep({ packagingData,
 
                     setCurrentStep(3);
                 }}
-                className="mt-10 h-13 bg-black px-10 text-[13px] uppercase tracking-[0.08em] text-white transition hover:bg-neutral-800">
-                Continue to Payment
+                className="
+                group
+                relative
+                mt-10
+                flex
+                h-14
+                w-full
+                items-center
+                justify-center
+                overflow-hidden
+                bg-[#181714]
+                text-[9px]
+                font-medium
+                uppercase
+                tracking-[0.35em]
+                text-white
+                transition-colors
+                duration-500
+                hover:bg-[#292721]
+            "
+            >
+
+                <span className="relative z-10">
+                    Continue to Payment
+                </span>
+
+                <span className="relative z-10 ml-3 translate-x-1 text-[#c4a66a] opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">
+                    →
+                </span>
+
+                <span className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-[#c4a66a] transition-transform duration-700 group-hover:scale-x-100" />
+
             </button>
 
-            {/* STEP 3 */}
-            <div className="mt-4 border border-neutral-200 bg-neutral-200 px-6 py-7">
+            {/* STEP 03 — PAYMENT PREVIEW */}
+            <div className="mt-5 border border-[#d8d3c9] bg-[#efede7] px-7 py-6">
 
                 <div className="flex items-center gap-5">
 
-                    <div className="mb-4 flex items-center gap-5">
-
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black text-[15px] font-bold">
-                            3
-                        </div>
-
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-[#bdb7ac] text-[10px] text-[#8f8980]">
+                        03
                     </div>
 
                     <div>
 
-                        <h3 className="text-2xl uppercase tracking-wide text-gray-500 max-md:text-lg">
+                        <p className="text-[8px] uppercase tracking-[0.4em] text-[#aaa49b]">
+                            Final Step
+                        </p>
+
+                        <h3 className="mt-2 font-serif text-[21px] tracking-tight text-[#77736b]">
                             Payment
                         </h3>
 
-                        <p className="mt-1 text-[13px] text-neutral-500 max-md:text-[11px]">
-                            Cash on Delivery or Online Payment
+                        <p className="mt-1 text-[9px] text-[#aaa49b]">
+                            Secure payment & order confirmation
                         </p>
 
                     </div>
@@ -422,6 +641,20 @@ export default function PackagingStep({ packagingData,
 
             </div>
 
+            {/* FOOTER DETAIL */}
+            <div className="mt-10 flex items-center justify-center gap-4">
+
+                <span className="h-px w-10 bg-[#d1cbc1]" />
+
+                <span className="text-[7px] uppercase tracking-[0.4em] text-[#aaa49a]">
+                    LUXE MEN
+                </span>
+
+                <span className="h-px w-10 bg-[#d1cbc1]" />
+
+            </div>
+
         </section>
     );
+
 }

@@ -31,33 +31,36 @@ export default async function CheckoutPage() {
         redirect("/cart");
     }
     
-    return (
-        <div className="min-h-screen ">
-            <div className="mx-auto max-w-330 px-10 py-6">
-                <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px]">
+   return (
+    <div className="min-h-screen">
+        <div className="mx-auto max-w-330 px-10 py-6">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_390px]">
 
-                    {/* LEFT */}
-                    <div>
-                        {/* Account */}
-                        <div className="mb-10 border border-neutral-200 px-5 py-4">
-                            <p className="text-[11px] uppercase tracking-[0.15em] text-neutral-500">
-                                You are checking out as:
-                            </p>
+                {/* LEFT */}
+                <div>
+                    {/* Account */}
+                    <div className="mb-10 border border-neutral-200 px-5 py-4">
+                        <p className="text-[11px] uppercase tracking-[0.15em] text-neutral-500">
+                            You are checking out as:
+                        </p>
 
-                            <p className="mt-1 text-[15px]">
-                                {session.user.email?.replace(/(.{2}).+(@.+)/, "$1****$2")}
-                            </p>
-                        </div>
-
-                        <CheckoutFlow />
-
+                        <p className="mt-1 text-[15px]">
+                            {session.user.email?.replace(
+                                /(.{2}).+(@.+)/,
+                                "$1****$2"
+                            )}
+                        </p>
                     </div>
 
-                    {/* RIGHT SIDEBAR */}
-                    <OrderSummary />
-
+                    <CheckoutFlow />
                 </div>
+
+                {/* RIGHT SIDEBAR */}
+                <OrderSummary />
+
             </div>
         </div>
-    );
+    </div>
+);
+
 }

@@ -108,7 +108,7 @@ try {
 
                 {/* Message */}
                 {message && (
-                    <div className="mb-7 border border-black/10 bg-black/[0.02] px-4 py-3 text-center">
+                    <div className="mb-7 border border-black/10 bg-black/2 px-4 py-3 text-center">
                         <p className="text-sm text-black/60">
                             {message}
                         </p>

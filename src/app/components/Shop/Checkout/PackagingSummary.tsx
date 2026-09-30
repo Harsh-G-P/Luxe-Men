@@ -1,10 +1,9 @@
-"use client"
+"use client";
 
 type PackagingData = {
     option: string;
     giftMessage: string;
 };
-
 
 type Props = {
     packagingData: PackagingData;
@@ -18,59 +17,163 @@ export default function PackagingSummary({
     setCurrentStep,
 }: Props) {
     return (
-        <div className="mt-14">
+        <section className="mt-5 text-[#1c1b18]">
 
-            <div className="flex gap-6">
+            {/* COMPLETED STEP */}
+            <div className="relative overflow-hidden border border-[#d8d3c9] bg-[#faf9f6] px-7 py-6">
 
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-black text-white">
-                    ✓
-                </div>
+                {/* GOLD ACCENT */}
 
-                <div className="flex-1">
+                <span className="absolute left-0 top-0 h-full w-0.5 bg-[#9b8150]" />
 
-                    {/* Heading + Edit */}
-                    <div className="flex items-center justify-between">
 
-                        <h2 className="text-2xl uppercase">
-                            Packaging & Gifting
-                        </h2>
+                <div className="flex items-start gap-5">
 
-                        <button
-                            onClick={() => setCurrentStep(2)}
-                            className="group relative text-sm"
-                        >
-                            Edit
-
-                            <span
-                                className=" absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-black transition-transform duration-500 ease-out group-hover:scale-x-100"
-                            />
-                        </button>
-
+                    {/* COMPLETED ICON */}
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-[#9b8150] text-[11px] text-[#9b8150]">
+                        ✓
                     </div>
 
 
-                    {/* Details */}
-                    <div className="mt-6 grid grid-cols-1 gap-3 text-xs md:grid-cols-2">
+                    {/* CONTENT */}
+                    <div className="min-w-0 flex-1">
 
-                        <p>
-                            {packagingData.option}
-                        </p>
+                        {/* HEADER */}
+                        <div className="flex items-start justify-between gap-5">
+
+                            <div>
+
+                                <p className="text-[8px] uppercase tracking-[0.45em] text-[#9b8150]">
+                                    Completed
+                                </p>
+
+                                <h2 className="mt-2 font-serif text-[24px] leading-none tracking-tight">
+                                    Packaging & Gifting
+                                </h2>
+
+                            </div>
 
 
-                        <div>
-                            <p className="text-left md:ms-24 font-md">
-                                Gift Message:{" "}
-                                <span className="font-light">
-                                    {packagingData.giftMessage || "No Gift Message"}
-                                </span>
-                            </p>
+                            {/* EDIT */}
+                            <button
+                                type="button"
+                                onClick={() => setCurrentStep(2)}
+                                className="
+                                    group
+                                    relative
+                                    shrink-0
+                                    text-[8px]
+                                    uppercase
+                                    tracking-[0.3em]
+                                    text-[#5e5951]
+                                "
+                            >
+                                Edit
 
-                            <p className="text-left md:ms-24 font-md">
-                                Remove price from invoice:{" "}
-                                <span className="font-light">
-                                    {removeInvoice ? "Yes" : "No"}
-                                </span>
-                            </p>
+                                <span
+                                    className="
+                                        absolute
+                                        -bottom-1
+                                        left-0
+                                        h-px
+                                        w-full
+                                        origin-left
+                                        scale-x-0
+                                        bg-[#9b8150]
+                                        transition-transform
+                                        duration-500
+                                        group-hover:scale-x-100
+                                    "
+                                />
+                            </button>
+
+                        </div>
+
+                        {/* DIVIDER */}
+                        <div className="my-5 h-px bg-[#ded9d0]" />
+
+                        {/* PACKAGING DETAILS */}
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                            {/* PRESENTATION */}
+                            <div>
+
+                                <p className="text-[8px] uppercase tracking-[0.3em] text-[#9b8150]">
+                                    Presentation
+                                </p>
+
+                                <p className="mt-2 font-serif text-[16px] tracking-tight text-[#25231f]">
+                                    {packagingData.option}
+                                </p>
+
+                                <p className="mt-2 text-[9px] leading-5 text-[#99938a]">
+                                    Carefully prepared according to your
+                                    selected presentation.
+                                </p>
+
+                            </div>
+
+
+                            {/* PREFERENCES */}
+                            <div>
+
+                                <p className="text-[8px] uppercase tracking-[0.3em] text-[#9b8150]">
+                                    Preferences
+                                </p>
+
+                                <div className="mt-3 space-y-3">
+
+                                    {/* GIFT MESSAGE */}
+                                    <div>
+
+                                        <p className="text-[8px] uppercase tracking-[0.15em] text-[#777168]">
+                                            Personal Message
+                                        </p>
+
+                                        <p className="mt-1 text-[9px] leading-5 text-[#99938a]">
+                                            {packagingData.giftMessage ||
+                                                "No gift message"}
+                                        </p>
+
+                                    </div>
+
+
+                                    {/* INVOICE */}
+                                    <div>
+
+                                        <p className="text-[8px] uppercase tracking-[0.15em] text-[#777168]">
+                                            Pricing Information
+                                        </p>
+
+                                        <p className="mt-1 text-[9px] leading-5 text-[#99938a]">
+                                            {removeInvoice
+                                                ? "Pricing concealed on invoice"
+                                                : "Pricing included on invoice"}
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {/* FOOTER DETAIL */}
+                        <div className="mt-6 border-t border-[#ded9d0] pt-4">
+
+                            <div className="flex items-start gap-3">
+
+                                <span className="mt-1.25 h-1.5 w-1.5 shrink-0 bg-[#9b8150]" />
+
+                                <p className="text-[9px] leading-5 text-[#99938a]">
+                                    Your presentation preferences have been
+                                    recorded and will accompany the order
+                                    through final preparation.
+                                </p>
+
+                            </div>
+
                         </div>
 
                     </div>
@@ -79,6 +182,6 @@ export default function PackagingSummary({
 
             </div>
 
-        </div>
+        </section>
     );
 }
