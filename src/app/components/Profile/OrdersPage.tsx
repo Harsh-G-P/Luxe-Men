@@ -117,7 +117,7 @@ export default function OrdersPage() {
           <div className="mx-auto mt-12 h-px max-w-4xl bg-[#dedad2]" />
 
           {/* Loading */}
-          <div className="flex min-h-[420px] items-center justify-center">
+          <div className="flex min-h-105 items-center justify-center">
 
             <div className="text-center">
 
@@ -180,43 +180,17 @@ export default function OrdersPage() {
           </div>
 
         ) : (
-
           <>
-
             {/* NAVIGATION */}
             <div className="mt-10 flex items-center justify-between">
 
               {/* Account */}
               <Link
                 href="/profile"
-                className="
-                  group
-                  inline-flex
-                  items-center
-                  gap-4
-                  border-b
-                  border-[#c9c5bd]
-                  pb-2
-                  text-[9px]
-                  font-medium
-                  uppercase
-                  tracking-[0.26em]
-                  text-[#625e56]
-                  transition-all
-                  duration-500
-                  hover:border-[#171614]
-                  hover:text-[#171614]
-                "
+                className=" group inline-flex items-center gap-4 border-b border-[#c9c5bd] pb-2 text-[9px] font-medium uppercase tracking-[0.26em] text-[#625e56] transition-all duration-500 hover:border-[#171614] hover:text-[#171614]"
               >
                 <span
-                  className="
-                    text-sm
-                    font-light
-                    transition-transform
-                    duration-500
-                    ease-out
-                    group-hover:-translate-x-1
-                  "
+                  className=" text-sm font-light transition-transform duration-500 ease-out group-hover:-translate-x-1"
                 >
                   ←
                 </span>
@@ -234,23 +208,13 @@ export default function OrdersPage() {
 
             {/* ORDERS */}
             <div
-              className={`
-                mt-8
-                space-y-8
-                transition-opacity
-                duration-500
-                ${loading ? "opacity-40" : "opacity-100"}
+              className={` mt-8 space-y-8 transition-opacity duration-500 ${loading ? "opacity-40" : "opacity-100"}
               `}
             >
               {orders.map((order) => (
                 <div
                   key={order.id}
-                  className="
-                    transition-transform
-                    duration-500
-                    ease-out
-                    hover:-translate-y-px
-                  "
+                  className=" transition-transform duration-500 ease-out hover:-translate-y-px"
                 >
                   <OrderCard order={order} />
                 </div>
@@ -276,35 +240,11 @@ export default function OrdersPage() {
                       disabled={
                         !pagination.hasPreviousPage || loading
                       }
-                      className="
-                        group
-                        relative
-                        inline-flex
-                        items-center
-                        gap-4
-                        pb-2
-                        text-[9px]
-                        font-medium
-                        uppercase
-                        tracking-[0.25em]
-                        text-[#625e56]
-                        transition-colors
-                        duration-500
-                        hover:text-[#171614]
-                        disabled:pointer-events-none
-                        disabled:opacity-20
-                      "
+                      className=" group relative inline-flex items-center gap-4 pb-2 text-[9px] font-medium uppercase tracking-[0.25em] text-[#625e56] transition-colors duration-500 hover:text-[#171614] disabled:pointer-events-none disabled:opacity-20"
                     >
 
                       <span
-                        className="
-                          text-sm
-                          font-light
-                          transition-transform
-                          duration-500
-                          ease-out
-                          group-hover:-translate-x-1
-                        "
+                        className=" text-sm font-light transition-transform duration-500 ease-out group-hover:-translate-x-1"
                       >
                         ←
                       </span>
@@ -315,21 +255,7 @@ export default function OrdersPage() {
 
                       {/* Underline */}
                       <span
-                        className="
-                          absolute
-                          bottom-0
-                          left-0
-                          h-px
-                          w-full
-                          origin-right
-                          scale-x-0
-                          bg-[#171614]
-                          transition-transform
-                          duration-500
-                          ease-out
-                          group-hover:origin-left
-                          group-hover:scale-x-100
-                        "
+                        className=" absolute bottom-0 left-0 h-px w-full origin-right scale-x-0 bg-[#171614] transition-transform duration-500 ease-out group-hover:origin-left group-hover:scale-x-100"
                       />
 
                     </button>
@@ -351,7 +277,7 @@ export default function OrdersPage() {
                         /
                       </span>
 
-                      <span className="font-sans text-xs tracking-[0.1em] text-[#8b867d]">
+                      <span className="font-sans text-xs tracking-widest text-[#8b867d]">
                         {String(pagination.totalPages).padStart(2, "0")}
                       </span>
 
@@ -368,24 +294,7 @@ export default function OrdersPage() {
                       disabled={
                         !pagination.hasNextPage || loading
                       }
-                      className="
-                        group
-                        relative
-                        inline-flex
-                        items-center
-                        gap-4
-                        pb-2
-                        text-[9px]
-                        font-medium
-                        uppercase
-                        tracking-[0.25em]
-                        text-[#171614]
-                        transition-colors
-                        duration-500
-                        hover:text-[#625e56]
-                        disabled:pointer-events-none
-                        disabled:opacity-20
-                      "
+                      className=" group relative inline-flex items-center gap-4 pb-2 text-[9px] font-medium uppercase tracking-[0.25em] text-[#171614] transition-colors duration-500 hover:text-[#625e56] disabled:pointer-events-none disabled:opacity-20"
                     >
 
                       <span>
@@ -393,35 +302,14 @@ export default function OrdersPage() {
                       </span>
 
                       <span
-                        className="
-                          text-sm
-                          font-light
-                          transition-transform
-                          duration-500
-                          ease-out
-                          group-hover:translate-x-1
-                        "
+                        className=" text-sm font-light transition-transform duration-500 ease-out group-hover:translate-x-1"
                       >
                         →
                       </span>
 
                       {/* Underline */}
                       <span
-                        className="
-                          absolute
-                          bottom-0
-                          right-0
-                          h-px
-                          w-full
-                          origin-left
-                          scale-x-0
-                          bg-[#171614]
-                          transition-transform
-                          duration-500
-                          ease-out
-                          group-hover:origin-right
-                          group-hover:scale-x-100
-                        "
+                        className=" absolute bottom-0 right-0 h-px w-full origin-left scale-x-0 bg-[#171614] transition-transform duration-500 ease-out group-hover:origin-right group-hover:scale-x-100"
                       />
 
                     </button>
@@ -441,7 +329,6 @@ export default function OrdersPage() {
                   )}{" "}
                   of {pagination.totalOrders}
                 </p>
-
 
               </nav>
             )}
