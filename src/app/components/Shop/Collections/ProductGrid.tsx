@@ -316,7 +316,7 @@ export default function ProductGrid({
                 </div>
 
                 {/* Product Grid */}
-                <div className="grid grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-3 lg:gap-y-16">
+                <div className="grid grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-2 xl:grid-cols-3 lg:gap-y-16">
 
                     {products.map(
                         (product) => (

@@ -31,58 +31,75 @@ export default function ShippingAddress({ address }: Props) {
     setTimeout(() => setCopiedPhone(false), 1500);
   };
   return (
-    <div className="border border-neutral-200 bg-white">
-
-      <div className="border-b border-neutral-200 px-6 py-5">
-
-        <h2 className="text-sm uppercase tracking-[0.18em]">
-          Shipping Address
-        </h2>
-
-      </div>
-
-      <div className="space-y-4 px-6 py-6">
-
-        <div>
-
-          <p className=" font-medium">
-            {address.fullname}
-          </p>
-
-          <div className="group mt-1 flex items-center gap-2">
-            <p className="block text-xs text-neutral-500">
-              {address.countryCode} {address.phone}
+    <div className="overflow-hidden border border-[#eeece7] bg-[#fdfcf9]">
+      
+      {/* Header */}
+      <div className="border-b border-[#eeece7] px-5 py-4 md:px-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[8px] uppercase tracking-[0.26em] text-[#aaa69e]">
+              Delivery Details
             </p>
 
-            <button
-              type="button"
-              onClick={handleCopyPhone}
-              className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-              title={copiedPhone ? "Copied!" : "Copy phone number"}
-            >
-              {copiedPhone ? (
-                <Check className="h-3.5 w-3.5 text-green-600" />
-              ) : (
-                <Copy className="h-3.5 w-3.5 text-neutral-400 hover:text-black" />
-              )}
-            </button>
+            <h2 className="mt-1 font-serif text-lg font-normal tracking-[0.01em] text-[#1b1a18]">
+              Shipping Address
+            </h2>
+          </div>
+
+          <span className="text-[8px] uppercase tracking-[0.22em] text-[#aaa69e]">
+            Address
+          </span>
+        </div>
+      </div>
+
+      {/* Address */}
+      <div className="px-5 py-5 md:px-6">
+        <div className="space-y-4">
+          
+          {/* Customer */}
+          <div>
+            <p className="font-serif text-[15px] font-normal tracking-[0.01em] text-[#1b1a18]">
+              {address.fullname}
+            </p>
+
+            {/* Phone */}
+            <div className="group mt-1.5 flex items-center gap-2">
+              <p className="text-[9px] uppercase tracking-[0.14em] text-[#817d75]">
+                {address.countryCode} {address.phone}
+              </p>
+
+              <button
+                type="button"
+                onClick={handleCopyPhone}
+                className=" opacity-0 transition-all duration-300 group-hover:opacity-100"
+                title={copiedPhone ? "Copied!" : "Copy phone number"}
+              >
+                {copiedPhone ? (
+                  <Check className="h-3 w-3 text-[#9a8a74]" />
+                ) : (
+                  <Copy className="h-3 w-3 text-[#aaa69e] transition-colors hover:text-[#6f604e]" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px w-full bg-[#eeece7]" />
+
+          {/* Address Details */}
+          <div className="space-y-0.5 text-[10px] leading-5 text-[#57534c]">
+            <p>{address.addressLine}</p>
+
+            <p>
+              {address.city}, {address.state} {address.postalCode}
+            </p>
+
+            <p className="text-[#817d75]">{address.country}</p>
           </div>
 
         </div>
-
-        <div className="space-y-1 text-xs leading-5 text-neutral-600">
-
-          <p>{address.addressLine}</p>
-
-          <p>
-            {address.city}, {address.state} {address.postalCode}
-          </p>
-
-          <p>{address.country}</p>
-        </div>
-
       </div>
-
+      
     </div>
   );
 }

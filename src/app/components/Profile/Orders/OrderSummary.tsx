@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 
-
 type Order = {
   id: string
   subtotal: number;
@@ -33,22 +32,36 @@ export default function OrderSummary({ order }: Props) {
   );
 
   return (
-    <div className="border border-neutral-200 bg-white">
+    <div className="overflow-hidden border border-[#eeece7] bg-[#fdfcf9]">
+      
+      {/* Header */}
+      <div className="border-b border-[#eeece7] px-5 py-4 md:px-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[8px] uppercase tracking-[0.26em] text-[#aaa69e]">
+              Order Details
+            </p>
 
-      <div className="border-b border-neutral-200 px-6 py-5">
-        <h2 className="text-sm uppercase tracking-[0.18em]">
-          Order Summary
-        </h2>
+            <h2 className="mt-1 font-serif text-lg font-normal tracking-[0.01em] text-[#1b1a18]">
+              Order Summary
+            </h2>
+          </div>
+
+          <span className="text-[8px] uppercase tracking-[0.22em] text-[#aaa69e]">
+            Summary
+          </span>
+        </div>
       </div>
 
-      <div className="space-y-5 px-6 py-6">
-
+      <div className="space-y-5 px-5 py-5 md:px-6">
+        
+        {/* Subtotal */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-neutral-500">
+          <span className="text-[10px] uppercase tracking-[0.14em] text-[#817d75]">
             Subtotal
           </span>
 
-          <span className="text-xs font-medium">
+          <span className="font-serif text-[14px] text-[#242320]">
             {new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
@@ -56,110 +69,130 @@ export default function OrderSummary({ order }: Props) {
           </span>
         </div>
 
+        {/* Shipping */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-neutral-500">
+          <span className="text-[10px] uppercase tracking-[0.14em] text-[#817d75]">
             Shipping
           </span>
 
-          <span className="text-xs font-medium">
-            {order.shipping === 0 ? (
-              <span className="rounded-full bg-green-100 px-2 py-1 text-[11px] font-medium uppercase text-green-700">
-                FREE
-              </span>
-            ) : (
-              new Intl.NumberFormat("en-US", {
+          {order.shipping === 0 ? (
+            <span className="text-[8px] uppercase tracking-[0.2em] text-[#6f604e]">
+              Free
+            </span>
+          ) : (
+            <span className="font-serif text-[14px] text-[#242320]">
+              {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
-              }).format(order.shipping)
-            )}
-          </span>
+              }).format(order.shipping)}
+            </span>
+          )}
         </div>
 
-        <div className="border-t border-neutral-200 pt-5">
+        {/* Total */}
+        <div className="border-t border-[#eeece7] pt-5">
+          <div className="flex items-end justify-between">
+            <div>
+              <p className="text-[8px] uppercase tracking-[0.24em] text-[#aaa69e]">
+                Amount Due
+              </p>
 
-          <div className="flex items-center justify-between">
+              <p className="mt-1 font-serif text-base text-[#1b1a18]">
+                Total
+              </p>
+            </div>
 
-            <span className="text-sm uppercase tracking-[0.12em]">
-              Total
-            </span>
-
-            <span className="text-sm font-semibold">
+            <span className="font-serif text-xl font-normal tracking-[0.01em] text-[#1b1a18]">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
               }).format(order.total)}
             </span>
-
           </div>
-
         </div>
 
-        <div className="border-t border-neutral-200 pt-5 space-y-4">
-
+        {/* Order Information */}
+        <div className="space-y-4 border-t border-[#eeece7] pt-5">
+          {/* Quantity */}
           <div className="flex items-center justify-between">
-            <span className="text-sm text-neutral-500">
+            <span className="text-[9px] uppercase tracking-[0.18em] text-[#aaa69e]">
               Total Quantity
             </span>
 
-            <span className="text-xs font-medium">
-              {totalQuantity}
+            <span className="font-serif text-sm text-[#57534c]">
+              {String(totalQuantity).padStart(2, "0")}
             </span>
           </div>
 
-          <div className="flex items-center justify-between">
-
-            <span className="text-sm text-neutral-500">
+          {/* Payment Method */}
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-[9px] uppercase tracking-[0.18em] text-[#aaa69e]">
               Payment Method
             </span>
 
-            <span className="text-xs font-medium">
+            <span className="text-[9px] uppercase tracking-[0.14em] text-[#57534c]">
               {order.paymentMethod}
             </span>
-
           </div>
 
-          <div className="flex items-center justify-between">
-
-            <span className="text-sm text-neutral-500">
+          {/* Payment Status */}
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-[9px] uppercase tracking-[0.18em] text-[#aaa69e]">
               Payment Status
             </span>
 
-            <span className={`rounded-full px-3 py-1 text-xs font-medium uppercase tracking-[0.08em] ${order.paymentStatus === "PAID"
-              ? "bg-green-100 text-green-700"
-              : order.paymentStatus === "PENDING"
-                ? "bg-yellow-100 text-yellow-700"
-                : order.paymentStatus === "FAILED"
-                  ? "bg-red-100 text-red-700"
-                  : "bg-blue-100 text-blue-700"
-              }`}>
+            <span
+              className={` inline-flex items-center gap-2 text-[8px] uppercase tracking-[0.16em] ${order.paymentStatus === "PAID"
+                  ? "text-[#6f604e]"
+                  : order.paymentStatus === "PENDING"
+                    ? "text-[#9a8060]"
+                    : order.paymentStatus === "FAILED"
+                      ? "text-[#9a6f63]"
+                      : "text-[#817d75]"
+                }
+            `}
+            >
+              <span
+                className={` h-1.5 w-1.5 rounded-full ${order.paymentStatus === "PAID"
+                    ? "bg-[#9a8a74]"
+                    : order.paymentStatus === "PENDING"
+                      ? "bg-[#b39a73]"
+                      : order.paymentStatus === "FAILED"
+                        ? "bg-[#9a6f63]"
+                        : "bg-[#aaa69e]"
+                  }
+              `}
+              />
+
               {order.paymentStatus}
             </span>
-
           </div>
 
         </div>
 
-        <div className="border-t border-neutral-200 pt-6 space-y-3">
-
+        {/* Actions */}
+        <div className="space-y-2.5 border-t border-[#eeece7] pt-5">
           <Link
             href={`/api/order/${order.id}/invoice`}
             target="_blank"
-            className="block w-full border border-black px-6 py-3 text-center text-xs uppercase tracking-[0.12em] transition hover:bg-gray-700 hover:text-white"
+            className=" group flex w-full items-center justify-center gap-2 border border-[#1b1a18] px-5 py-3 text-[8px] uppercase tracking-[0.2em] text-[#1b1a18] transition-all duration-500 hover:bg-[#1b1a18] hover:text-white"
           >
-            ↓ Download Invoice
+            <span className="transition-transform duration-300 group-hover:-translate-y-0.5">
+              ↓
+            </span>
+
+            Download Invoice
           </Link>
 
           <Link
             href="/"
-            className="block w-full border border-black px-6 py-3 text-center text-xs uppercase tracking-[0.12em] transition hover:bg-black hover:text-white"
+            className=" flex w-full items-center justify-center border border-[#d9d5cd] px-5 py-3 text-[8px] uppercase tracking-[0.2em] text-[#57534c] transition-all duration-500 hover:border-[#9a8a74] hover:text-[#6f604e]"
           >
             Continue Shopping
           </Link>
-
         </div>
 
       </div>
-
     </div>
   );
 }

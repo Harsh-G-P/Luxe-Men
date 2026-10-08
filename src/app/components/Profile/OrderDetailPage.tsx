@@ -98,23 +98,54 @@ export default function OrderDetailPage({ id }: Props) {
 
     if (loading) {
         return (
-            <section className="mx-auto max-w-7xl px-6 py-20">
-                <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
+            <section className="min-h-screen bg-[#f7f6f2]">
+                <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
 
-                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-neutral-200 border-t-black" />
+                    <div
+                        className=" relative mx-auto max-w-2xl border border-[#d8d3c9] bg-[#faf9f6] px-10 py-20 text-center md:px-12"
+                    >
+                        {/* Editorial accent */}
+                        <div className="absolute left-1/2 top-0 h-px w-16 -translate-x-1/2 bg-[#9b8150]" />
 
-                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-neutral-500">
-                        Loading Order
-                    </p>
+                        {/* Brand */}
+                        <div className="flex items-center justify-center gap-3">
+                            <span className="h-px w-8 bg-[#d1cbc1]" />
 
-                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em]">
-                        Please Wait
-                    </h2>
+                            <span className="text-[7px] font-medium uppercase tracking-[0.45em] text-[#9b8150]">
+                                LUXE MEN
+                            </span>
 
-                    <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
-                        We're retrieving your order details.
-                    </p>
+                            <span className="h-px w-8 bg-[#d1cbc1]" />
+                        </div>
 
+                        {/* Loading bar */}
+                        <div className="mx-auto mt-7 h-px w-20 overflow-hidden bg-[#ded9d0]">
+                            <div
+                                className="
+                                h-full
+                                w-1/2
+                                animate-[luxuryLoading_1.5s_ease-in-out_infinite]
+                                bg-[#9b8150]
+                            "
+                            />
+                        </div>
+
+                        {/* Status */}
+                        <p className="mt-6 text-[8px] uppercase tracking-[0.4em] text-[#aaa49b]">
+                            Loading Order
+                        </p>
+
+                        {/* Heading */}
+                        <h2 className="mt-4 font-serif text-3xl font-normal tracking-[0.01em] text-[#171614] md:text-4xl">
+                            Please Wait
+                        </h2>
+
+                        {/* Description */}
+                        <p className="mx-auto mt-5 max-w-sm text-[11px] leading-6 text-[#858077]">
+                            We're carefully retrieving your order details.
+                        </p>
+
+                    </div>
                 </div>
             </section>
         );
@@ -122,127 +153,171 @@ export default function OrderDetailPage({ id }: Props) {
 
     if (!order) {
         return (
-            <section className="mx-auto max-w-7xl px-6 py-20">
-                <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
-
-                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-neutral-200 text-3xl">
-                        !
-                    </div>
-
-                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-neutral-500">
-                        Order
-                    </p>
-
-                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em]">
-                        Order Not Found
-                    </h2>
-
-                    <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
-                        The order you're looking for doesn't exist or you don't have
-                        permission to view it.
-                    </p>
-
-                    <Link
-                        href="/profile/orders"
-                        className="mt-10 inline-flex border border-black px-8 py-3 text-xs uppercase tracking-[0.12em] transition hover:bg-black hover:text-white"
+            <section className="min-h-screen bg-[#f7f6f2]">
+                <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+                    <div
+                        className=" relative mx-auto max-w-2xl overflow-hidden border border-[#d9d6cf] bg-[#faf9f6] px-8 py-24 text-center md:px-12 md:py-28"
                     >
-                        Back to Orders
-                    </Link>
+                        {/* Subtle editorial detail */}
+                        <div className="absolute left-1/2 top-0 h-px w-20 -translate-x-1/2 bg-[#a18450]" />
 
+                        {/* Luxe Men Monogram */}
+                        <div
+                            className=" mx-auto flex h-16 w-16 items-center justify-center border border-[#cfcac1] bg-[#f7f5f0]"
+                        >
+                            <span
+                                className="
+                                font-serif
+                                text-[21px]
+                                font-normal
+                                tracking-[-0.12em]
+                                text-[#292824]
+                            "
+                            >
+                                LM
+                            </span>
+                        </div>
+
+                        {/* Eyebrow */}
+                        <p className="mt-8 text-[8px] font-medium uppercase tracking-[0.4em] text-[#a18450]">
+                            Order Archive
+                        </p>
+
+                        {/* Heading */}
+                        <h2 className="mt-5 font-serif text-3xl font-normal tracking-[0.01em] text-[#171614] md:text-4xl">
+                            Order Not Found
+                        </h2>
+
+                        {/* Description */}
+                        <p className="mx-auto mt-5 max-w-md text-[12px] leading-7 text-[#858077]">
+                            The order you're looking for doesn't exist or you don't
+                            have permission to view it.
+                        </p>
+
+                        {/* CTA */}
+                        <Link
+                            href="/profile/orders" className=" group relative mt-10 inline-flex items-center gap-5 border border-[#252421] bg-[#252421] px-9 py-4 text-[9px] font-medium uppercase tracking-[0.28em] text-[#faf9f6] transition-all duration-500 hover:bg-[#f4f3ef] hover:text-[#252421]"
+                        >
+                            <span>Back to Orders</span>
+
+                            <span
+                                className="
+                                text-sm
+                                font-light
+                                transition-transform
+                                duration-500
+                                ease-out
+                                group-hover:-translate-x-1
+                            "
+                            >
+                                ←
+                            </span>
+                        </Link>
+
+                        {/* Bottom detail */}
+                        <div className="mx-auto mt-12 flex items-center justify-center gap-4">
+                            <span className="h-px w-8 bg-[#d6d2ca]" />
+
+                            <span className="text-[7px] uppercase tracking-[0.32em] text-[#aaa69e]">
+                                Return to your collection
+                            </span>
+
+                            <span className="h-px w-8 bg-[#d6d2ca]" />
+                        </div>
+                    </div>
                 </div>
             </section>
         );
     }
 
     return (
-        <section className="mx-auto max-w-7xl px-6 py-14">
+        <section className="min-h-screen bg-[#f6f4ef]">
+            <div className="mx-auto max-w-7xl px-5 py-10 md:px-6 md:py-14">
 
-            <Link
-                href="/profile/orders"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
-            >
-                ← Back to Orders
-            </Link>
-
-            <div className="mt-8 flex flex-col gap-6 border-b border-neutral-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
-
-                <div>
-
-                    <p className="text-xs uppercase tracking-[0.25em] text-neutral-500">
-                        Order
-                    </p>
-
-                    <h1 className="mt-3 font-medium tracking-[0.12em]">
-                        {order.orderNumber}
-                    </h1>
-
-                    <p className="mt-1 text-xs text-neutral-500">
-                        Placed on{" "}
-                        {new Date(order.createdAt).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </p>
-
-                </div>
-
-                <div className="flex gap-3">
-
-                    <span className="border border-black px-5 py-2 text-xs uppercase tracking-[0.12em]">
-                        {order.status}
+                {/* Back */}
+                <Link
+                    href="/profile/orders"
+                    className=" group inline-flex items-center gap-2 border-b border-[#d9d5cd] pb-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#171512] transition-all duration-300 hover:border-[#9a8a74] hover:text-[#1b1a18]"
+                >
+                    <span className="text-[13px] leading-none transition-transform duration-300 group-hover:-translate-x-1">
+                        ←
                     </span>
 
-                    <span className="border border-green-600 bg-green-50 px-5 py-2 text-xs uppercase tracking-[0.12em] text-green-700">
-                        {order.paymentStatus}
-                    </span>
+                    <span>Back to Orders</span>
+                </Link>
 
-                </div>
+                {/* Order Header */}
+                <div className="mt-8 flex flex-col gap-6 border-b border-[#dedbd4] pb-8 lg:flex-row lg:items-end lg:justify-between">
+                    <div>
+                        <p className="text-[8px] uppercase tracking-[0.28em] text-[#aaa69e]">
+                            Order
+                        </p>
 
-            </div>
+                        <h1 className="mt-2 font-serif text-2xl font-normal tracking-[0.02em] text-[#1b1a18]">
+                            {order.orderNumber}
+                        </h1>
 
-            <div className="mt-12 grid gap-12 lg:grid-cols-[1.6fr_0.9fr]">
-
-                <div>
-
-                    <OrderProducts items={order.items} />
-
-                    <div className="mt-8">
-                        <OrderTimeline status={order.status} />
+                        <p className="mt-1.5 text-[9px] uppercase tracking-[0.14em] text-[#817d75]">
+                            Placed on{" "}
+                            {new Date(order.createdAt).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                            })}
+                        </p>
                     </div>
 
+                    {/* Status */}
+                    <div className="flex flex-wrap gap-2">
+                        <span className="border border-[#bdb8ae] bg-[#fdfcf9] px-4 py-2 text-[8px] uppercase tracking-[0.2em] text-[#57534c]">
+                            Order: {order.status}
+                        </span>
+
+                        <span className="border border-[#c9c0b2] bg-[#fdfcf9] px-4 py-2 text-[8px] uppercase tracking-[0.2em] text-[#6f604e]">
+                            Payment: {order.paymentStatus}
+                        </span>
+                    </div>
                 </div>
 
-                <div className="space-y-8">
+                {/* Content */}
+                <div className="mt-10 grid gap-8 lg:grid-cols-[1.6fr_0.9fr] lg:gap-10">
+                    {/* Main */}
+                    <div className="min-w-0">
+                        <OrderProducts items={order.items} />
 
-                    <ShippingAddress address={order.address} />
+                        <div className="mt-6">
+                            <OrderTimeline status={order.status} />
+                        </div>
+                    </div>
 
-                    <OrderPreferences
-                        packagingOption={order.packagingOption}
-                        giftMessage={order.giftMessage}
-                        notes={order.notes}
-                        removeInvoice={order.removeInvoice}
-                    />
+                    {/* Sidebar */}
+                    <div className="space-y-6">
+                        <ShippingAddress address={order.address} />
 
-                    <OrderSummary order={order} />
+                        <OrderPreferences
+                            packagingOption={order.packagingOption}
+                            giftMessage={order.giftMessage}
+                            notes={order.notes}
+                            removeInvoice={order.removeInvoice}
+                        />
 
-                    <RequestCancellation
-                        orderId={order.id}
-                        status={order.status}
-                        cancellationStatus={order.cancellationStatus}
-                    />
+                        <OrderSummary order={order} />
 
-                    <RequestRefund
-                        orderId={order.id}
-                        status={order.status}
-                        paymentStatus={order.paymentStatus}
-                        refundStatus={order.refundStatus}
-                    />
+                        <RequestCancellation
+                            orderId={order.id}
+                            status={order.status}
+                            cancellationStatus={order.cancellationStatus}
+                        />
 
+                        <RequestRefund
+                            orderId={order.id}
+                            status={order.status}
+                            paymentStatus={order.paymentStatus}
+                            refundStatus={order.refundStatus}
+                        />
+                    </div>
                 </div>
-
             </div>
-
         </section>
     );
 }

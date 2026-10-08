@@ -409,20 +409,6 @@ export default function ProductCard({ product }: ProductProps) {
                             VIEW DETAILS
                         </span>
 
-
-                        <span
-                            className="
-                                absolute
-                                right-4
-                                z-40
-                                text-xl
-                                font-light
-                                text-black
-                                xl:right-6
-                            "
-                        >
-                            +
-                        </span>
                     </div>
 
                     {/* SHOPPING BAG */}

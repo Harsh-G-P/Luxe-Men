@@ -33,94 +33,179 @@ type Props = {
 };
 
 export default function OrderTimeline({ status }: Props) {
+  const isCancelled = status === "CANCELLED";
+
   const currentStep = steps.findIndex((step) => step.key === status);
 
   return (
-    <div className="border border-neutral-200 bg-white">
+    <div className="overflow-hidden border border-[#eeece7] bg-[#fdfcf9]">
+      
+      {/* Header */}
+      <div className="border-b border-[#eeece7] px-5 py-4 md:px-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[8px] uppercase tracking-[0.26em] text-[#aaa69e]">
+              Order Progress
+            </p>
 
-      <div className="border-b border-neutral-200 px-6 py-5">
+            <h2 className="mt-1 font-serif text-lg font-normal tracking-[0.01em] text-[#1b1a18]">
+              Track Your Order
+            </h2>
+          </div>
 
-        <h2 className="text-sm uppercase tracking-[0.18em]">
-          Track Your Order
-        </h2>
-
-        <p className="mt-1 text-xs text-neutral-500">
-          Follow your order from purchase to delivery.
-        </p>
-
+          <span
+            className={`text-[8px] uppercase tracking-[0.22em] ${
+              isCancelled
+                ? "text-[#9a6f63]"
+                : "text-[#aaa69e]"
+            }`}
+          >
+            {isCancelled
+              ? "Cancelled"
+              : currentStep >= 0
+              ? `${String(currentStep + 1).padStart(2, "0")} / ${String(
+                  steps.length
+                ).padStart(2, "0")}`
+              : "—"}
+          </span>
+        </div>
       </div>
 
-      <div className="px-6 py-6">
+      {/* Cancelled State */}
+      {isCancelled ? (
+        <div className="px-5 py-6 md:px-6">
+          <div className="flex items-start gap-4">
+            {/* Cancelled Icon */}
+            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#9a6f63]">
+              <span className="h-px w-2 bg-[#9a6f63]" />
+            </div>
 
-        <div className="space-y-8">
+            <div className="min-w-0">
+              <p className="font-serif text-[14px] text-[#1b1a18]">
+                Order Cancelled
+              </p>
 
-          {steps.map((step, index) => {
-            const completed = index < currentStep;
-            const active = index === currentStep;
+              <p className="mt-1 text-[9px] leading-5 text-[#817d75]">
+                This order has been cancelled and will not be processed.
+              </p>
 
-            return (
-              <div
-                key={step.key}
-                className="relative flex gap-5"
-              >
-                {index !== steps.length - 1 && (
-                  <div
-                    className={`absolute left-[11px] top-7 h-14 w-px ${
-                      completed
-                        ? "bg-black"
-                        : "bg-neutral-300"
-                    }`}
-                  />
-                )}
+              <div className="mt-3 h-px w-8 bg-[#d9d5cd]" />
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Timeline */
+        <div className="px-5 py-5 md:px-6">
+          <div className="space-y-6">
+            {steps.map((step, index) => {
+              const completed = index < currentStep;
+              const active = index === currentStep;
 
+              return (
                 <div
-                  className={`mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border ${
-                    completed
-                      ? "border-black bg-black text-white"
-                      : active
-                      ? "border-black bg-white"
-                      : "border-neutral-300 bg-white"
-                  }`}
+                  key={step.key}
+                  className="group relative flex gap-4"
                 >
-                  {completed ? (
-                    <span className="text-[10px]">✓</span>
-                  ) : (
-                    <span
-                      className={`h-2 w-2 rounded-full ${
-                        active
-                          ? "bg-black"
-                          : "bg-neutral-300"
-                      }`}
+                  {/* Connecting Line */}
+                  {index !== steps.length - 1 && (
+                    <div
+                      className={` absolute left-2.25 top-6 h-[calc(100%+1.5rem)] w-px transition-colors duration-500 ${
+                          completed
+                            ? "bg-[#9a8a74]"
+                            : "bg-[#dedbd4]"
+                        }
+                      `}
                     />
                   )}
+
+                  {/* Indicator */}
+                  <div className="relative z-10 shrink-0">
+                    <div
+                      className={` flex h-5 w-5 items-center justify-center rounded-full border transition-all duration-500 ${
+                          completed
+                            ? "border-[#1b1a18] bg-[#1b1a18]"
+                            : active
+                            ? "border-[#9a8a74] bg-[#fdfcf9]"
+                            : "border-[#d9d5cd] bg-[#fdfcf9]"
+                        }
+                      `}
+                    >
+                      {completed ? (
+                        <svg
+                          viewBox="0 0 12 12"
+                          className="h-2.5 w-2.5 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                        >
+                          <path
+                            d="M2.5 6.2 5 8.5 9.5 3.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      ) : (
+                        <span
+                          className={` h-1.5 w-1.5 rounded-full transition-colors duration-500 ${
+                              active
+                                ? "bg-[#9a8a74]"
+                                : "bg-[#d9d5cd]"
+                            }
+                          `}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="-mt-0.5 min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p
+                          className={` font-serif text-[14px] font-normal tracking-[0.01em] transition-colors duration-300 ${
+                              completed || active
+                                ? "text-[#1b1a18]"
+                                : "text-[#aaa69e]"
+                            }
+                          `}
+                        >
+                          {step.title}
+                        </p>
+
+                        <p
+                          className={` mt-0.5 text-[9px] leading-5 transition-colors duration-300 ${
+                              active
+                                ? "text-[#817d75]"
+                                : "text-[#aaa69e]"
+                            }
+                          `}
+                        >
+                          {step.description}
+                        </p>
+                      </div>
+
+                      {/* Current Label */}
+                      {active && (
+                        <span
+                          className=" mt-0.5 shrink-0 text-[7px] uppercase tracking-[0.22em] text-[#9a8a74]"
+                        >
+                          Current
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Active Accent */}
+                    {active && (
+                      <div className="mt-2 h-px w-8 bg-[#d9d5cd] transition-all duration-500 group-hover:w-12 group-hover:bg-[#9a8a74]" />
+                    )}
+                  </div>
+                  
                 </div>
-
-                <div>
-
-                  <p
-                    className={`text-sm ${
-                      completed || active
-                        ? "font-medium text-black"
-                        : "text-neutral-400"
-                    }`}
-                  >
-                    {step.title}
-                  </p>
-
-                  <p className="mt-1 text-xs leading-6 text-neutral-500">
-                    {step.description}
-                  </p>
-
-                </div>
-
-              </div>
-            );
-          })}
-
+              );
+            })}
+          </div>
         </div>
-
-      </div>
-
+      )}
     </div>
   );
 }
