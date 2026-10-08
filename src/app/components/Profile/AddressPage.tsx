@@ -73,7 +73,7 @@ export default function AddressesPage({ address }: AddressProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f4ef] text-[#171614]">
+    <main className="min-h-screen bg-[#f7f6f2] text-[#171614]">
 
       {/* HEADER */}
       <section className="border-b border-[#e4e0d7]">
@@ -256,6 +256,7 @@ export default function AddressesPage({ address }: AddressProps) {
           </div>
         ) : (
           <div className="relative">
+
             {/* Scroll indicator */}
             <div className="mb-4 flex items-center justify-center gap-2.5">
               <span className="h-px w-6 bg-[#d5d0c5]" />
@@ -272,9 +273,9 @@ export default function AddressesPage({ address }: AddressProps) {
                 {address.map((addresses, index) => (
                   <div
                     key={addresses.id}
-                    className={`group relative overflow-hidden border p-5 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_14px_35px_rgba(40,36,28,0.06)] ${addresses.isDefault
-                      ? "border-[#bca875] bg-[#eeece5]"
-                      : "border-[#d8d4cb] bg-[#f1efe9]"
+                    className={`group relative overflow-hidden border p-5 shadow-[0_4px_18px_rgba(45,40,30,0.035)] transition-all duration-500 ease-out hover:-translate-y-0.5 hover:bg-[#faf8f3] hover:border-[#c8bb94] hover:shadow-[0_16px_40px_rgba(65,55,38,0.09)] ${addresses.isDefault
+                        ? "border-[#bca875] bg-[#f5f4ef]"
+                        : "border-[#e2ded4] bg-[#f5f4ef]"
                       }`}
                   >
 

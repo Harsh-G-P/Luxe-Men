@@ -231,7 +231,7 @@ export default function OrderDetailPage({ id }: Props) {
     }
 
     return (
-        <section className="min-h-screen bg-[#f6f4ef]">
+        <section className="min-h-screen bg-[#f7f6f2]">
             <div className="mx-auto max-w-7xl px-5 py-10 md:px-6 md:py-14">
 
                 {/* Back */}

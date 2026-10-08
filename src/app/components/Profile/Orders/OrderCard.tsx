@@ -54,21 +54,8 @@ export default function OrderCard({ order }: Props) {
 
   return (
     <div
-      className="
-    group
-    overflow-hidden
-    border
-    border-[#d8d5cf]
-    bg-[#fdfcf9]
-    transition-all
-    duration-500
-    ease-out
-    hover:-translate-y-0.5
-    hover:border-[#b9b3a8]
-    hover:bg-[#fdfbf7]
-  "
+      className=" overflow-hidden border border-[#e2ded4] bg-[#f5f4ef] shadow-[0_4px_18px_rgba(45,40,30,0.035)] transition-all duration-500 ease-out hover:border-[#c8bb94] hover:bg-[#faf8f3] hover:shadow-[0_16px_40px_rgba(65,55,38,0.09)]"
     >
-
 
       {/* Header */}
       <div className="border-b border-[#e4e1db] px-6 py-5 md:px-7">
@@ -115,7 +102,7 @@ export default function OrderCard({ order }: Props) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-end justify-between border-t border-[#e4e1db] bg-[#faf9f6] px-6 py-5 md:px-7">
+      <div className="flex items-end justify-between border-t border-[#e4e1db] px-6 py-5 md:px-7">
 
         <div>
           <p className="text-[9px] uppercase tracking-[0.32em] text-[#8b8881]">

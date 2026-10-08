@@ -562,7 +562,7 @@ export default function CartDetails() {
 
                         {/* ORDER SUMMARY */}
                         <aside className="lg:sticky lg:top-16 lg:self-start">
-                            <div className="relative overflow-hidden border border-[#d7d2c8] bg-[#ebe8e0] p-6 md:p-8">
+                            <div className="relative overflow-hidden border border-[#d7d2c8] bg-[#f1eee7] p-6 md:p-8">
 
                                 {/* DECORATIVE CORNER */}
                                 <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 border-l border-b border-[#c8b78e]/40" />

@@ -32,71 +32,71 @@ export default function UserProfile({ user }: UserProps) {
     user.accountDeletionStatus
   );
 
-  
-  
-useEffect(() => {
-  let stopped = false;
-  let redirecting = false;
 
-  const checkDeletionStatus = async () => {
-    if (stopped || redirecting) return;
 
-    try {
-      const res = await fetch("/api/user/delete-request", {
-        method: "GET",
-        cache: "no-store",
-        headers: {
-          "Cache-Control": "no-cache",
-        },
-      });
+  useEffect(() => {
+    let stopped = false;
+    let redirecting = false;
 
-      // User was deleted OR session is no longer valid
-      if (res.status === 404 || res.status === 401) {
-        redirecting = true;
-        stopped = true;
+    const checkDeletionStatus = async () => {
+      if (stopped || redirecting) return;
 
-        await signOut({
-          redirect: false,
+      try {
+        const res = await fetch("/api/user/delete-request", {
+          method: "GET",
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
         });
 
-        window.location.replace("/");
-        return;
+        // User was deleted OR session is no longer valid
+        if (res.status === 404 || res.status === 401) {
+          redirecting = true;
+          stopped = true;
+
+          await signOut({
+            redirect: false,
+          });
+
+          window.location.replace("/");
+          return;
+        }
+
+        if (!res.ok) {
+          return;
+        }
+
+        const data = await res.json();
+
+        const status = data.data?.accountDeletionStatus;
+
+        // Keep UI updated without page refresh
+        if (
+          status === "REQUESTED" ||
+          status === "NONE" ||
+          status === "REJECTED"
+        ) {
+          setDeletionStatus(status);
+        }
+      } catch (error) {
+        if (!stopped) {
+          console.error("Deletion status check failed:", error);
+        }
       }
+    };
 
-      if (!res.ok) {
-        return;
-      }
+    // Check immediately when page loads
+    checkDeletionStatus();
 
-      const data = await res.json();
+    // Check every 2 seconds
+    const interval = setInterval(checkDeletionStatus, 2000);
 
-      const status = data.data?.accountDeletionStatus;
-
-      // Keep UI updated without page refresh
-      if (
-        status === "REQUESTED" ||
-        status === "NONE" ||
-        status === "REJECTED"
-      ) {
-        setDeletionStatus(status);
-      }
-    } catch (error) {
-      if (!stopped) {
-        console.error("Deletion status check failed:", error);
-      }
-    }
-  };
-
-  // Check immediately when page loads
-  checkDeletionStatus();
-
-  // Check every 2 seconds
-  const interval = setInterval(checkDeletionStatus, 2000);
-
-  return () => {
-    stopped = true;
-    clearInterval(interval);
-  };
-}, []);
+    return () => {
+      stopped = true;
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -136,187 +136,344 @@ useEffect(() => {
   const alreadyRequested = deletionStatus === "REQUESTED";
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center p-4">
-      <div className="max-w-4xl w-full">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold">
-            Welcome back, {user.name} 👋
-          </h1>
+    <main className="min-h-screen bg-[#f7f6f2] text-[#272522]">
+      
+      <div className="mx-auto w-full max-w-6xl px-5 py-8 md:px-8 md:py-12">
 
-          <p className="mt-2 text-slate-500">
-            Manage your account and profile settings.
-          </p>
+        {/* PAGE HEADER */}
+        <div className="mb-8 border-b border-[#d8d4cb] pb-7">
+          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+
+            <div>
+              <p className="mb-2 text-[8px] uppercase tracking-[0.42em] text-[#9b8150]">
+                Private Account
+              </p>
+
+              <h1 className="font-serif text-4xl font-normal tracking-tight text-[#201f1c] md:text-5xl">
+                Welcome back, {user.name}
+              </h1>
+
+              <p className="mt-3 max-w-lg text-[10px] leading-5 text-[#77736b]">
+                Manage your account, personal details, orders and delivery
+                preferences from your private account.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="h-px w-8 bg-[#cfc7b7]" />
+
+              <span className="text-[8px] uppercase tracking-[0.3em] text-[#9b8150]">
+                Member Account
+              </span>
+            </div>
+
+          </div>
         </div>
 
-        <div className="mb-6 h-2 rounded-full bg-linear-to-r from-violet-600 via-indigo-600 to-cyan-500" />
+        {/* PROFILE FRAME */}
+        <div className=" overflow-hidden border border-[#e2ded4] bg-[#f5f4ef] shadow-[0_4px_18px_rgba(45,40,30,0.035)] transition-all duration-500 ease-out hover:bg-[#faf8f3] hover:shadow-[0_16px_40px_rgba(65,55,38,0.09)]">
 
-        {/* Profile Card */}
-        <div className="overflow-hidden rounded-3xl bg-white shadow-xl border border-slate-200">
-          {/* Banner */}
-          <div className="relative h-44 bg-linear-to-r from-emerald-400 via-cyan-400 to-blue-500">
-            <div>
-              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
-              <div className="absolute right-20 top-10 h-24 w-24 rounded-full bg-white/10" />
-              <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-white/20" />
-              <div className="absolute left-20 top-10 h-24 w-24 rounded-full bg-white/20" />
-            </div>
-          </div>
+          {/* TOP ACCENT */}
+          <div className="h-px w-full bg-[#bda875]" />
 
-          {/* Content */}
-          <div className="relative px-6 pb-8">
-            {/* Avatar */}
-            <div className="-mt-16">
-              <div className="relative inline-block">
-                <Image
-                  src={user.image || "/avatar/camel.png"}
-                  alt="avatar"
-                  width={128}
-                  height={128}
-                  className="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg"
-                />
+          {/* PROFILE INTRO */}
+          <div className="border-b border-[#d8d4cb] px-6 py-7 md:px-8">
 
-                <span className="absolute bottom-2 right-2 h-5 w-5 rounded-full bg-green-500 border-2 border-white" />
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+
+              {/* IDENTITY */}
+              <div className="flex items-center gap-5">
+
+                <div className="relative shrink-0">
+                  <Image
+                    src={user.image || "/avatar/camel.png"}
+                    alt="avatar"
+                    width={96}
+                    height={96}
+                    className="h-24 w-24 rounded-full border border-[#c9c1b2] bg-[#e8e4db] object-cover p-1"
+                  />
+
+                  <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full border-2 border-[#f1efe9] bg-[#75836c]" />
+                </div>
+
+                <div>
+                  <p className="mb-1 text-[8px] uppercase tracking-[0.32em] text-[#9b8150]">
+                    Account Holder
+                  </p>
+
+                  <h2 className="font-serif text-3xl font-normal text-[#272522]">
+                    {user.name}
+                  </h2>
+
+                  <p className="mt-2 text-[9px] tracking-[0.08em] text-[#858078]">
+                    @{user.username}
+                  </p>
+                </div>
+
               </div>
-            </div>
 
-            {/* Header */}
-            <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900">
-                  {user.name}
-                </h1>
-              </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row">
+              {/* ACTIONS */}
+              <div className="flex flex-wrap items-center gap-2">
+
                 <Link
                   href="/profile/orders"
-                  className="text-center rounded-2xl border border-slate-300 bg-white px-5 py-2.5 font-medium text-slate-900 transition hover:bg-slate-100"
+                  className="group relative border border-[#cbc5b9] bg-[#f8f6f1] px-5 py-3 text-[8px] uppercase tracking-[0.25em] text-[#4f4b44] transition-all duration-300 hover:border-[#9b8150] hover:bg-[#eeebe3]"
                 >
-                  My Orders
+                  Orders
+
+                  <span className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-[#9b8150] transition-transform duration-300 group-hover:scale-x-100" />
                 </Link>
 
                 <Link
                   href="/profile/addresses"
-                  className="text-center rounded-2xl bg-slate-200 px-5 py-2.5 font-medium text-black transition hover:bg-slate-300"
+                  className="group relative border border-[#cbc5b9] bg-[#f8f6f1] px-5 py-3 text-[8px] uppercase tracking-[0.25em] text-[#4f4b44] transition-all duration-300 hover:border-[#9b8150] hover:bg-[#eeebe3]"
                 >
                   Addresses
+
+                  <span className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-[#9b8150] transition-transform duration-300 group-hover:scale-x-100" />
                 </Link>
 
                 <Link
                   href="/profile/edit"
-                  className="text-center rounded-2xl bg-slate-900 px-5 py-2.5 font-medium text-white transition hover:bg-slate-750"
+                  className="group relative overflow-hidden bg-[#171614] px-5 py-3 text-[8px] uppercase tracking-[0.25em] text-white transition-colors duration-300 hover:bg-[#292722]"
                 >
-                  Edit Profile
+                  <span className="relative z-10">
+                    Edit Profile
+                  </span>
+
+                  <span className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-[#c4a66a] transition-transform duration-300 group-hover:scale-x-100" />
                 </Link>
+
               </div>
+
             </div>
 
-            {/* Info Cards */}
-            <div className="mt-8 grid gap-4 md:grid-cols-4">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:shadow-md">
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  Display Name
+          </div>
+
+          {/* ACCOUNT DETAILS */}
+          <div className="px-6 py-7 md:px-8">
+
+            <div className="mb-5 flex items-end justify-between border-b border-[#d8d4cb] pb-4">
+
+              <div>
+                <p className="text-[8px] uppercase tracking-[0.4em] text-[#9b8150]">
+                  Personal Information
                 </p>
 
-                <p className="mt-3 text-sm font-semibold text-slate-900">
+                <h3 className="mt-1.5 font-serif text-2xl font-normal text-[#272522]">
+                  Account Details
+                </h3>
+              </div>
+
+              <span className="font-serif text-lg italic text-[#c2b9a7]">
+                ☆
+              </span>
+
+            </div>
+
+
+            {/* DETAILS GRID */}
+            <div className="grid grid-cols-1 border border-[#d8d4cb] sm:grid-cols-2 lg:grid-cols-4">
+
+              {/* NAME */}
+              <div className="group border-b border-[#d8d4cb] p-5 transition-colors hover:bg-[#eeece6] sm:border-r lg:border-b-0">
+                <div className="flex items-start justify-between">
+
+                  <p className="text-[8px] uppercase tracking-[0.3em] text-[#9b8150]">
+                    Display Name
+                  </p>
+
+                  <span className="font-serif text-sm italic text-[#c7bfae]">
+                    01
+                  </span>
+
+                </div>
+
+                <p className="mt-6 font-serif text-xl font-normal text-[#302e2a]">
                   {user.name}
                 </p>
+
+                <div className="mt-4 h-px w-7 origin-left bg-[#bda875] transition-all duration-500 group-hover:w-14" />
+
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:shadow-md">
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  Username
+
+              {/* USERNAME */}
+              <div className="group border-b border-[#d8d4cb] p-5 transition-colors hover:bg-[#eeece6] lg:border-b-0 lg:border-r">
+                <div className="flex items-start justify-between">
+
+                  <p className="text-[8px] uppercase tracking-[0.3em] text-[#9b8150]">
+                    Username
+                  </p>
+
+                  <span className="font-serif text-sm italic text-[#c7bfae]">
+                    02
+                  </span>
+
+                </div>
+
+                <p className="mt-6 break-all font-serif text-xl font-normal text-[#302e2a]">
+                  @{user.username}
                 </p>
 
-                <p className="mt-3 text-sm font-semibold text-slate-900">
-                  {user.username}
-                </p>
+                <div className="mt-4 h-px w-7 origin-left bg-[#bda875] transition-all duration-500 group-hover:w-14" />
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:shadow-md">
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  Email
-                </p>
 
-                <p className="mt-3 text-sm font-semibold text-slate-900">
+              {/* EMAIL */}
+              <div className="group border-b border-[#d8d4cb] p-5 transition-colors hover:bg-[#eeece6] sm:border-r lg:border-b-0">
+                <div className="flex items-start justify-between">
+
+                  <p className="text-[8px] uppercase tracking-[0.3em] text-[#9b8150]">
+                    Email
+                  </p>
+
+                  <span className="font-serif text-sm italic text-[#c7bfae]">
+                    03
+                  </span>
+
+                </div>
+
+                <p className="mt-6 break-all text-[11px] tracking-[0.03em] text-[#4f4b44]">
                   {user.email.replace(/(.{2}).+(@.+)/, "$1****$2")}
                 </p>
+
+                <div className="mt-4 h-px w-7 origin-left bg-[#bda875] transition-all duration-500 group-hover:w-14" />
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:shadow-md">
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  Member Since
-                </p>
 
-                <p className="mt-3 text-sm font-semibold text-slate-900">
+              {/* MEMBER SINCE */}
+              <div className="group p-5 transition-colors hover:bg-[#eeece6]">
+                <div className="flex items-start justify-between">
+
+                  <p className="text-[8px] uppercase tracking-[0.3em] text-[#9b8150]">
+                    Member Since
+                  </p>
+
+                  <span className="font-serif text-sm italic text-[#c7bfae]">
+                    04
+                  </span>
+
+                </div>
+
+                <p className="mt-6 font-serif text-xl font-normal text-[#302e2a]">
                   {user.createdAt.toLocaleDateString()}
                 </p>
-              </div>
-            </div>
 
-            {/* About */}
-            <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <h2 className="text-lg font-semibold text-slate-900">
-                About
-              </h2>
-
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Welcome to your profile dashboard. Here you can manage your
-                account information, update your profile details, and customize
-                your experience.
-              </p>
-            </div>
-
-            {/* Account Deletion */}
-            <div className="mt-8 border border-neutral-200 bg-white">
-              <div className="border-b border-neutral-200 px-6 py-5">
-                <h2 className="text-sm uppercase tracking-[0.18em]">
-                  Account Deletion
-                </h2>
-
-                <p className="mt-1 text-xs leading-5 text-neutral-500">
-                  Need to delete your account? Submit a request and our team
-                  will review it.
-                </p>
+                <div className="mt-4 h-px w-7 origin-left bg-[#bda875] transition-all duration-500 group-hover:w-14" />
               </div>
 
-              <div className="px-6 py-6">
-                {/* Pending */}
-                {alreadyRequested && (
-                  <div className="border border-amber-200 bg-amber-50 px-5 py-5">
-                    <p className="text-xs uppercase tracking-[0.12em] text-amber-700">
-                      Account Deletion Requested
-                    </p>
+            </div>
 
-                    <p className="mt-3 text-sm leading-6 text-neutral-600">
-                      Your account deletion request is under review. Your
-                      account will remain active while our team carefully
-                      reviews your request and reaches a final decision.
-                    </p>
 
-                    {user.accountDeletionRequestedAt && (
-                      <p className="mt-4 text-xs text-neutral-500">
-                        Requested on{" "}
-                        {new Date(
-                          user.accountDeletionRequestedAt
-                        ).toLocaleString()}
+            {/* ABOUT */}
+            <div className="mt-7 border-t border-[#d8d4cb] pt-6">
+
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-[180px_1fr]">
+
+                <div>
+                  <p className="text-[8px] uppercase tracking-[0.4em] text-[#9b8150]">
+                    About
+                  </p>
+
+                  <p className="mt-2 font-serif text-xl text-[#302e2a]">
+                    Your Account
+                  </p>
+                </div>
+
+                <div className="border-l border-[#d8d4cb] pl-5">
+                  <p className="max-w-2xl text-[10px] leading-6 text-[#77736b]">
+                    Welcome to your private account. Here you can manage your
+                    personal information, update your profile details, review
+                    your orders and maintain your delivery preferences.
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* ACCOUNT DELETION */}
+          <div className="border-t border-[#d8d4cb]">
+
+            <div className="px-6 py-6 md:px-8">
+
+              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+
+                <div>
+                  <p className="text-[8px] uppercase tracking-[0.4em] text-[#9b8150]">
+                    Account Management
+                  </p>
+
+                  <h3 className="mt-2 font-serif text-2xl font-normal text-[#302e2a]">
+                    Account Deletion
+                  </h3>
+
+                  <p className="mt-2 max-w-xl text-[9px] leading-5 text-[#858078]">
+                    If you no longer wish to use your account, you may submit a
+                    deletion request for review by our team.
+                  </p>
+                </div>
+
+                <span className="font-serif text-xl italic text-[#c2b9a7]">
+                  ☆
+                </span>
+
+              </div>
+
+
+              {/* PENDING */}
+              {alreadyRequested && (
+                <div className="mt-6 border border-[#cbbd9d] bg-[#eeece5] p-5">
+
+                  <div className="flex items-start gap-3">
+
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#9b8150]" />
+
+                    <div>
+                      <p className="text-[8px] uppercase tracking-[0.25em] text-[#806a3e]">
+                        Deletion Request Under Review
                       </p>
-                    )}
+
+                      <p className="mt-3 max-w-2xl text-[10px] leading-6 text-[#706b63]">
+                        Your account deletion request has been received and is
+                        currently under review. Your account will remain active
+                        while our team reviews the request.
+                      </p>
+
+                      {user.accountDeletionRequestedAt && (
+                        <p className="mt-4 text-[8px] uppercase tracking-[0.15em] text-[#99948b]">
+                          Requested on{" "}
+                          {new Date(
+                            user.accountDeletionRequestedAt
+                          ).toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+
                   </div>
-                )}
 
-                {/* Request */}
-                {!alreadyRequested && !showForm && (
-                  <div>
-                    <div className="border border-neutral-200 bg-neutral-50 px-5 py-4">
-                      <p className="text-xs uppercase tracking-[0.12em] text-neutral-500">
-                        Account Deletion Request
+                </div>
+              )}
+
+
+              {/* DELETE REQUEST */}
+              {!alreadyRequested && !showForm && (
+                <div className="mt-6 border-t border-[#d8d4cb] pt-5">
+
+                  <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+
+                    <div>
+                      <p className="text-[8px] uppercase tracking-[0.25em] text-[#77736b]">
+                        Request Account Deletion
                       </p>
 
-                      <p className="mt-2 text-xs leading-6 text-neutral-600">
-                        Account deletion requests are reviewed by our team.
-                        Your account will remain active until the request is
-                        approved.
+                      <p className="mt-2 max-w-xl text-[9px] leading-5 text-[#99948b]">
+                        Requests are reviewed manually. Your account will remain
+                        active until the request has been approved.
                       </p>
                     </div>
 
@@ -326,73 +483,156 @@ useEffect(() => {
                         setShowForm(true);
                         setReason("");
                       }}
-                      className="mt-5 w-full border border-red-800 py-3 text-xs uppercase tracking-[0.12em] text-red-800 transition hover:bg-red-900 hover:text-white"
+                      className="group relative shrink-0 border border-[#9c6b63] px-6 py-3 text-[8px] uppercase tracking-[0.25em] text-[#8c655e] transition-all duration-300 hover:bg-[#8c655e] hover:text-white"
                     >
-                      Request Account Deletion
+                      Request Deletion
+
+                      <span className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-300 group-hover:scale-x-100" />
                     </button>
-                  </div>
-                )}
 
-                {/* Request Form */}
-                {!alreadyRequested && showForm && (
+                  </div>
+
+                </div>
+              )}
+
+
+              {/* DELETE FORM */}
+              {!alreadyRequested && showForm && (
+                <div className="mt-6 border-t border-[#d8d4cb] pt-6">
+
+                  <div className="mb-6">
+
+                    <p className="text-[8px] uppercase tracking-[0.3em] text-[#8c655e]">
+                      Confirmation Required
+                    </p>
+
+                    <h4 className="mt-2 font-serif text-2xl font-normal text-[#302e2a]">
+                      Are you certain?
+                    </h4>
+
+                    <p className="mt-2 max-w-xl text-[9px] leading-5 text-[#858078]">
+                      This will submit a request to our team. Your account will
+                      not be deleted immediately.
+                    </p>
+
+                  </div>
+
+
+                  {/* REASON */}
                   <div>
-                    <p className="text-xs uppercase tracking-[0.12em] text-neutral-500">
-                      Request Account Deletion
-                    </p>
 
-                    <h3 className="mt-3 text-lg font-medium tracking-[0.04em]">
-                      Are you sure you want to request account deletion?
-                    </h3>
+                    <label className="mb-2 block text-[8px] uppercase tracking-[0.25em] text-[#5f5b54]">
+                      Reason for Leaving
+                    </label>
 
-                    <p className="mt-3 text-xs leading-6 text-neutral-500">
-                      This will send a deletion request to our team. Your
-                      account will not be deleted immediately.
-                    </p>
+                    <textarea
+                      value={reason}
+                      onChange={(e) => setReason(e.target.value)}
+                      placeholder="Tell us why you would like to delete your account..."
+                      rows={4}
+                      disabled={loading}
+                      className="w-full resize-none border border-[#d3cec3] bg-[#faf9f6] px-4 py-3 text-[10px] leading-5 text-[#302e2a] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#f8f6f0] disabled:cursor-not-allowed disabled:opacity-60"
+                    />
 
-                    <div className="mt-6">
-                      <label className="mb-2 block text-xs uppercase tracking-[0.12em] text-neutral-500">
-                        Reason
-                      </label>
-
-                      <textarea
-                        value={reason}
-                        onChange={(e) => setReason(e.target.value)}
-                        placeholder="Tell us why you would like to delete your account..."
-                        rows={4}
-                        disabled={loading}
-                        className="w-full resize-none border border-neutral-200 bg-white px-4 py-3 text-xs leading-6 outline-none transition placeholder:text-neutral-400 focus:border-black"
-                      />
-                    </div>
-
-                    <div className="mt-6 flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowForm(false);
-                          setReason("");
-                        }}
-                        disabled={loading}
-                        className="flex-1 border border-neutral-300 py-3 text-xs uppercase tracking-[0.12em] transition hover:bg-neutral-100"
-                      >
-                        Keep Account
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleSubmit}
-                        disabled={loading}
-                        className="flex-1 border border-red-800 bg-red-800 py-3 text-xs uppercase tracking-[0.12em] text-white transition hover:bg-red-900 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        {loading ? "Submitting..." : "Submit Request"}
-                      </button>
-                    </div>
                   </div>
-                )}
-              </div>
+
+
+                  {/* FORM ACTIONS */}
+                  <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowForm(false);
+                        setReason("");
+                      }}
+                      disabled={loading}
+                      className="border border-[#d0cbc1] bg-[#f8f6f0] px-6 py-3 text-[8px] uppercase tracking-[0.25em] text-[#5f5b54] transition-all duration-300 hover:border-[#9b8150] hover:bg-[#eeebe3] disabled:opacity-50"
+                    >
+                      Keep Account
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                      disabled={loading}
+                      className="border border-[#8c655e] bg-[#8c655e] px-6 py-3 text-[8px] uppercase tracking-[0.25em] text-white transition-all duration-300 hover:bg-[#754f49] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {loading ? "Submitting..." : "Submit Request"}
+                    </button>
+
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* FOOTER DETAIL */}
+        <div className="mt-8 grid grid-cols-1 border-y border-[#d8d4cb] sm:grid-cols-3">
+
+          {/* 01 */}
+          <div className="flex items-start gap-5 px-5 py-5 sm:block sm:border-r sm:border-[#d8d4cb]">
+            <p className="shrink-0 font-serif text-lg text-[#302e2a]">
+              01
+            </p>
+
+            <div>
+              <p className="mt-0.5 text-[8px] uppercase tracking-[0.25em] text-[#5f5b54] sm:mt-2">
+                Private Account
+              </p>
+
+              <p className="mt-2 text-[9px] leading-5 text-[#99948b]">
+                Your personal account information remains securely managed.
+              </p>
             </div>
           </div>
+
+
+          {/* 02 */}
+          <div className="flex items-start gap-5 border-t border-[#d8d4cb] px-5 py-5 sm:block sm:border-y-0 sm:border-r">
+            <p className="shrink-0 font-serif text-lg text-[#302e2a]">
+              02
+            </p>
+
+            <div>
+              <p className="mt-0.5 text-[8px] uppercase tracking-[0.25em] text-[#5f5b54] sm:mt-2">
+                Order History
+              </p>
+
+              <p className="mt-2 text-[9px] leading-5 text-[#99948b]">
+                Review previous orders and manage your delivery destinations.
+              </p>
+            </div>
+          </div>
+
+
+          {/* 03 */}
+          <div className="flex items-start gap-5 border-t border-[#d8d4cb] px-5 py-5 sm:block sm:border-t-0">
+            <p className="shrink-0 font-serif text-lg text-[#302e2a]">
+              03
+            </p>
+
+            <div>
+              <p className="mt-0.5 text-[8px] uppercase tracking-[0.25em] text-[#5f5b54] sm:mt-2">
+                Account Control
+              </p>
+
+              <p className="mt-2 text-[9px] leading-5 text-[#99948b]">
+                Update your details or manage your account preferences anytime.
+              </p>
+            </div>
+          </div>
+
         </div>
+
       </div>
-    </div>
+    </main>
   );
+
 }

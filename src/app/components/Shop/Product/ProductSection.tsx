@@ -25,7 +25,7 @@ type Props = {
 
 function ProductCard({ product }: { product: Product }) {
     return (
-        <div className="w-full border border-gray-200 bg-white p-4">
+        <div className="w-full border border-gray-200 bg-[#f5f4ef] p-4">
             <Link
                 href={`/product/${product.slug}`}
                 className="
@@ -321,12 +321,11 @@ function ProductCard({ product }: { product: Product }) {
                         className="
                             mx-auto
                             max-w-[85%]
-                            text-base
+                            text-sm
                             font-medium
                             leading-snug
                             tracking-[-0.01em]
                             text-black
-                            xl:text-xl
                         "
                     >
                         {product.title}
@@ -372,7 +371,7 @@ function ProductCard({ product }: { product: Product }) {
                             group/view
                             relative
                             flex
-                            h-12
+                            h-11
                             flex-1
                             items-center
                             justify-center
@@ -416,20 +415,6 @@ function ProductCard({ product }: { product: Product }) {
                             VIEW DETAILS
                         </span>
 
-
-                        <span
-                            className="
-                                absolute
-                                right-4
-                                z-40
-                                text-xl
-                                font-light
-                                text-black
-                                xl:right-6
-                            "
-                        >
-                            +
-                        </span>
                     </div>
 
                     {/* SHOPPING BAG */}
@@ -437,8 +422,8 @@ function ProductCard({ product }: { product: Product }) {
                         className="
                             relative
                             flex
-                            h-13
-                            w-13
+                            h-12
+                            w-12
                             shrink-0
                             items-center
                             justify-center

@@ -38,7 +38,9 @@ export default function OrderTimeline({ status }: Props) {
   const currentStep = steps.findIndex((step) => step.key === status);
 
   return (
-    <div className="overflow-hidden border border-[#eeece7] bg-[#fdfcf9]">
+    <div
+      className=" overflow-hidden border border-[#e2ded4] bg-[#f5f4ef] shadow-[0_4px_18px_rgba(45,40,30,0.035)] transition-all duration-500 ease-out hover:border-[#c8bb94] hover:bg-[#faf8f3] hover:shadow-[0_16px_40px_rgba(65,55,38,0.09)]"
+    >
       
       {/* Header */}
       <div className="border-b border-[#eeece7] px-5 py-4 md:px-6">

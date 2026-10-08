@@ -23,16 +23,7 @@ export default function OrderItem({ item }: Props) {
 
     return (
         <div
-            className="
-                group
-                border-b
-                border-[#eeece7]
-                bg-[#fdfcf9]
-                transition-colors
-                duration-500
-                last:border-b-0
-                hover:bg-[#f8f6f1]
-            "
+            className=" group border-b border-[#eeece7] transition-colors duration-500 last:border-b-0 hover:bg-[#fdfbf7]"
         >
             <div className="flex gap-5 px-6 py-6 md:gap-7 md:px-7">
 

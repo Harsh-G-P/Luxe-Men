@@ -56,7 +56,7 @@ export default function AddAddressPage() {
             minHeight: "50px",
             borderRadius: "0px",
             borderColor: state.isFocused ? "#9b8150" : "#d3cec3",
-            backgroundColor: "#faf9f6",
+            backgroundColor: "#f5f4ef",
             boxShadow: "none",
             transition: "all 300ms ease",
             "&:hover": {
@@ -293,7 +293,9 @@ export default function AddAddressPage() {
                 <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_280px]">
 
                     {/* FORM */}
-                    <div className="border border-[#d8d4cb] bg-[#f1efe9]">
+                    <div
+                        className=" overflow-hidden border border-[#e2ded4] bg-[#f5f4ef] shadow-[0_4px_18px_rgba(45,40,30,0.035)] transition-all duration-500 ease-out hover:border-[#c8bb94] hover:bg-[#faf8f3] hover:shadow-[0_16px_40px_rgba(65,55,38,0.09)]"
+                    >
 
                         {/* FORM HEADER */}
                         <div className="border-b border-[#d6d1c7] px-6 py-6 md:px-9">
@@ -362,7 +364,7 @@ export default function AddAddressPage() {
                                             fullname: e.target.value,
                                         })
                                     }
-                                    className="w-full border border-[#d3cec3] bg-[#faf9f6] px-4 py-3.5 text-[11px] text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
+                                    className="w-full border border-[#d3cec3] bg-[#f5f4ef] px-4 py-3.5 text-[11px] text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
                                 />
 
                                 {fieldErrors.fullname && (
@@ -426,7 +428,7 @@ export default function AddAddressPage() {
                                             })
                                         }
                                         placeholder="Enter phone number"
-                                        className="w-full border border-[#d3cec3] bg-[#faf9f6] px-4 py-3.5 text-[11px] text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
+                                        className="w-full border border-[#d3cec3] bg-[#f5f4ef] px-4 py-3.5 text-[11px] text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
                                     />
 
                                     {fieldErrors.phone && (
@@ -456,7 +458,7 @@ export default function AddAddressPage() {
                                         })
                                     }
                                     placeholder="House No, Street, Area..."
-                                    className="w-full resize-none border border-[#d3cec3] bg-[#faf9f6] px-4 py-3.5 text-[11px] leading-5 text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
+                                    className="w-full resize-none border border-[#d3cec3] bg-[#f5f4ef] px-4 py-3.5 text-[11px] leading-5 text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
                                 />
 
                                 {fieldErrors.addressLine && (
@@ -563,7 +565,7 @@ export default function AddAddressPage() {
                                                 city: e.target.value,
                                             })
                                         }
-                                        className="w-full border border-[#d3cec3] bg-[#faf9f6] px-4 py-3.5 text-[11px] text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
+                                        className="w-full border border-[#d3cec3] bg-[#f5f4ef] px-4 py-3.5 text-[11px] text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
                                     />
 
                                     {fieldErrors.city && (
@@ -591,7 +593,7 @@ export default function AddAddressPage() {
                                             })
                                         }
                                         placeholder="e.g. 380015"
-                                        className="w-full border border-[#d3cec3] bg-[#faf9f6] px-4 py-3.5 text-[11px] text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
+                                        className="w-full border border-[#d3cec3] bg-[#f5f4ef] px-4 py-3.5 text-[11px] text-[#272522] outline-none transition-all placeholder:text-[#aaa59b] focus:border-[#9b8150] focus:bg-[#fdfcf9]"
                                     />
 
                                     {fieldErrors.postalCode && (
@@ -640,7 +642,9 @@ export default function AddAddressPage() {
                     {/* SIDE INFORMATION */}
                     <aside className="hidden lg:block">
 
-                        <div className="border border-[#d8d4cb] bg-[#eeece6] p-6">
+                        <div
+                            className=" overflow-hidden border p-6 border-[#e2ded4] bg-[#f5f4ef] shadow-[0_4px_18px_rgba(45,40,30,0.035)] transition-all duration-500 ease-out hover:border-[#c8bb94] hover:bg-[#faf8f3] hover:shadow-[0_16px_40px_rgba(65,55,38,0.09)]"
+                        >
 
                             <p className="text-[8px] uppercase tracking-[0.35em] text-[#9b8150]">
                                 Address Collection

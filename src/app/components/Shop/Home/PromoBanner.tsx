@@ -101,11 +101,11 @@ export default function PromoBanner({ product }: Props) {
                             }}
                             className="relative z-20 mx-auto -mt-16 w-82.5 sm:w-92.5 lg:-ml-40 lg:mt-0 lg:w-92.5"
                         >
-                            <div className="border border-gray-200 bg-white p-4">
+                            <div className="border border-gray-200 bg-[#f5f4ef] p-4">
 
                                 <Link
                                     href={`/product/${product.slug}`}
-                                    className="group relative block h-97.5 bg-[#faf9f6] sm:h-105"
+                                    className="group relative block h-97.5 bg-[#f5f4ef] sm:h-105"
                                 >
 
                                     {/* PRODUCT IMAGE - UNCHANGED */}
@@ -289,15 +289,11 @@ export default function PromoBanner({ product }: Props) {
                                                 VIEW DETAILS
                                             </span>
 
-                                            <span className="absolute right-4 z-40 text-lg font-light text-black">
-                                                +
-                                            </span>
-
                                         </div>
 
 
                                         {/* BAG */}
-                                        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+                                        <div className="relative flex h-10 w-10 shrink-0 items-center justify-center">
 
                                             <div className="absolute inset-0 bg-[#faf9f6]" />
 
