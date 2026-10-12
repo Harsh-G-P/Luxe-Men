@@ -210,7 +210,7 @@ export default async function ProductPage({ slug }: Props) {
                     />
 
                     {/* Details */}
-                    <section className="w-full bg-white px-5 py-12">
+                    <section className="w-full bg-white py-12">
                         <ProductDetails
                             product={formattedProduct}
                             totalStock={totalStock}

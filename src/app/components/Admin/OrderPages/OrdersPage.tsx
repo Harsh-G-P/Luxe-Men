@@ -236,7 +236,7 @@ export default function OrdersPage({
     };
 
     return (
-        <div className="w-full px-6">
+        <div className="w-full">
 
             {/* Header */}
 

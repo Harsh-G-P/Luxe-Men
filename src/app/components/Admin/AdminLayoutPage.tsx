@@ -62,7 +62,7 @@ export default function AdminLayoutPage({
     };
 
     return (
-        <main className="min-h-screen bg-[#f7f7f5] text-[#111111]">
+        <main className="min-h-screen text-[#111111]">
             <div className="flex min-h-screen">
 
                 {/* ================= DESKTOP SIDEBAR ================= */}

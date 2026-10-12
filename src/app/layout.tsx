@@ -60,7 +60,7 @@ export default function RootLayout({
                     <ScrollRestoration />
                     <Toaster />
                     <Navbar />
-                    <main className="flex-1 mt-16">
+                    <main className="flex-1 mt-12">
                         {children}
                     </main>
                     <Footer />

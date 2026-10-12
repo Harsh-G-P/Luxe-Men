@@ -122,7 +122,7 @@ export default function ProductDetails({
 
                 {/* CONTENT */}
                 <div
-                    className=" relative z-20 px-4 pb-10 pt-14 sm:px-7 sm:pb-14 sm:pt-16 md:px-12 md:pb-20 md:pt-20 lg:px-28 lg:pb-28 lg:pt-32"
+                    className=" relative z-20 px-4 pb-10 pt-14 sm:px-7 sm:pb-14 sm:pt-16 md:px-10 md:pb-20 md:pt-20 lg:px-10 lg:pb-28 lg:pt-32"
                 >
 
                     {/* CENTERED PRODUCT TILE */}

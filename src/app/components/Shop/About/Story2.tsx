@@ -475,14 +475,16 @@ export default function Story2() {
                     {/* RIGHT IMAGE — DESKTOP ONLY */}
                     <div className="relative hidden min-h-[90vh] overflow-hidden lg:block">
 
+
                         <Image
                             src="/images/about1.jpg"
                             alt="Luxe Men collection"
                             fill
                             priority
                             className="object-cover p-10"
-                            sizes="50vw"
+                            sizes="(min-width: 768px) 50vw, 100vw"
                         />
+
 
                         <div
                             className="
@@ -510,14 +512,16 @@ export default function Story2() {
                         "
                     >
 
+
                         <Image
                             src="/images/about1.jpg"
                             alt="Luxe Men collection"
                             fill
                             priority
                             className="object-cover"
-                            sizes="100vw"
+                            sizes="(min-width: 768px) 50vw, 100vw"
                         />
+
 
                         <div className="absolute inset-0 bg-[#171714]/10" />
 

@@ -289,8 +289,9 @@ export default function Ourstory() {
                             fill
                             priority
                             className="object-cover object-[center_25%] p-10"
-                            sizes="50vw"
+                            sizes="(min-width: 1024px) 50vw, 1px"
                         />
+
 
                         <div className="absolute inset-0 bg-black/20" />
 
@@ -307,7 +308,7 @@ export default function Ourstory() {
                             fill
                             priority
                             className="object-cover object-center"
-                            sizes="100vw"
+                            sizes="(min-width: 768px) calc(100vw - 3rem), (min-width: 640px) calc(100vw - 3rem), calc(100vw - 2rem)"
                         />
 
                         <div className="absolute inset-0 bg-black/20" />

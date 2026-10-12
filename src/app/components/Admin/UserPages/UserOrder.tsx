@@ -48,7 +48,7 @@ const formatDateTime = (date: string) =>
     timeStyle: "short",
   });
 
-const ORDERS_PER_PAGE = 1;
+const ORDERS_PER_PAGE = 7;
 
 export default function UserOrders({ orders }: Props) {
   const [currentPage, setCurrentPage] = useState(1);

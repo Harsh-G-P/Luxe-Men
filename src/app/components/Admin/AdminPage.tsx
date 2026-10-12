@@ -267,7 +267,7 @@ export default function AdminPage({ adminName }: Props) {
 
 
     return (
-        <main className="min-h-screen bg-[#f7f7f5] text-[#111111]">
+        <main className="min-h-screen bg-[#f5f4ef] text-[#111111]">
             <div className="w-full">
 
                 {/* Welcome */}

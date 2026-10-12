@@ -177,7 +177,7 @@ export default function ProductPage({
     };
 
     return (
-        <div className="w-full px-6">
+        <div className="w-full">
 
             {/* Header */}
 

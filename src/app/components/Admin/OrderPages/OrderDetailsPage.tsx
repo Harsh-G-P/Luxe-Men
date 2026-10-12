@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import ShippingAddress from "../../Profile/Orders/ShippingAddress";
-import OrderPreferences from "../../Profile/Orders/OrderPreferences";
 import CustomerInformation from "./CustomerInformation";
 import AdminActions from "./AdminActions";
 import OrderSummary from "./OrderSummary";
@@ -10,6 +8,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import OrderTimeline from "./OrderTimeline";
 import OrderProducts from "./OrderProducts";
+import ShippingAddress from "./ShippingAddress";
+import OrderPreferences from "./OrderPreferences";
 
 
 type Props = {

@@ -150,7 +150,7 @@ export default function MiniCart({ open, onClose }: Props) {
             <div
                 ref={cartRef}
                 onClick={(e) => e.stopPropagation()}
-                className={` fixed right-4 top-19 z-50 w-[calc(100%-32px)] max-w-110 overflow-hidden border border-[#d8d3c8] bg-[#f7f5ef] shadow-[0_25px_70px_rgba(35,32,26,0.16)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:right-8 lg:right-14 ${open
+                className={` fixed right-4 top-19 z-50 w-[calc(100%-32px)] max-w-110 overflow-hidden border border-[#d8d3c8] bg-[#f5f4ef] shadow-[0_25px_70px_rgba(35,32,26,0.16)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:right-8 lg:right-14 ${open
                         ? "translate-y-0 scale-100 opacity-100"
                         : "-translate-y-3 scale-[0.98] pointer-events-none opacity-0"
                     }
@@ -465,7 +465,7 @@ export default function MiniCart({ open, onClose }: Props) {
 
                 {/* FOOTER */}
                 {!loading && items.length > 0 && (
-                    <div className="border-t border-[#d5d0c6] bg-[#ebe8e0] px-6 py-5">
+                    <div className="border-t border-[#d5d0c6] bg-[#f5f4ef] px-6 py-5">
 
                         {/* SUBTOTAL */}
                         <div className="flex items-end justify-between">

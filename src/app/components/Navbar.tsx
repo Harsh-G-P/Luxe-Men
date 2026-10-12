@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -5,91 +6,34 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import MiniCart from "./MiniCart";
-import { ShoppingBag } from "lucide-react";
+import {
+    Menu,
+    X,
+    UserRound,
+    ChevronDown,
+    BriefcaseBusiness,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [profileOpen, setProfileOpen] = useState(false);
+    const [miniCartOpen, setMiniCartOpen] = useState(false);
+    const [cartCount, setCartCount] = useState(0);
 
     const pathname = usePathname();
     const router = useRouter();
-
     const { data: session } = useSession();
-
     const user = session?.user;
 
     const initials = user?.name
         ? user.name
             .split(" ")
-            .map((n) => n[0])
+            .map((part) => part[0])
             .join("")
             .toUpperCase()
         : "?";
-
-    useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 20);
-
-        window.addEventListener("scroll", handleScroll);
-
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    const [profileOpen, setProfileOpen] = useState(false);
-    const [miniCartOpen, setMiniCartOpen] = useState(false);
-    const [cartCount, setCartCount] = useState(0);
-
-    useEffect(() => {
-        if (!user) return;
-
-        const fetchCart = async () => {
-            try {
-                const res = await fetch("/api/cart");
-
-                const data = await res.json();
-
-                if (res.ok && data.success) {
-                    setCartCount(data.data.items.length);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchCart();
-
-        window.addEventListener("cartUpdated", fetchCart);
-
-        return () => {
-            window.removeEventListener("cartUpdated", fetchCart);
-        };
-    }, [user]);
-
-    useEffect(() => {
-        const handleOpenMiniCart = () => {
-            setMiniCartOpen(true);
-        };
-
-        window.addEventListener("openMiniCart", handleOpenMiniCart);
-
-        return () => {
-            window.removeEventListener("openMiniCart", handleOpenMiniCart);
-        };
-    }, []);
-
-    useEffect(() => {
-        const closeMenu = () => setProfileOpen(false);
-
-        if (profileOpen) {
-            window.addEventListener("click", closeMenu);
-        }
-
-        return () => {
-            window.removeEventListener("click", closeMenu);
-        };
-    }, [profileOpen]);
-
-    const active = pathname === "/" ? "home" : pathname.replace("/", "");
 
     const navItems = [
         { name: "Home", path: "/" },
@@ -99,283 +43,309 @@ export default function Navbar() {
         { name: "Contact", path: "/contact" },
     ];
 
-    return (
-        <nav
-            className={`fixed top-0 z-50 w-full backdrop-blur-md transition-all duration-300 ${scrolled ? "bg-white/80 shadow-sm" : "bg-transparent"
-                } ${menuOpen ? "pt-5 pb-5" : "pt-4 pb-4"} md:pt-0 md:pb-0`}
-        >
-            <div className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6">
+    useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 16);
 
-                {/* Desktop Navigation */}
-                <div className="hidden items-center gap-8 md:flex">
-                    {navItems.map(({ name, path }) => {
-                        const isActive = active === name.toLowerCase();
+        handleScroll();
+        window.addEventListener("scroll", handleScroll);
 
-                        return (
-                            <Link
-                                key={name}
-                                href={path}
-                                className={`text-[15px] font-medium transition ${isActive
-                                    ? "rounded-full bg-black px-4 py-2 text-white shadow-sm"
-                                    : "text-black hover:text-cyan-600"
-                                    }`}
-                            >
-                                {name}
-                            </Link>
-                        );
-                    })}
-                </div>
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
-                {/* Logo */}
-                <div
-                    onClick={() =>
-                        window.innerWidth >= 768
-                            ? router.push("/")
-                            : setMenuOpen((prev) => !prev)
+    useEffect(() => {
+        if (!user) {
+            setCartCount(0);
+            return;
+        }
+
+        const fetchCart = async () => {
+            try {
+                const res = await fetch("/api/cart");
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    setCartCount(data.data.items.length);
+                }
+            } catch (error) {
+                console.error("Failed to fetch cart:", error);
+            }
+        };
+
+        fetchCart();
+        window.addEventListener("cartUpdated", fetchCart);
+
+        return () => window.removeEventListener("cartUpdated", fetchCart);
+    }, [user]);
+
+    useEffect(() => {
+        const handleOpenMiniCart = () => setMiniCartOpen(true);
+
+        window.addEventListener("openMiniCart", handleOpenMiniCart);
+
+        return () =>
+            window.removeEventListener("openMiniCart", handleOpenMiniCart);
+    }, []);
+
+    useEffect(() => {
+        const closeProfile = () => setProfileOpen(false);
+
+        if (profileOpen) {
+            window.addEventListener("click", closeProfile);
+        }
+
+        return () => window.removeEventListener("click", closeProfile);
+    }, [profileOpen]);
+
+    const handleCartClick = () => {
+        if (!user) {
+            router.push("/login");
+            return;
+        }
+
+        if (cartCount === 0) {
+            toast.error("Your shopping bag is empty");
+            return;
+        }
+
+        setMiniCartOpen(true);
+        setMenuOpen(false);
+    };
+
+    return pathname.startsWith("/admin") ? null : (
+        <>
+            <header
+                className={`
+                    fixed inset-x-0 top-0 z-50
+                    border-b transition-all duration-300
+                    ${scrolled || menuOpen
+                        ? "border-black/10 bg-[#faf9f6]/95 shadow-[0_4px_24px_rgba(0,0,0,0.03)] backdrop-blur-xl"
+                        : "border-transparent bg-[#faf9f6]/80 backdrop-blur-md"
                     }
-                    className="absolute left-1/2 -translate-x-1/2 cursor-pointer select-none transition hover:opacity-80"
-                >
-                    <div className="flex items-center">
-                        <span className="rounded-l-md bg-black px-3 py-1 font-semibold text-white">
-                            LUXE
-                        </span>
+                `}
+            >
+                <div className="relative mx-auto grid h-17 max-w-400 grid-cols-3 items-center px-5 md:h-19 md:px-10 lg:px-14">
 
-                        <span className="rounded-r-md border border-black bg-white px-3 py-1 font-semibold text-black">
-                            MEN
-                        </span>
-                    </div>
-                </div>
-
-                {/* Mobile Menu Button */}
-                <button
-                    onClick={() => setMenuOpen((prev) => !prev)}
-                    className="absolute right-4 text-2xl md:hidden"
-                >
-                    ☰
-                </button>
-
-                {/* Desktop Right */}
-                <div className="hidden items-center gap-5 md:flex">
-                    {!user ? (
-                        <Link
-                            href="/login"
-                            className="text-[15px] font-medium text-black hover:text-cyan-600"
+                    {/* LEFT: NAVIGATION */}
+                    <div className="flex items-center justify-start">
+                        <button
+                            type="button"
+                            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+                            aria-expanded={menuOpen}
+                            onClick={() => setMenuOpen((prev) => !prev)}
+                            className="
+                                group flex items-center gap-2.5
+                                text-[#242321] transition-opacity
+                                hover:opacity-60
+                            "
                         >
-                            Login
-                        </Link>
-                    ) : (
-                        <>
-                            <button
-                                id="shopping-bag-btn-desktop"
-                                onClick={() => {
-                                    if (cartCount === 0) {
-                                        toast.error("Your shopping bag is empty");
-                                        return;
-                                    }
+                            {menuOpen ? (
+                                <X size={20} strokeWidth={1.3} />
+                            ) : (
+                                <Menu size={20} strokeWidth={1.3} />
+                            )}
 
-                                    setMiniCartOpen(true);
-                                }}
-                                className="relative p-1 text-black transition-all duration-200 hover:text-gray-600 mt-2"
-                            >
-                                <ShoppingBag className="h-6 w-6" />
+                            <span className="hidden text-[10px] uppercase tracking-[0.2em] sm:inline">
+                                {menuOpen ? "Close" : "Menu"}
+                            </span>
+                        </button>
+                    </div>
 
-                                {cartCount > 0 && (
-                                    <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1 text-[10px] font-semibold text-white">
-                                        {cartCount}
-                                    </span>
-                                )}
-                            </button>
+                    {/* CENTER: LOGO */}
+                    <Link
+                        href="/"
+                        aria-label="Luxe Men home"
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center justify-center"
+                    >
 
+                        <span className="flex items-baseline text-[16px] font-medium tracking-[0.24em] text-[#191918] sm:text-[18px]">
+                            LUXE
+                            <span className="ml-2 font-light tracking-[0.28em]">
+                                MEN
+                            </span>
+                        </span>
+
+                    </Link>
+
+                    {/* RIGHT: CART + PROFILE */}
+                    <div className="flex items-center justify-end gap-3 sm:gap-5">
+
+
+                        <button
+                            type="button"
+                            onClick={handleCartClick}
+                            aria-label={`Shopping bag${cartCount ? `, ${cartCount} items` : ""}`}
+                            className=" group relative flex h-9 w-9 items-center justify-center text-[#242321] transition-opacity duration-300 hover:opacity-55"
+                        >
+                            <BriefcaseBusiness
+                                size={19}
+                                strokeWidth={1.15}
+                                className="transition-transform duration-300 group-hover:-translate-y-0.5"
+                            />
+
+                            {cartCount > 0 && (
+                                <span
+                                    className=" absolute right-0 top-0 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[#242321] px-0.75 text-[8px] font-medium leading-none text-[#faf9f6]"
+                                >
+                                    {cartCount > 99 ? "99+" : cartCount}
+                                </span>
+                            )}
+                        </button>
+
+
+                        {user ? (
                             <div className="relative">
                                 <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
+                                    type="button"
+                                    aria-label="Open account menu"
+                                    aria-expanded={profileOpen}
+                                    onClick={(event) => {
+                                        event.stopPropagation();
                                         setProfileOpen((prev) => !prev);
                                     }}
-                                    className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-sm font-semibold text-white ring-2 ring-transparent transition hover:ring-gray-300"
+                                    className="
+                                        flex h-8 w-8 items-center justify-center
+                                        rounded-full border border-black/15
+                                        text-[10px] font-medium text-[#242321]
+                                        transition-colors hover:bg-black hover:text-white
+                                    "
                                 >
                                     {initials}
                                 </button>
 
                                 {profileOpen && (
-                                    <div className="absolute right-0 mt-3 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
-                                        <div className="border-b border-gray-100 px-5 py-4">
-                                            <p className="font-semibold text-gray-900">
+                                    <div
+                                        onClick={(event) => event.stopPropagation()}
+                                        className="
+                                            absolute right-0 top-full mt-4
+                                            w-64 border border-black/10
+                                            bg-[#faf9f6] py-2
+                                            shadow-[0_15px_50px_rgba(0,0,0,0.10)]
+                                        "
+                                    >
+                                        <div className="border-b border-black/10 px-5 py-4">
+                                            <p className="truncate text-sm font-medium text-[#242321]">
                                                 {user.name}
                                             </p>
-
-                                            <p className="mt-1 text-xs text-gray-500">
-                                                {user.email?.replace(/(.{2}).+(@.+)/, "$1****$2")}
+                                            <p className="mt-1 truncate text-xs text-black/50">
+                                                {user.email}
                                             </p>
+                                            {user.role === "ADMIN" && (
+                                                <p className="mt-2 text-[9px] uppercase tracking-[0.2em] text-black/50">
+                                                    Administrator
+                                                </p>
+                                            )}
                                         </div>
-                                        {user.role === "ADMIN" && (
-                                            <div className="px-5 pt-3">
-                                                <span className="rounded-full bg-black px-3 py-1 text-xs text-white">
-                                                    ADMIN
-                                                </span>
-                                            </div>
-                                        )}
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                router.push("/profile");
-                                                setProfileOpen(false);
-                                            }}
-                                            className="block w-full px-5 py-3 text-left text-sm transition hover:bg-gray-100"
+
+                                        <Link
+                                            href="/profile"
+                                            onClick={() => setProfileOpen(false)}
+                                            className="block px-5 py-3 text-xs tracking-wide text-[#242321] transition-colors hover:bg-black/4"
                                         >
-                                            Profile
-                                        </button>
+                                            My Account
+                                        </Link>
 
                                         {user.role === "ADMIN" && (
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    router.push("/admin");
-                                                    setProfileOpen(false);
-                                                }}
-                                                className="block w-full px-5 py-3 text-left text-sm transition hover:bg-gray-100"
+                                            <Link
+                                                href="/admin"
+                                                onClick={() => setProfileOpen(false)}
+                                                className="block px-5 py-3 text-xs tracking-wide text-[#242321] transition-colors hover:bg-black/4"
                                             >
                                                 Admin Dashboard
-                                            </button>
+                                            </Link>
                                         )}
 
                                         <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
+                                            type="button"
+                                            onClick={() => {
                                                 setProfileOpen(false);
                                                 signOut({ callbackUrl: "/login" });
                                             }}
-                                            className="block w-full px-5 py-3 text-left text-sm text-red-600 transition hover:bg-red-50"
+                                            className="w-full px-5 py-3 text-left text-xs tracking-wide text-black/60 transition-colors hover:bg-black/4 hover:text-black"
                                         >
-                                            Logout
+                                            Sign Out
                                         </button>
                                     </div>
                                 )}
                             </div>
-                        </>
-
-                    )}
+                        ) : (
+                            <Link
+                                href="/login"
+                                aria-label="Login"
+                                className="p-1 text-[#242321] transition-opacity hover:opacity-60"
+                            >
+                                <UserRound size={20} strokeWidth={1.3} />
+                            </Link>
+                        )}
+                    </div>
                 </div>
 
-            </div>
+                {/* NAVIGATION PANEL */}
+                <div
+                    className={`
+                        grid overflow-hidden transition-[grid-template-rows,opacity]
+                        duration-300 ease-out
+                        ${menuOpen
+                            ? "grid-rows-[1fr] opacity-100"
+                            : "grid-rows-[0fr] opacity-0"
+                        }
+                    `}
+                    aria-hidden={!menuOpen}
+                >
+                    <div className="min-h-0 overflow-hidden">
+                        <div className="mx-auto max-w-400 px-6 pb-8 pt-3 md:px-14 md:pb-10">
+                            <p className="mb-5 text-[9px] uppercase tracking-[0.3em] text-black/40">
+                                Discover Luxe Men
+                            </p>
 
-            {/* Mobile Menu */}
-            {menuOpen && (
-                <div className="mt-4 md:hidden">
-                    <div className="rounded-3xl border border-gray-200 bg-white/95 p-6 shadow-2xl backdrop-blur-xl">
-                        <div className="flex flex-col gap-2">
-                            {navItems.map(({ name, path }) => {
-                                const isActive = active === name.toLowerCase();
+                            <nav className="grid grid-cols-1 md:grid-cols-2">
+                                {navItems.map(({ name, path }, index) => {
+                                    const isActive = pathname === path;
 
-                                return (
-                                    <Link
-                                        key={name}
-                                        href={path}
-                                        onClick={() => setMenuOpen(false)}
-                                        className={`rounded-2xl px-4 py-3 text-center text-[16px] font-medium transition-all duration-300 ${isActive
-                                            ? "bg-black text-white"
-                                            : "text-gray-700 hover:bg-gray-100 hover:text-black"
-                                            }`}
-                                    >
-                                        {name}
-                                    </Link>
-                                );
-                            })}
-
-                            <div className="my-4 border-t border-gray-200" />
-                            <button
-                                id="shopping-bag-btn-mobile"
-                                onClick={() => {
-                                    if (cartCount === 0) {
-                                        toast.error("Your shopping bag is empty");
-                                        return;
-                                    }
-
-                                    setMiniCartOpen(true);
-                                    setMenuOpen(false);
-                                }}
-                                className="flex items-center justify-center gap-3 rounded-2xl border border-gray-200 px-4 py-3"
-                            >
-                                <ShoppingBag className="h-5 w-5" />
-
-                                <span>Shopping Bag</span>
-
-                                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1 text-[10px] text-white">
-                                    {cartCount}
-                                </span>
-                            </button>
-
-                            {!user ? (
-                                <Link
-                                    href="/login"
-                                    onClick={() => setMenuOpen(false)}
-                                    className="rounded-2xl border border-black px-4 py-3 text-center font-medium text-black transition hover:bg-black hover:text-white"
-                                >
-                                    Login
-                                </Link>
-                            ) : (
-                                <>
-                                    {/* User Card */}
-                                    <div className="mb-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black text-sm font-semibold text-white">
-                                                {initials}
-                                            </div>
-
-                                            <div className="min-w-0 flex-1">
-                                                <p className="truncate font-semibold text-gray-900">
-                                                    {user.name}
-                                                </p>
-
-                                                <p className="truncate text-xs text-gray-500">
-                                                    {user.email?.replace(/(.{2}).+(@.+)/, "$1****$2")}
-                                                </p>
-
-                                                {user.role === "ADMIN" && (
-                                                    <span className="mt-2 inline-flex rounded-full bg-black px-2.5 py-1 text-[10px] font-medium tracking-wider text-white">
-                                                        ADMIN
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <Link
-                                        href="/profile"
-                                        onClick={() => setMenuOpen(false)}
-                                        className="rounded-2xl px-4 py-3 text-center font-medium text-gray-700 transition hover:bg-gray-100 hover:text-black"
-                                    >
-                                        Profile
-                                    </Link>
-
-                                    {user.role === "ADMIN" && (
+                                    return (
                                         <Link
-                                            href="/admin"
+                                            key={name}
+                                            href={path}
+                                            tabIndex={menuOpen ? 0 : -1}
                                             onClick={() => setMenuOpen(false)}
-                                            className="rounded-2xl px-4 py-3 text-center font-medium text-gray-700 transition hover:bg-gray-100 hover:text-black"
+                                            className="
+                                                group flex items-center justify-between
+                                                border-b border-black/10
+                                                py-4 pr-3
+                                                transition-colors
+                                                hover:text-black/50
+                                                md:mr-10
+                                            "
                                         >
-                                            Admin Dashboard
-                                        </Link>
-                                    )}
+                                            <span className={`
+                                                text-sm tracking-wide md:text-base
+                                                ${isActive ? "text-black" : "text-black/75"}
+                                            `}>
+                                                <span className="mr-4 text-[9px] text-black/30">
+                                                    0{index + 1}
+                                                </span>
+                                                {name}
+                                            </span>
 
-                                    <button
-                                        onClick={() => signOut({ callbackUrl: "/login" })}
-                                        className="rounded-2xl border border-red-200 px-4 py-3 text-center font-medium text-red-600 transition hover:bg-red-600 hover:text-white"
-                                    >
-                                        Logout
-                                    </button>
-                                </>
-                            )}
+                                            <ChevronDown
+                                                size={15}
+                                                strokeWidth={1}
+                                                className="-rotate-90 text-black/30 transition-transform group-hover:translate-x-1"
+                                            />
+                                        </Link>
+                                    );
+                                })}
+                            </nav>
                         </div>
                     </div>
                 </div>
-            )}
+            </header>
 
             <MiniCart
                 open={miniCartOpen}
                 onClose={() => setMiniCartOpen(false)}
             />
-
-        </nav>
+            
+        </>
     );
 }

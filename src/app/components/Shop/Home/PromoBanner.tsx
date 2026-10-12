@@ -269,45 +269,6 @@ export default function PromoBanner({ product }: Props) {
 
                                     </div>
 
-                                    {/* HOVER ACTIONS */}
-                                    <div
-                                        className=" absolute bottom-6 left-5 right-5 z-30 flex items-center gap-3 translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
-                                    >
-
-                                        {/* VIEW DETAILS */}
-                                        <div className="group/view relative flex h-11 flex-1 items-center justify-center">
-
-                                            <div className="absolute inset-0 bg-[#faf9f6]" />
-
-                                            <div className="pointer-events-none absolute inset-0 z-30 border border-black/20" />
-
-                                            <div
-                                                className=" absolute left-1/2 top-1/2 z-10 h-[calc(100%-8px)] w-[calc(100%+8px)] -translate-x-1/2 -translate-y-1/2 border border-black/20 bg-[#faf9f6] transition-all duration-500 group-hover/view:h-full group-hover/view:w-full"
-                                            />
-
-                                            <span className="relative z-40 text-[11px] tracking-wide text-black">
-                                                VIEW DETAILS
-                                            </span>
-
-                                        </div>
-
-
-                                        {/* BAG */}
-                                        <div className="relative flex h-10 w-10 shrink-0 items-center justify-center">
-
-                                            <div className="absolute inset-0 bg-[#faf9f6]" />
-
-                                            <div className="pointer-events-none absolute inset-0 z-10 border border-black/20" />
-
-                                            <ShoppingBag
-                                                className="relative z-20 h-5 w-5 text-black"
-                                                strokeWidth={1.2}
-                                            />
-
-                                        </div>
-
-                                    </div>
-
                                 </Link>
 
                             </div>
@@ -373,7 +334,7 @@ export default function PromoBanner({ product }: Props) {
                                         group/shop
                                         relative
                                         flex
-                                        h-13
+                                        h-11
                                         w-fit
                                         min-w-48
                                         items-center
