@@ -26,109 +26,110 @@ export default function CustomerInformation({ customer }: Props) {
     setTimeout(() => setCopied(false), 1500);
   };
   return (
-    <div className="border border-neutral-200 bg-white">
+    <div className="overflow-hidden border border-[#e2ded4] bg-[#f5f4ef] shadow-[0_4px_18px_rgba(45,40,30,0.035)] transition-all duration-500 ease-out hover:border-[#c8bb94] hover:bg-[#faf8f3] hover:shadow-[0_16px_40px_rgba(65,55,38,0.09)]">
 
-      <div className="border-b border-neutral-200 px-6 py-5">
+      {/* Header */}
+      <div className="border-b border-[#eeece7] px-5 py-4 md:px-6">
+        <p className="text-[8px] uppercase tracking-[0.26em] text-[#aaa69e]">
+          Admin / Customer Management
+        </p>
 
-        <h2 className="text-sm uppercase tracking-[0.18em]">
-          Customer
+        <h2 className="mt-1 font-serif text-lg font-normal tracking-[0.01em] text-[#1b1a18]">
+          Customer Details
         </h2>
-
       </div>
 
-      <div className="space-y-5 px-6 py-6">
+      <div className="space-y-5 px-5 py-5 md:px-6">
 
+        {/* Customer Information */}
         <div>
-
-          <p className="font-medium">
+          <p className="font-serif text-[15px] font-normal tracking-[0.01em] text-[#1b1a18]">
             {customer.name}
           </p>
 
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 break-all text-[10px] tracking-[0.02em] text-[#817d75]">
             {customer.email}
           </p>
 
-          <div className="group">
-            <p className="mt-3 text-[11px] uppercase tracking-[0.12em] text-neutral-400">
+          {/* Customer ID */}
+          <div className="group mt-4">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[#aaa69e]">
               Customer ID
             </p>
 
             <div className="mt-1 flex items-center gap-2">
-              <p className="break-all text-xs text-neutral-700">
+              <p className="min-w-0 break-all text-[10px] tracking-[0.02em] text-[#57534c]">
                 {customer.id}
               </p>
 
               <button
                 type="button"
                 onClick={handleCopy}
-                className="opacity-0 transition-opacity group-hover:opacity-100"
+                className="shrink-0 text-[#aaa69e] transition-colors duration-300 hover:text-[#1b1a18] focus-visible:outline-1 focus-visible:outline-[#9a8a74]"
                 title={copied ? "Copied!" : "Copy Customer ID"}
+                aria-label={copied ? "Customer ID copied" : "Copy Customer ID"}
               >
                 {copied ? (
-                  <Check className="h-3.5 w-3.5 text-green-600" />
+                  <Check className="h-3.5 w-3.5 text-[#6f8068]" />
                 ) : (
-                  <Copy className="h-3.5 w-3.5 text-neutral-500 hover:text-neutral-900" />
+                  <Copy className="h-3.5 w-3.5" />
                 )}
               </button>
             </div>
           </div>
-
         </div>
 
-        <div className="space-y-4">
+        {/* Customer Metadata */}
+        <div className="space-y-4 border-t border-[#e2ded4] pt-4">
 
-          <div className="flex justify-between">
-
-            <span className="text-xs uppercase tracking-[0.12em] text-neutral-500">
-              Role
+          {/* Role */}
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[8px] uppercase tracking-[0.22em] text-[#aaa69e]">
+              Account Role
             </span>
 
             <span
-              className={`rounded-full px-3 py-1 text-[11px] font-medium uppercase ${customer.role === "ADMIN"
-                ? "bg-purple-100 text-purple-700"
-                : "bg-slate-100 text-slate-700"
+              className={`text-[8px] uppercase tracking-[0.2em] ${customer.role === "ADMIN"
+                  ? "text-[#806c94]"
+                  : "text-[#817d75]"
                 }`}
             >
               {customer.role}
             </span>
-
           </div>
 
-          <div className="flex justify-between">
-
-            <span className="text-xs uppercase tracking-[0.12em] text-neutral-500">
-              Joined
+          {/* Joined Date */}
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[8px] uppercase tracking-[0.22em] text-[#aaa69e]">
+              Member Since
             </span>
 
-            <span className="text-xs">
+            <span className="text-right text-[10px] tracking-[0.02em] text-[#57534c]">
               {new Date(customer.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
               })}
             </span>
-
           </div>
 
         </div>
 
-        <div className="border-t border-neutral-200 pt-5">
-
+        {/* View Customer */}
+        <div className="border-t border-[#e2ded4] pt-5">
           <Link
             href={`/admin/user/${customer.id}`}
-            className="group w-full inline-flex h-11 items-center justify-center gap-3 border border-black bg-white px-5 py-3 text-center  text-xs font-semibold uppercase tracking-[0.14em] text-black transition-all duration-200 hover:bg-black hover:text-white"
+            className="group inline-flex h-11 w-full items-center justify-center gap-3 border border-[#d9d5cd] bg-[#fdfcf9] px-5 text-center text-[9px] font-medium uppercase tracking-[0.2em] text-[#1b1a18] transition-all duration-300 hover:border-[#1b1a18] hover:bg-[#1b1a18] hover:text-white focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[#9a8a74]"
           >
-            <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+            <span className="text-base font-light leading-none transition-transform duration-300 group-hover:rotate-90">
               +
             </span>
-            View Customer
 
+            View Customer Profile
           </Link>
-
         </div>
 
       </div>
-
     </div>
   );
 }

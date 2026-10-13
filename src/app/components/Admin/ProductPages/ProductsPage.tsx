@@ -102,25 +102,40 @@ export default function ProductPage({
 
     if (isPending) {
         return (
-            <section className="w-full px-6 py-20">
-                <div className="mx-auto max-w-2xl border border-slate-200 bg-white px-12 py-20 text-center shadow-sm">
+            <section className="w-full px-5 py-16 sm:px-8 sm:py-20">
+                <div className="mx-auto max-w-2xl border border-[#dedbd4] bg-[#faf9f6] px-6 py-16 text-center sm:px-12 sm:py-20">
 
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
-                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-slate-950" />
+                    {/* Loading Indicator */}
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center border border-[#dedbd4] bg-[#f5f3ed]">
+                        <div className="h-6 w-6 animate-spin border-2 border-[#dedbd4] border-t-[#9b8150]" />
                     </div>
 
-                    <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
-                        Product
+                    {/* Eyebrow */}
+                    <p className="mt-8 text-[9px] font-medium uppercase tracking-[0.3em] text-[#9b8150]">
+                        LUXE MEN / PRODUCT MANAGEMENT
                     </p>
 
-                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em] text-slate-900">
+                    {/* Heading */}
+                    <h2 className="mt-4 text-2xl font-light uppercase tracking-[0.18em] text-[#1b1a18] sm:text-3xl">
                         Please Wait
                     </h2>
 
-                    <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-slate-500">
-                        We're processing your request. Please wait while
-                        we update your product catalog.
+                    {/* Divider */}
+                    <div className="mx-auto mt-6 h-px w-12 bg-[#b49a6c]" />
+
+                    {/* Description */}
+                    <p className="mx-auto mt-6 max-w-sm text-xs leading-6 text-[#817d75] sm:text-sm">
+                        We're processing your request.
+                        Please wait while we update your product catalog.
                     </p>
+
+                    {/* Loading Status */}
+                    <div className="mt-9 flex items-center justify-center gap-2">
+                        <span className="h-1 w-1 animate-pulse bg-[#9b8150]" />
+                        <span className="text-[8px] uppercase tracking-[0.22em] text-[#aaa49b]">
+                            Updating Products
+                        </span>
+                    </div>
 
                 </div>
             </section>
@@ -176,500 +191,406 @@ export default function ProductPage({
         ];
     };
 
+
     return (
-        <div className="w-full">
+        <div className="w-full bg-[#f5f4ef]">
 
             {/* Header */}
+            <div className="mb-8 flex flex-col gap-6 border-b border-[#dedbd4] pb-8 lg:flex-row lg:items-end lg:justify-between">
+                <div className="min-w-0">
+                    <div className="mb-3 flex items-center gap-3">
+                        <span className="h-px w-7 bg-[#9a8a74]" />
 
-            <div className="mb-10 flex flex-col gap-6 border-b border-slate-200 pb-8 lg:flex-row lg:items-start lg:justify-between">
-
-                <div>
-
-                    <div className="mb-4 flex items-center gap-3">
-                        <span className="h-px w-8 bg-black" />
-
-                        <p className="text-[10px] font-medium uppercase tracking-[0.35em] text-neutral-400">
-                            Store / Catalog
+                        <p className="text-[8px] uppercase tracking-[0.28em] text-[#aaa69e]">
+                            Admin / Catalog Management
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <h1 className="font-serif text-3xl font-normal tracking-[0.02em] text-[#1b1a18] sm:text-4xl">
+                        Products
+                    </h1>
 
-                        <h1 className="text-4xl font-light uppercase tracking-[0.08em] text-neutral-950">
-                            Products
-                        </h1>
-
-                    </div>
-
-                    <p className="mt-4 text-sm text-neutral-500">
-                        Manage your collection, inventory and product visibility.
+                    <p className="mt-2 max-w-xl text-[10px] leading-6 text-[#817d75]">
+                        Manage your collection, inventory, pricing, and product visibility.
                     </p>
-
                 </div>
-
 
                 <Link
                     href="/admin/products/new"
-                    className="group inline-flex h-12 items-center gap-3 border border-black bg-black px-6 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-white hover:text-black"
+                    className="group inline-flex min-h-11 items-center justify-center gap-3 border border-[#1b1a18] bg-[#1b1a18] px-5 py-3 text-[8px] uppercase tracking-[0.18em] text-[#faf9f6] transition-all duration-300 hover:border-[#6f604e] hover:bg-[#6f604e]"
                 >
-                    <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+                    <span className="text-base font-light leading-none transition-transform duration-300 group-hover:rotate-90">
                         +
                     </span>
 
                     Add Product
                 </Link>
-
             </div>
 
+            {/* Filters */}
             <ProductFilter />
 
             {/* Product List */}
+            <div className="mt-8 space-y-5">
 
-            <div className="mt-7 space-y-5">
-
-                <div className="flex items-center justify-between px-1">
-
+                {/* List Heading */}
+                <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[#dedbd4] pb-4">
                     <div>
-                        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+                        <p className="text-[8px] uppercase tracking-[0.24em] text-[#aaa69e]">
+                            Store Records
+                        </p>
+
+                        <h2 className="mt-2 font-serif text-xl font-normal text-[#1b1a18]">
                             Product List
                         </h2>
 
-                        <p className="mt-1 text-xs text-slate-400">
-                            Your current catalog
+                        <p className="mt-1 text-[9px] text-[#817d75]">
+                            Review your catalog, stock levels, and product details.
                         </p>
                     </div>
 
-                    <span className="text-sm text-slate-500">
-                        {pagination.totalProducts}{" "}
-                        {pagination.totalProducts === 1
-                            ? "Product"
-                            : "Products"}
-                    </span>
-
+                    <p className="text-[9px] uppercase tracking-[0.14em] text-[#817d75]">
+                        <span className="text-[#1b1a18]">
+                            {pagination.totalProducts}
+                        </span>{" "}
+                        {pagination.totalProducts === 1 ? "Product" : "Products"}
+                    </p>
                 </div>
 
+                {/* Products */}
                 {products.length > 0 ? (
                     products.map((product) => {
-
                         const stock = product.variants.reduce(
-                            (total, variant) =>
-                                total + variant.stock,
+                            (total, variant) => total + variant.stock,
                             0
                         );
 
                         return (
                             <div
                                 key={product.id}
-                                className="group overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-px hover:border-slate-300 hover:shadow-[0_12px_35px_rgba(15,23,42,0.08)]"
+                                className="group overflow-hidden border border-[#e2ded4] bg-[#faf9f6] transition-all duration-300 hover:border-[#c8bb94] hover:bg-[#fdfcf9] hover:shadow-[0_10px_30px_rgba(45,40,30,0.06)]"
                             >
+                                <div className="grid gap-6 p-5 md:p-6 lg:grid-cols-[1.5fr_1.15fr_0.9fr] lg:gap-7">
 
-                                <div className="grid gap-8 p-6 lg:grid-cols-[1.6fr_1.2fr_0.9fr_1fr]">
-
-                                    {/* Product */}
-
-                                    <div className="flex min-w-0 items-center gap-5">
-
-                                        {/* Image */}
-
+                                    {/* Product Information */}
+                                    <div className="flex min-w-0 items-start gap-4">
                                         <div className="relative shrink-0">
-
-                                            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-1 shadow-sm">
-
-                                                {product.images?.length >
-                                                    0 ? (
+                                            <div className="border border-[#e2ded4] bg-[#f3f0e9] p-1">
+                                                {product.images?.length > 0 ? (
                                                     <Image
-                                                        src={
-                                                            product
-                                                                .images[0]
-                                                        }
-                                                        alt={
-                                                            product.title
-                                                        }
+                                                        src={product.images[0]}
+                                                        alt={product.title}
                                                         width={82}
                                                         height={82}
-                                                        className="h-20.5 w-20.5 rounded-xl object-cover"
+                                                        className="h-20.5 w-20.5 object-cover"
                                                     />
                                                 ) : (
-                                                    <div className="flex h-20.5 w-20.5 items-center justify-center rounded-xl bg-slate-100">
-                                                        <Package className="h-7 w-7 text-slate-300" />
+                                                    <div className="flex h-20.5 w-20.5 items-center justify-center bg-[#eeece5]">
+                                                        <Package className="h-7 w-7 stroke-[1.2] text-[#b5afa3]" />
                                                     </div>
                                                 )}
-
                                             </div>
 
-                                            {/* Active indicator */}
-
+                                            {/* Active Indicator */}
                                             <span
-                                                className={`absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full border-2 border-white ${product.isActive
-                                                    ? "bg-emerald-500"
-                                                    : "bg-slate-400"
+                                                className={`absolute -bottom-1 -right-1 h-3 w-3 border-2 border-[#faf9f6] ${product.isActive
+                                                        ? "bg-[#7c896c]"
+                                                        : "bg-[#b9b3a8]"
                                                     }`}
                                             />
-
                                         </div>
 
-                                        {/* Product Info */}
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[7px] uppercase tracking-[0.22em] text-[#aaa69e]">
+                                                Product Reference
+                                            </p>
 
-                                        <div className="min-w-0">
+                                            <h3 className="mt-2 wrap-break-word font-serif text-base font-normal leading-6 tracking-[0.01em] text-[#1b1a18]">
+                                                {product.title}
+                                            </h3>
 
-                                            <div className="flex flex-wrap items-center gap-2">
-
-                                                <h3 className="truncate text-base font-semibold text-slate-900">
-                                                    {product.title}
-                                                </h3>
-
-                                                <span
-                                                    className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${product.isActive
-                                                        ? "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/10"
-                                                        : "bg-slate-100 text-slate-500 ring-1 ring-inset ring-slate-500/10"
-                                                        }`}
-                                                >
-                                                    {product.isActive
-                                                        ? "Active"
-                                                        : "Inactive"}
-                                                </span>
-
-                                            </div>
-
-                                            <p className="mt-2 text-sm font-medium text-slate-600">
+                                            <p className="mt-2 text-[10px] text-[#57534c]">
                                                 {product.brand.title}
                                             </p>
 
-                                            <p className="mt-1 text-xs text-slate-400">
+                                            <p className="mt-1 text-[9px] text-[#aaa49b]">
                                                 {product.category.title}
                                             </p>
 
+                                            <span
+                                                className={`mt-4 inline-block border px-2.5 py-1.5 text-[7px] uppercase tracking-[0.15em] ${product.isActive
+                                                        ? "border-[#d6dfd0] bg-[#eff2eb] text-[#68795c]"
+                                                        : "border-[#e2ded4] bg-[#f1efe9] text-[#817d75]"
+                                                    }`}
+                                            >
+                                                {product.isActive ? "Active" : "Inactive"}
+                                            </span>
                                         </div>
-
                                     </div>
 
                                     {/* Product Details */}
-
-                                    <div className="border-l border-slate-100 pl-0 lg:pl-7">
-
-                                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                    <div className="border-t border-[#e8e4dc] pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+                                        <p className="text-[7px] uppercase tracking-[0.22em] text-[#aaa69e]">
                                             Product Details
                                         </p>
 
-                                        <div className="mt-3 space-y-2.5">
-
-                                            <div className="flex items-center justify-between gap-4 text-sm">
-
-                                                <span className="text-slate-400">
+                                        <div className="mt-4 space-y-3">
+                                            <div className="flex items-start justify-between gap-4">
+                                                <span className="text-[10px] text-[#aaa49b]">
                                                     Brand
                                                 </span>
 
-                                                <span className="truncate font-medium text-slate-700">
+                                                <span className="min-w-0 text-right text-[10px] text-[#57534c]">
                                                     {product.brand.title}
                                                 </span>
-
                                             </div>
 
-                                            <div className="flex items-center justify-between gap-4 text-sm">
-
-                                                <span className="text-slate-400">
+                                            <div className="flex items-start justify-between gap-4">
+                                                <span className="text-[10px] text-[#aaa49b]">
                                                     Category
                                                 </span>
 
-                                                <span className="truncate font-medium text-slate-700">
+                                                <span className="min-w-0 text-right text-[10px] text-[#57534c]">
                                                     {product.category.title}
                                                 </span>
-
                                             </div>
 
-                                            <div className="flex items-center justify-between gap-4 text-sm">
-
-                                                <span className="text-slate-400">
-                                                    Stock
+                                            <div className="flex items-center justify-between gap-4 border-t border-[#eeece7] pt-3">
+                                                <span className="text-[10px] text-[#aaa49b]">
+                                                    Total Stock
                                                 </span>
 
                                                 <span
-                                                    className={`font-semibold ${stock === 0
-                                                        ? "text-rose-600"
-                                                        : stock < 10
-                                                            ? "text-amber-600"
-                                                            : "text-emerald-600"
+                                                    className={`font-serif text-lg ${stock === 0
+                                                            ? "text-[#9a6f63]"
+                                                            : stock < 10
+                                                                ? "text-[#a18450]"
+                                                                : "text-[#68795c]"
                                                         }`}
                                                 >
                                                     {stock}
                                                 </span>
-
                                             </div>
 
+                                            <p className="text-[8px] leading-5 text-[#aaa49b]">
+                                                Combined inventory across all variants.
+                                            </p>
                                         </div>
-
                                     </div>
 
-                                    {/* Price */}
-
-                                    <div className="border-l border-slate-100 pl-0 lg:pl-7">
-
-                                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                    {/* Price & Status */}
+                                    <div className="border-t border-[#e8e4dc] pt-5 lg:border-l lg:pt-0 lg:pl-6">
+                                        <p className="text-[7px] uppercase tracking-[0.22em] text-[#aaa69e]">
                                             Price & Status
                                         </p>
 
-                                        <div className="mt-3">
+                                        <p className="mt-3 font-serif text-2xl font-normal tracking-tight text-[#1b1a18]">
+                                            ${Number(product.price).toFixed(2)}
+                                        </p>
 
-                                            <p className="text-md font-semibold tracking-tight text-slate-900">
-                                                $
-                                                {Number(
-                                                    product.price
-                                                ).toFixed(2)}
-                                            </p>
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            {product.isFeatured && (
+                                                <span className="inline-flex items-center gap-1.5 border border-[#e1d4bc] bg-[#f4eee3] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[#8b704d]">
+                                                    <Star className="h-3 w-3 fill-current" />
+                                                    Featured
+                                                </span>
+                                            )}
 
-                                            <div className="mt-3 flex flex-wrap gap-2">
+                                            {product.bestseller && (
+                                                <span className="inline-flex items-center gap-1.5 border border-[#ded6e4] bg-[#f1edf3] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[#77657f]">
+                                                    <Trophy className="h-3 w-3" />
+                                                    Bestseller
+                                                </span>
+                                            )}
 
-                                                {product.isFeatured && (
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/10">
-
-                                                        <Star className="h-3 w-3 fill-current" />
-
-                                                        Featured
-
-                                                    </span>
-                                                )}
-
-                                                {product.bestseller && (
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-semibold text-violet-700 ring-1 ring-inset ring-violet-600/10">
-
-                                                        <Trophy className="h-3 w-3" />
-
-                                                        Bestseller
-
-                                                    </span>
-                                                )}
-
-                                                {!product.isFeatured &&
-                                                    !product.bestseller && (
-                                                        <span className="text-xs text-slate-400">
-                                                            Standard
-                                                        </span>
-                                                    )}
-
-                                            </div>
-
+                                            {!product.isFeatured && !product.bestseller && (
+                                                <span className="border border-[#e2ded4] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.12em] text-[#817d75]">
+                                                    Standard
+                                                </span>
+                                            )}
                                         </div>
 
-                                    </div>
-
-                                    {/* Actions */}
-
-                                    <div className="flex flex-col items-end justify-between border-l border-slate-100 pl-0 lg:pl-7">
-
-                                        <div className="text-right">
-
-                                            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                                                Added
+                                        <div className="mt-5 border-t border-[#eeece7] pt-4">
+                                            <p className="text-[7px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                                Added On
                                             </p>
 
-                                            <p className="mt-2 text-sm font-medium text-slate-600">
+                                            <p className="mt-2 text-[10px] text-[#57534c]">
                                                 {new Date(
                                                     product.createdAt
-                                                ).toLocaleDateString(
-                                                    "en-US",
-                                                    {
-                                                        day: "numeric",
-                                                        month: "short",
-                                                        year: "numeric",
-                                                    }
-                                                )}
+                                                ).toLocaleDateString("en-US", {
+                                                    day: "numeric",
+                                                    month: "short",
+                                                    year: "numeric",
+                                                })}
                                             </p>
-
                                         </div>
 
-                                        <div className="mt-6 flex w-full gap-2 lg:w-auto">
-
-                                            {/* Edit */}
-
+                                        {/* Actions */}
+                                        <div className="mt-5 flex gap-2">
                                             <Link
                                                 href={`/admin/products/${product.id}/edit`}
-                                                className="group/edit inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 hover:shadow-md lg:flex-none"
+                                                className="group/edit inline-flex min-h-10 flex-1 items-center justify-center gap-2 border border-[#dedbd4] bg-[#fdfcf9] px-3 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[#57534c] transition-all duration-300 hover:border-[#9a8a74] hover:text-[#1b1a18]"
                                             >
-                                                <Edit3 className="h-3.5 w-3.5 transition-transform group-hover/edit:-rotate-6" />
-
+                                                <Edit3 className="h-3.5 w-3.5 stroke-[1.5] transition-transform duration-300 group-hover/edit:-rotate-6" />
                                                 Edit
                                             </Link>
-
-                                            {/* Delete */}
 
                                             <button
                                                 type="button"
                                                 disabled={deletingId === product.id}
                                                 onClick={() => handleDelete(product.id)}
-                                                className="group/delete inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-rose-100 bg-rose-50 px-4 py-2.5 text-sm font-semibold text-rose-600 transition-all duration-200 hover:border-rose-200 hover:bg-rose-700 hover:text-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 lg:flex-none"
+                                                className="group/delete inline-flex min-h-10 flex-1 items-center justify-center gap-2 border border-[#e5d8d2] bg-[#f8f1ed] px-3 py-2.5 text-[8px] uppercase tracking-[0.12em] text-[#956d60] transition-all duration-300 hover:border-[#9a6f63] hover:bg-[#9a6f63] hover:text-[#faf9f6] disabled:cursor-not-allowed disabled:opacity-50"
                                             >
                                                 {deletingId === product.id ? (
                                                     <>
-                                                        <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-rose-200 border-t-rose-600 group-hover/delete:border-rose-400 group-hover/delete:border-t-white" />
-
-                                                        Deleting...
+                                                        <span className="h-3.5 w-3.5 animate-spin rounded-full border border-[#d9c1b7] border-t-[#956d60] group-hover/delete:border-t-white" />
+                                                        <span>Deleting</span>
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <Trash2 className="h-3.5 w-3.5 transition-transform group-hover/delete:scale-110" />
-
-                                                        Delete
+                                                        <Trash2 className="h-3.5 w-3.5 stroke-[1.5] transition-transform duration-300 group-hover/delete:scale-110" />
+                                                        <span>Delete</span>
                                                     </>
                                                 )}
                                             </button>
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
                         );
                     })
                 ) : (
-                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
-
-                        <div className="px-6 py-20 text-center">
-
-                            {/* Icon */}
-
-                            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
-                                <Package className="h-8 w-8 stroke-[1.2] text-slate-400" />
-                            </div>
-
-                            {/* Label */}
-
-                            <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
-                                Product Collection
-                            </p>
-
-                            {/* Title */}
-
-                            <h3 className="mt-4 text-2xl font-light uppercase tracking-[0.14em] text-slate-900">
-                                No Products Found
-                            </h3>
-
-                            {/* Description */}
-
-                            <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-slate-500">
-                                Your product catalog is currently empty or no products
-                                match the filters you've selected.
-                            </p>
-
-                            {/* Actions */}
-
-                            <div className="mt-9 flex items-center justify-center gap-3">
-
-                                <Link
-                                    href="/admin/products/new"
-                                    className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-6 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg"
-                                >
-                                    <span className="text-base leading-none">
-                                        +
-                                    </span>
-
-                                    Add Product
-                                </Link>
-
-                            </div>
-
+                    /* Empty State */
+                    <div className="border border-[#e2ded4] bg-[#faf9f6] px-6 py-16 text-center md:py-20">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center border border-[#dedbd4] bg-[#f3f0e9]">
+                            <Package className="h-5 w-5 stroke-[1.3] text-[#9a8a74]" />
                         </div>
 
+                        <p className="mt-7 text-[7px] uppercase tracking-[0.3em] text-[#aaa69e]">
+                            Admin / Catalog Records
+                        </p>
+
+                        <h3 className="mt-3 font-serif text-2xl font-normal text-[#1b1a18]">
+                            No Products Found
+                        </h3>
+
+                        <p className="mx-auto mt-3 max-w-md text-[10px] leading-6 text-[#817d75]">
+                            Your catalog is empty or no products match your current
+                            filters. Adjust your search criteria or add a new product
+                            to your collection.
+                        </p>
+
+                        <div className="mt-8 flex justify-center">
+                            <Link
+                                href="/admin/products/new"
+                                className="group inline-flex min-h-10 items-center justify-center gap-3 border border-[#1b1a18] bg-[#1b1a18] px-5 py-3 text-[8px] uppercase tracking-[0.18em] text-[#faf9f6] transition-all duration-300 hover:border-[#6f604e] hover:bg-[#6f604e]"
+                            >
+                                <span className="text-base font-light leading-none transition-transform duration-300 group-hover:rotate-90">
+                                    +
+                                </span>
+                                Add Product
+                            </Link>
+                        </div>
                     </div>
                 )}
-
             </div>
 
             {/* Pagination */}
-
             {pagination.totalPages > 0 && (
-                <div className="mt-7 flex items-center justify-between border-t border-slate-200 pt-5">
+                <div className="mt-8 flex flex-col gap-5 border-t border-[#dedbd4] pt-5 sm:flex-row sm:items-center sm:justify-between">
 
-                    <div className="text-sm text-slate-500">
+                    {/* Page Information */}
+                    <div className="flex items-center gap-2 text-[9px] uppercase tracking-[0.16em] text-[#817d75]">
+                        <span>Page</span>
 
-                        Page{" "}
-
-                        <span className="font-semibold text-slate-900">
-                            {pagination.page}
+                        <span className="font-medium text-[#1b1a18]">
+                            {String(pagination.page).padStart(2, "0")}
                         </span>
 
-                        {" "}of{" "}
+                        <span className="text-[#c3beb4]">/</span>
 
-                        <span className="font-semibold text-slate-900">
-                            {pagination.totalPages}
+                        <span>
+                            {String(pagination.totalPages).padStart(2, "0")}
                         </span>
-
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    {/* Pagination Controls */}
+                    <div className="flex flex-wrap items-center gap-1.5">
 
+                        {/* Previous */}
                         <button
                             type="button"
                             disabled={!pagination.hasPreviousPage || isPending}
-                            onClick={() =>
-                                handlePageChange(pagination.page - 1)
-                            }
-                            className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${pagination.hasPreviousPage
-                                ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
-                                : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
-                                }`}
+                            onClick={() => handlePageChange(pagination.page - 1)}
+                            className="group flex h-9 items-center gap-2 border border-[#dedbd4] bg-[#faf9f6] px-3 text-[8px] uppercase tracking-[0.12em] text-[#57534c] transition-all duration-300 hover:border-[#9b8150] hover:text-[#9b8150] disabled:cursor-not-allowed disabled:border-[#e8e4dc] disabled:bg-[#f1efe9] disabled:text-[#c3beb4] disabled:hover:border-[#e8e4dc] disabled:hover:text-[#c3beb4]"
                         >
-                            Previous
+                            <span className="transition-transform duration-300 group-hover:-translate-x-0.5">
+                                ←
+                            </span>
+                            <span className="hidden xs:inline">Previous</span>
+                            <span className="xs:hidden">Prev</span>
                         </button>
 
+                        {/* Page Numbers */}
                         <div className="flex flex-wrap items-center gap-1">
-
                             {getPaginationPages(
                                 pagination.page,
                                 pagination.totalPages
                             ).map((page, index) => {
-
                                 if (page === "...") {
                                     return (
                                         <span
                                             key={`ellipsis-${index}`}
-                                            className="flex h-9 min-w-9 items-center justify-center px-2 text-sm font-semibold text-slate-400"
+                                            aria-hidden="true"
+                                            className="flex h-9 min-w-5 items-center justify-center text-[10px] text-[#aaa49b]"
                                         >
-                                            ...
+                                            ···
                                         </span>
                                     );
                                 }
+
+                                const isActive = pagination.page === page;
 
                                 return (
                                     <button
                                         key={page}
                                         type="button"
                                         disabled={isPending}
-                                        onClick={() =>
-                                            handlePageChange(page)
-                                        }
-                                        className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold transition ${pagination.page === page
-                                                ? "bg-slate-950 text-white shadow-sm"
-                                                : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                                        aria-label={`Go to page ${page}`}
+                                        aria-current={isActive ? "page" : undefined}
+                                        onClick={() => handlePageChange(page)}
+                                        className={`relative flex h-9 min-w-9 items-center justify-center border px-2.5 text-[9px] transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${isActive
+                                                ? "border-[#1b1a18] bg-[#1b1a18] text-[#faf9f6]"
+                                                : "border-transparent bg-transparent text-[#817d75] hover:border-[#dedbd4] hover:bg-[#faf9f6] hover:text-[#9b8150]"
                                             }`}
                                     >
-                                        {page}
+                                        {String(page).padStart(2, "0")}
+
+                                        {isActive && (
+                                            <span className="absolute inset-x-2 -bottom-px h-0.5 bg-[#b49a6c]" />
+                                        )}
                                     </button>
                                 );
                             })}
-
                         </div>
 
+                        {/* Next */}
                         <button
                             type="button"
                             disabled={!pagination.hasNextPage || isPending}
-                            onClick={() =>
-                                handlePageChange(pagination.page + 1)
-                            }
-                            className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${pagination.hasNextPage
-                                ? "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
-                                : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
-                                }`}
+                            onClick={() => handlePageChange(pagination.page + 1)}
+                            className="group flex h-9 items-center gap-2 border border-[#dedbd4] bg-[#faf9f6] px-3 text-[8px] uppercase tracking-[0.12em] text-[#57534c] transition-all duration-300 hover:border-[#9b8150] hover:text-[#9b8150] disabled:cursor-not-allowed disabled:border-[#e8e4dc] disabled:bg-[#f1efe9] disabled:text-[#c3beb4] disabled:hover:border-[#e8e4dc] disabled:hover:text-[#c3beb4]"
                         >
-                            Next
+                            <span className="hidden xs:inline">Next</span>
+                            <span className="xs:hidden">Next</span>
+                            <span className="transition-transform duration-300 group-hover:translate-x-0.5">
+                                →
+                            </span>
                         </button>
-
                     </div>
-
                 </div>
             )}
-
         </div>
     );
 }

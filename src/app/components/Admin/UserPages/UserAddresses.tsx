@@ -35,99 +35,170 @@ function AddressCard({ address }: { address: Address }) {
     }, 1500);
   };
 
+
   return (
-    <div className="group rounded-2xl border border-neutral-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-md">
+    <div className="group border border-[#e2ded4] bg-[#f5f4ef] p-4 transition-all duration-300 hover:border-[#c8bb94] hover:bg-[#fdfcf9] hover:shadow-[0_10px_30px_rgba(45,40,30,0.05)] sm:p-5">
+      {/* HEADER */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="font-serif text-lg font-normal text-[#272522]">
+            {address.fullname}
+          </p>
 
-  <div className="flex items-start justify-between gap-4">
+          {/* PHONE */}
+          <div className="mt-2 flex items-center gap-2">
+            <p className="text-[10px] tracking-wide text-[#817d75]">
+              {address.countryCode} {address.phone}
+            </p>
 
-    <div>
-      <p className="font-medium text-neutral-900">
-        {address.fullname}
-      </p>
+            <button
+              type="button"
+              onClick={handleCopyPhone}
+              className="shrink-0 opacity-60 transition-opacity duration-200 hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+              title={copiedPhone ? "Copied!" : "Copy phone number"}
+              aria-label={
+                copiedPhone
+                  ? "Phone number copied"
+                  : "Copy phone number"
+              }
+            >
+              {copiedPhone ? (
+                <Check className="h-3.5 w-3.5 text-[#7d8b69]" />
+              ) : (
+                <Copy className="h-3.5 w-3.5 text-[#99948b] transition-colors hover:text-[#272522]" />
+              )}
+            </button>
+          </div>
+        </div>
 
-      <div className="mt-1 flex items-center gap-2">
-        <p className="text-xs text-neutral-500">
-          {address.countryCode} {address.phone}
+        {/* STATUS */}
+        <span className="shrink-0 border border-[#dedbd4] bg-[#faf9f6] px-2.5 py-1 text-[7px] uppercase tracking-[0.2em] text-[#9b8150]">
+          Saved
+        </span>
+      </div>
+
+      {/* ADDRESS DETAILS */}
+      <div className="mt-5 space-y-1 border-t border-[#dedbd4] pt-4 text-[10px] leading-5 text-[#817d75]">
+        <p className="text-[#57534c]">
+          {address.addressLine}
         </p>
 
-        <button
-          type="button"
-          onClick={handleCopyPhone}
-          className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-          title={copiedPhone ? "Copied!" : "Copy phone number"}
-        >
-          {copiedPhone ? (
-            <Check className="h-3.5 w-3.5 text-green-600" />
-          ) : (
-            <Copy className="h-3.5 w-3.5 text-neutral-400 transition-colors hover:text-black" />
-          )}
-        </button>
+        <p>
+          {address.city}, {address.state} {address.postalCode}
+        </p>
+
+        <p>{address.country}</p>
+      </div>
+
+      {/* FOOTER */}
+      <div className="mt-5 flex items-center gap-2 border-t border-[#e8e4dc] pt-3">
+        <span className="h-px w-5 bg-[#c8bb94]" />
+        <span className="text-[7px] uppercase tracking-[0.25em] text-[#aaa49b]">
+          Delivery Destination
+        </span>
       </div>
     </div>
-
-    <span className="rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 text-[10px] uppercase tracking-widest text-neutral-500">
-      Saved
-    </span>
-
-  </div>
-
-  <div className="mt-5 border-t border-neutral-100 pt-5 space-y-1 text-xs leading-5 text-neutral-600">
-    <p>{address.addressLine}</p>
-
-    <p>
-      {address.city}, {address.state} {address.postalCode}
-    </p>
-
-    <p>{address.country}</p>
-  </div>
-
-</div>
   );
 }
 
 export default function UserAddresses({ addresses }: Props) {
+
+
   return (
-    <div className="border border-neutral-200 bg-white">
-
-      <div className="border-b border-neutral-200 px-8 py-5">
-
-        <h2 className="text-sm uppercase tracking-[0.18em]">
-          Addresses
-        </h2>
-
-        <p className="mt-1 text-xs text-neutral-500">
-          Saved customer addresses.
+    <div className="overflow-hidden border border-[#e2ded4] bg-[#f5f4ef] shadow-[0_4px_18px_rgba(45,40,30,0.035)] transition-all duration-500 ease-out hover:border-[#c8bb94] hover:bg-[#faf8f3] hover:shadow-[0_16px_40px_rgba(65,55,38,0.09)]">
+      {/* HEADER */}
+      <div className="border-b border-[#e2ded4] px-5 py-4 md:px-6">
+        <p className="text-[8px] uppercase tracking-[0.26em] text-[#aaa69e]">
+          Admin / Customer Management
         </p>
 
+        <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
+          <h2 className="font-serif text-lg font-normal tracking-[0.01em] text-[#1b1a18]">
+            Saved Addresses
+          </h2>
+
+          <span className="text-[8px] uppercase tracking-[0.2em] text-[#817d75]">
+            {String(addresses.length).padStart(2, "0")}{" "}
+            {addresses.length === 1 ? "Address" : "Addresses"}
+          </span>
+        </div>
+
+        <p className="mt-2 text-[10px] leading-5 tracking-[0.02em] text-[#817d75]">
+          Saved customer delivery destinations and address details.
+        </p>
       </div>
 
-      <div className="p-8">
+      {/* CONTENT */}
+      <div className="p-4 sm:p-5 md:p-6">
         {addresses.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100">
-              <span className="text-xl text-neutral-400">⌂</span>
+          /* EMPTY STATE */
+          <div className="border border-[#dedbd4] bg-[#f3f0e9] px-5 py-12 text-center transition-colors duration-300 hover:bg-[#faf8f3] sm:py-16">
+            <div className="mx-auto mb-6 flex items-center justify-center gap-3">
+              <span className="h-px w-8 bg-[#cec8bc]" />
+
+              <span className="font-serif text-2xl text-[#9b8150]">
+                ⌂
+              </span>
+
+              <span className="h-px w-8 bg-[#cec8bc]" />
             </div>
 
-            <h3 className="mt-4 text-sm font-medium text-neutral-800">
-              No saved addresses
+            <p className="text-[8px] uppercase tracking-[0.3em] text-[#9b8150]">
+              Delivery Collection
+            </p>
+
+            <h3 className="mt-3 font-serif text-2xl font-normal text-[#1b1a18]">
+              No Addresses Saved
             </h3>
 
-            <p className="mt-1 max-w-sm text-xs text-neutral-500">
-              This user hasn&apos;t added any saved addresses yet.
+            <p className="mx-auto mt-3 max-w-sm text-[10px] leading-6 tracking-[0.02em] text-[#817d75]">
+              This customer hasn&apos;t added any saved delivery
+              addresses yet. Address details will appear here once
+              they have been added.
             </p>
+
+            <div className="mx-auto mt-6 h-px w-12 bg-[#cfc6b6]" />
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
-            {addresses.map((address) => (
-              <AddressCard
-                key={address.id}
-                address={address}
-              />
-            ))}
-          </div>
+          <>
+            {/* SECTION LABEL */}
+            <div className="mb-4 flex items-center justify-between gap-3 border-b border-[#e2ded4] pb-3">
+              <p className="text-[8px] uppercase tracking-[0.24em] text-[#9b8150]">
+                Customer Destinations
+              </p>
+
+              <span className="text-[8px] uppercase tracking-[0.15em] text-[#aaa69e]">
+                Saved Records
+              </span>
+            </div>
+
+            {/* ADDRESS GRID */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {addresses.map((address, index) => (
+                <div
+                  key={address.id}
+                  className="group relative border border-[#e2ded4] bg-[#f5f4ef] p-4 transition-all duration-500 ease-out hover:border-[#c8bb94] hover:bg-[#fdfcf9] hover:shadow-[0_10px_30px_rgba(45,40,30,0.05)] sm:p-5"
+                >
+                  {/* CARD HEADER */}
+                  <div className="mb-5 flex items-center justify-between gap-3 border-b border-[#dedbd4] pb-3">
+                    <span className="font-serif text-lg italic text-[#c0b7a5]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+
+                    <span className="text-[7px] uppercase tracking-[0.22em] text-[#9b8150]">
+                      Saved Address
+                    </span>
+                  </div>
+
+                  {/* ADDRESS DETAILS */}
+                  <AddressCard address={address} />
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
-
     </div>
   );
+
 }
