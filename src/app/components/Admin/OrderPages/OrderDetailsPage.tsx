@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import ShippingAddress from "../../Profile/Orders/ShippingAddress";
-import OrderPreferences from "../../Profile/Orders/OrderPreferences";
 import CustomerInformation from "./CustomerInformation";
 import AdminActions from "./AdminActions";
 import OrderSummary from "./OrderSummary";
@@ -10,6 +8,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import OrderTimeline from "./OrderTimeline";
 import OrderProducts from "./OrderProducts";
+import ShippingAddress from "./ShippingAddress";
+import OrderPreferences from "./OrderPreferences";
 
 
 type Props = {
@@ -141,28 +141,47 @@ export default function AdminOrderDetail({ id }: Props) {
     };
 
 
+
     if (loading) {
         return (
-            <section className="w-full px-6 py-20">
-                <div className="mx-auto max-w-2xl border border-slate-200 bg-white px-12 py-20 text-center shadow-sm">
+            <section className="min-h-screen bg-[#f5f4ef]">
+                <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+                    <div className="relative mx-auto max-w-2xl border border-[#e2ded4] bg-[#faf9f6] px-8 py-20 text-center md:px-12">
 
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
-                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-slate-950" />
+                        {/* Editorial accent */}
+                        <div className="absolute left-1/2 top-0 h-px w-16 -translate-x-1/2 bg-[#9a8a74]" />
+
+                        {/* Brand */}
+                        <div className="flex items-center justify-center gap-3">
+                            <span className="h-px w-8 bg-[#d1cbc1]" />
+
+                            <span className="text-[7px] font-medium uppercase tracking-[0.45em] text-[#9a8a74]">
+                                LUXE MEN
+                            </span>
+
+                            <span className="h-px w-8 bg-[#d1cbc1]" />
+                        </div>
+
+                        {/* Loading bar */}
+                        <div className="mx-auto mt-7 h-px w-20 overflow-hidden bg-[#ded9d0]">
+                            <div className="h-full w-1/2 animate-[luxuryLoading_1.5s_ease-in-out_infinite] bg-[#9a8a74]" />
+                        </div>
+
+                        {/* Status */}
+                        <p className="mt-6 text-[8px] uppercase tracking-[0.4em] text-[#aaa49b]">
+                            Administration
+                        </p>
+
+                        {/* Heading */}
+                        <h2 className="mt-4 font-serif text-3xl font-normal tracking-[0.01em] text-[#1b1a18] md:text-4xl">
+                            Please Wait
+                        </h2>
+
+                        {/* Description */}
+                        <p className="mx-auto mt-5 max-w-sm text-[11px] leading-6 text-[#817d75]">
+                            We're retrieving the requested administrative records.
+                        </p>
                     </div>
-
-                    <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
-                        Order
-                    </p>
-
-                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em] text-slate-900">
-                        Please Wait
-                    </h2>
-
-                    <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-slate-500">
-                        We're processing your request.
-                        Please wait while We're retrieving your order details.
-                    </p>
-
                 </div>
             </section>
         );
@@ -170,200 +189,222 @@ export default function AdminOrderDetail({ id }: Props) {
 
     if (!order) {
         return (
-            <section className="w-full px-6 py-20">
-                <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
+            <section className="min-h-screen bg-[#f5f4ef]">
+                <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+                    <div className="relative mx-auto max-w-2xl overflow-hidden border border-[#e2ded4] bg-[#faf9f6] px-8 py-24 text-center md:px-12 md:py-28">
 
-                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-neutral-200 text-3xl">
-                        !
-                    </div>
+                        {/* Editorial accent */}
+                        <div className="absolute left-1/2 top-0 h-px w-20 -translate-x-1/2 bg-[#9a8a74]" />
 
-                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-neutral-500">
-                        Order
-                    </p>
+                        {/* Admin Monogram */}
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center border border-[#d4cfc5] bg-[#f5f4ef]">
+                            <span className="font-serif text-[21px] font-normal tracking-[-0.08em] text-[#292824]">
+                                LM
+                            </span>
+                        </div>
 
-                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em]">
-                        Order Not Found
-                    </h2>
+                        {/* Eyebrow */}
+                        <p className="mt-8 text-[8px] font-medium uppercase tracking-[0.4em] text-[#9a8a74]">
+                            Admin / Order Management
+                        </p>
 
-                    <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
-                        The order you're looking for doesn't exist or you don't have
-                        permission to view it.
-                    </p>
+                        {/* Heading */}
+                        <h2 className="mt-5 font-serif text-3xl font-normal tracking-[0.01em] text-[#1b1a18] md:text-4xl">
+                            Order Not Found
+                        </h2>
 
-                    <div className="mt-9 flex items-center justify-center">
+                        {/* Description */}
+                        <p className="mx-auto mt-5 max-w-md text-[12px] leading-7 text-[#817d75]">
+                            This order could not be found, or you may not have permission to access its administrative details.
+                        </p>
 
+                        {/* CTA */}
                         <Link
                             href="/admin/orders"
-                            className="group inline-flex h-11 items-center justify-center gap-3 border border-black bg-black px-6 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-white hover:text-black"
+                            className="group relative mt-10 inline-flex items-center gap-5 border border-[#1b1a18] bg-[#1b1a18] px-9 py-4 text-[9px] font-medium uppercase tracking-[0.28em] text-[#faf9f6] transition-all duration-500 hover:border-[#6f604e] hover:bg-[#6f604e]"
                         >
-                            <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
-                                +
+                            <span>Back to Orders</span>
+
+                            <span className="text-sm font-light transition-transform duration-500 ease-out group-hover:-translate-x-1">
+                                ←
                             </span>
-
-                            Back to Orders
-
                         </Link>
 
-                    </div>
+                        {/* Bottom detail */}
+                        <div className="mx-auto mt-12 flex items-center justify-center gap-4">
+                            <span className="h-px w-8 bg-[#d6d2ca]" />
 
+                            <span className="text-[7px] uppercase tracking-[0.32em] text-[#aaa69e]">
+                                Administration Portal
+                            </span>
+
+                            <span className="h-px w-8 bg-[#d6d2ca]" />
+                        </div>
+                    </div>
                 </div>
             </section>
         );
     }
 
     return (
-        <section className="w-full px-6">
+        <section className="min-h-screen w-full bg-[#f7f6f2]">
+            <div>
 
-            <Link
-                href="/admin/orders"
-                className="group mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-950"
-            >
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm transition group-hover:-translate-x-0.5 group-hover:border-slate-300">
-                    ←
-                </span>
+                {/* Back */}
+                <Link
+                    href="/admin/orders"
+                    className="group inline-flex items-center gap-2 border-b border-[#d9d5cd] pb-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#171512] transition-all duration-300 hover:border-[#9a8a74] hover:text-[#6f604e]"
+                >
+                    <span className="text-[13px] leading-none transition-transform duration-300 group-hover:-translate-x-1">
+                        ←
+                    </span>
 
-                Back to Orders
-            </Link>
+                    <span>Back to Orders</span>
+                </Link>
 
-            <div className="mb-10 flex flex-col gap-6 border-b border-neutral-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
+                {/* Order Header */}
+                <div className="mt-8 flex flex-col gap-6 border-b border-[#dedbd4] pb-8 lg:flex-row lg:items-end lg:justify-between">
 
-                <div className="min-w-0">
+                    <div className="min-w-0">
+                        {/* Eyebrow */}
+                        <div className="mb-3 flex items-center gap-3">
+                            <span className="h-px w-7 bg-[#9a8a74]" />
 
-                    <div className="mb-3 flex items-center gap-3">
-                        <span className="h-px w-8 bg-slate-950" />
+                            <p className="text-[8px] uppercase tracking-[0.28em] text-[#aaa69e]">
+                                Admin / Order Management
+                            </p>
+                        </div>
 
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
-                            Store / Orders
+                        {/* Order Number */}
+                        <h1 className="wrap-break-word font-serif text-2xl font-normal tracking-[0.02em] text-[#1b1a18] sm:text-3xl">
+                            {order.orderNumber}
+                        </h1>
+
+                        {/* Date */}
+                        <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-[#817d75]">
+                            Placed on{" "}
+                            {new Date(order.createdAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                }
+                            )}
                         </p>
+
+                        {/* Order Metadata */}
+                        <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-[#dedbd4] pt-6 sm:grid-cols-3 sm:gap-x-8">
+
+                            {/* Order ID */}
+                            <div className="min-w-0">
+                                <p className="text-[8px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                    Order ID
+                                </p>
+
+                                <p className="mt-2 break-all text-[10px] leading-5 text-[#57534c]">
+                                    {order.id}
+                                </p>
+                            </div>
+
+                            {/* Items */}
+                            <div>
+                                <p className="text-[8px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                    Items
+                                </p>
+
+                                <p className="mt-2 text-[10px] uppercase tracking-[0.08em] text-[#57534c]">
+                                    {order.items.length}{" "}
+                                    {order.items.length === 1
+                                        ? "Product"
+                                        : "Products"}
+                                </p>
+                            </div>
+
+                            {/* Payment Method */}
+                            <div>
+                                <p className="text-[8px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                    Payment Method
+                                </p>
+
+                                <p className="mt-2 wrap-break-word text-[10px] uppercase tracking-[0.08em] text-[#57534c]">
+                                    {order.paymentMethod}
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
-                    <h1 className="text-2xl font-light uppercase tracking-[0.08em] text-slate-950 sm:text-3xl">
-                        {order.orderNumber}
-                    </h1>
+                    {/* Order & Payment Status */}
+                    <div className="flex flex-wrap gap-2 lg:justify-end">
+                        <span
+                            className={`border px-4 py-2 text-[8px] uppercase tracking-[0.16em] ${statusStyles[
+                                order.status as keyof typeof statusStyles
+                                ]
+                                }`}
+                        >
+                            Order: {order.status}
+                        </span>
 
-                    <p className="mt-2 text-xs text-slate-500">
-                        Placed on{" "}
-                        {new Date(order.createdAt).toLocaleString("en-US", {
-                            dateStyle: "long",
-                            timeStyle: "short",
-                        })}
-                    </p>
+                        <span
+                            className={`border px-4 py-2 text-[8px] uppercase tracking-[0.16em] ${paymentStyles[
+                                order.paymentStatus as keyof typeof paymentStyles
+                                ]
+                                }`}
+                        >
+                            Payment: {order.paymentStatus}
+                        </span>
+                    </div>
+                </div>
 
-                    <div className="mt-7 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-slate-200 pt-6 sm:grid-cols-3">
+                {/* Order Content */}
+                <div className="mt-10 grid gap-8 lg:grid-cols-[1.6fr_0.9fr] lg:gap-10">
 
-                        {/* Order ID */}
+                    {/* Main Column */}
+                    <div className="min-w-0">
+                        {/* Products */}
+                        <OrderProducts items={order.items} />
 
-                        <div className="min-w-0">
-
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                Order ID
-                            </p>
-
-                            <p className="mt-2 break-all text-xs text-slate-700">
-                                {order.id}
-                            </p>
-
+                        {/* Timeline */}
+                        <div className="mt-6">
+                            <OrderTimeline status={order.status} />
                         </div>
-
-
-                        {/* Items */}
-
-                        <div>
-
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                Items
-                            </p>
-
-                            <p className="mt-2 text-xs text-slate-700">
-                                {order.items.length} Products
-                            </p>
-
-                        </div>
-
-
-                        {/* Payment */}
-
-                        <div>
-
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                Payment
-                            </p>
-
-                            <p className="mt-2 text-xs font-medium text-slate-700">
-                                {order.paymentMethod}
-                            </p>
-
-                        </div>
-
                     </div>
 
+                    {/* Admin Sidebar */}
+                    <div className="min-w-0 space-y-6">
+
+                        {/* Customer */}
+                        <CustomerInformation customer={order.user} />
+
+                        {/* Shipping */}
+                        <ShippingAddress address={order.address} />
+
+                        {/* Order Preferences */}
+                        <OrderPreferences
+                            packagingOption={order.packagingOption}
+                            giftMessage={order.giftMessage}
+                            notes={order.notes}
+                            removeInvoice={order.removeInvoice}
+                        />
+
+                        {/* Order Summary */}
+                        <OrderSummary order={order} />
+
+                        {/* Admin Controls */}
+                        <AdminActions
+                            orderId={order.id}
+                            status={order.status}
+                            paymentStatus={order.paymentStatus}
+                            cancellationStatus={order.cancellationStatus}
+                            cancellationReason={order.cancellationReason}
+                            refundStatus={order.refundStatus}
+                            refundReason={order.refundReason}
+                            refundRequestedAt={order.refundRequestedAt}
+                            onUpdated={handleOrderUpdate}
+                        />
+                    </div>
                 </div>
-
-                <div className="flex gap-3">
-
-                    <span
-                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${statusStyles[order.status as keyof typeof statusStyles]
-                            }`}
-                    >
-                        {order.status}
-                    </span>
-
-                    <span
-                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${paymentStyles[
-                            order.paymentStatus as keyof typeof paymentStyles
-                        ]
-                            }`}
-                    >
-                        {order.paymentStatus}
-                    </span>
-
-                </div>
-
             </div>
-
-            <div className="mt-12 grid gap-12 lg:grid-cols-[1.6fr_0.9fr]">
-
-                <div>
-
-                    <OrderProducts items={order.items} />
-
-                    <div className="mt-8">
-                        <OrderTimeline status={order.status} />
-                    </div>
-
-                </div>
-
-                <div className="space-y-8">
-
-                    <CustomerInformation customer={order.user} />
-
-                    <ShippingAddress address={order.address} />
-
-                    <OrderPreferences
-                        packagingOption={order.packagingOption}
-                        giftMessage={order.giftMessage}
-                        notes={order.notes}
-                        removeInvoice={order.removeInvoice}
-                    />
-
-                    <OrderSummary order={order} />
-
-                    <AdminActions
-                        orderId={order.id}
-                        status={order.status}
-                        paymentStatus={order.paymentStatus}
-                        cancellationStatus={order.cancellationStatus}
-                        cancellationReason={order.cancellationReason}
-                        refundStatus={order.refundStatus}
-                        refundReason={order.refundReason}
-                        refundRequestedAt={order.refundRequestedAt}
-                        onUpdated={handleOrderUpdate}
-                    />
-
-                </div>
-
-            </div>
-
         </section>
     );
 }

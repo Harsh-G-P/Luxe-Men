@@ -6,7 +6,7 @@ export default function FooterLinks() {
         <div className="grid grid-cols-2 gap-16">
 
             <div>
-                <h3 className="mb-6 text-xs uppercase tracking-[0.35em] text-gray-400">
+                <h3 className="mb-7 text-[10px] uppercase tracking-[0.45em] text-white/40">
                     Shop
                 </h3>
 
@@ -15,7 +15,7 @@ export default function FooterLinks() {
                         <li key={item.title}>
                             <Link
                                 href={item.href}
-                                className="transition-colors duration-300 hover:text-white text-white/70"
+                                className="text-sm text-white/60 transition-colors duration-300 hover:text-white"
                             >
                                 {item.title}
                             </Link>
@@ -25,7 +25,7 @@ export default function FooterLinks() {
             </div>
 
             <div>
-                <h3 className="mb-6 text-xs uppercase tracking-[0.35em] text-gray-400">
+                <h3 className="mb-7 text-[10px] uppercase tracking-[0.45em] text-white/40">
                     Company
                 </h3>
 
@@ -34,7 +34,7 @@ export default function FooterLinks() {
                         <li key={item.title}>
                             <Link
                                 href={item.href}
-                                className="transition-colors duration-300 hover:text-white text-white/70"
+                                className="text-sm text-white/60 transition-colors duration-300 hover:text-white"
                             >
                                 {item.title}
                             </Link>

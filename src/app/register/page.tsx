@@ -60,7 +60,7 @@ export default function Register() {
 
             if (!res.ok) {
                 if (res.status === 429) {
-                    const seconds = data.retryAfter || 60 
+                    const seconds = data.retryAfter || 60
 
                     setError(
                         `Too many registration attempts. Please try again in ${seconds} sec${seconds > 1 ? "s" : ""}.`
@@ -81,7 +81,7 @@ export default function Register() {
                 setError("❌ " + (data.message || "Something went wrong"))
                 return
             }
-            
+
             toast.success(data.message)
             router.push('/login')
 
@@ -94,91 +94,193 @@ export default function Register() {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-            <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
+        <div className="min-h-screen bg-[#f7f6f2] px-5 py-12 text-[#111111] sm:px-8">
 
-                <h2 className="text-2xl font-bold text-center mb-6">
-                    Create Your Account
-                </h2>
+            <div className="flex min-h-[calc(100vh-6rem)] items-center justify-center">
 
-                {error &&
-                    <div className="text-center">
-                        <p className="text-red-500 mb-4">{error}</p>
-                    </div>
-                }
+                <div className="w-full max-w-md">
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Brand */}
+                    <div className="mb-12 text-center">
 
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Name</label>
-                        <input
-                            type="text"
-                            placeholder="Your name"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full border px-3 py-2 rounded-md"
-                        />
-                        {fieldErrors.name && (
-                            <p className="text-red-500 text-sm mt-1">{fieldErrors.name}</p>
-                        )}
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Username</label>
-                        <input
-                            type="text"
-                            placeholder="Username"
-                            value={formData.username}
-                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                            className="w-full border px-3 py-2 rounded-md"
-                        />
-                        {fieldErrors.username && (
-                            <p className="text-red-500 text-sm mt-1">{fieldErrors.username}</p>
-                        )}
+                        <p className="text-[10px] uppercase tracking-[0.55em] text-black/40">
+                            LUXE MEN
+                        </p>
+
+                        <div className="mt-6 flex items-center justify-center gap-4">
+                            <span className="h-px w-10 bg-black/15" />
+
+                            <span className="text-[8px] uppercase tracking-[0.35em] text-black/30">
+                                Private Access
+                            </span>
+
+                            <span className="h-px w-10 bg-black/15" />
+                        </div>
+
+                        <h1 className="mt-7 font-serif text-4xl tracking-tight sm:text-5xl">
+                            Create Your Account
+                        </h1>
+
+                        <p className="mt-4 text-sm text-black/45">
+                            Begin your LUXE MEN experience.
+                        </p>
+
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Email</label>
-                        <input
-                            type="text"
-                            placeholder="you@example.com"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full border px-3 py-2 rounded-md"
-                        />
-                        {fieldErrors.email && (
-                            <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
-                        )}
+                    {/* Error */}
+                    {error && (
+                        <div className="mb-7 border border-red-200 bg-red-50 px-4 py-3 text-center">
+                            <p className="text-sm text-red-600">
+                                {error}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="space-y-7">
+
+                        {/* Name */}
+                        <div>
+                            <label className="mb-3 block text-[10px] uppercase tracking-[0.35em] text-black/45">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                placeholder="Your name"
+                                value={formData.name}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        name: e.target.value,
+                                    })
+                                }
+                                className="w-full border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black outline-none placeholder:text-black/25 transition-colors duration-300 focus:border-black"
+                            />
+
+                            {fieldErrors.name && (
+                                <p className="mt-2 text-xs text-red-600">
+                                    {fieldErrors.name}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Username */}
+                        <div>
+                            <label className="mb-3 block text-[10px] uppercase tracking-[0.35em] text-black/45">
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                placeholder="Choose a username"
+                                value={formData.username}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        username: e.target.value,
+                                    })
+                                }
+                                className="w-full border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black outline-none placeholder:text-black/25 transition-colors duration-300 focus:border-black"
+                            />
+
+                            {fieldErrors.username && (
+                                <p className="mt-2 text-xs text-red-600">
+                                    {fieldErrors.username}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Email */}
+                        <div>
+                            <label className="mb-3 block text-[10px] uppercase tracking-[0.35em] text-black/45">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                placeholder="you@example.com"
+                                value={formData.email}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        email: e.target.value,
+                                    })
+                                }
+                                className="w-full border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black outline-none placeholder:text-black/25 transition-colors duration-300 focus:border-black"
+                            />
+
+                            {fieldErrors.email && (
+                                <p className="mt-2 text-xs text-red-600">
+                                    {fieldErrors.email}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Password */}
+                        <div>
+                            <label className="mb-3 block text-[10px] uppercase tracking-[0.35em] text-black/45">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                placeholder="••••••••"
+                                value={formData.password}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        password: e.target.value,
+                                    })
+                                }
+                                className="w-full border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black outline-none placeholder:text-black/25 transition-colors duration-300 focus:border-black"
+                            />
+
+                            {fieldErrors.password && (
+                                <p className="mt-2 text-xs text-red-600">
+                                    {fieldErrors.password}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Register */}
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-[#111111] py-4 text-[10px] font-medium uppercase tracking-[0.35em] text-white transition-all duration-300 hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            {loading ? "Creating Account..." : "Create Account"}
+                        </button>
+
+                    </form>
+
+                    {/* Login */}
+                    <div className="mt-10 border-t border-black/10 pt-8 text-center">
+
+                        <p className="text-sm text-black/45">
+                            Already have an account?
+                        </p>
+
+                        <Link
+                            href="/login"
+                            className="mt-3 inline-block text-sm text-black transition-all duration-300 hover:underline hover:underline-offset-8"
+                        >
+                            Sign In
+                        </Link>
+
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Password</label>
-                        <input
-                            type="password"
-                            placeholder="••••••••"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            className="w-full border px-3 py-2 rounded-md"
-                        />
-                        {fieldErrors.password && (
-                            <p className="text-red-500 text-sm mt-1">{fieldErrors.password}</p>
-                        )}
+                    {/* Bottom Brand */}
+                    <div className="mt-14 text-center">
+                        <p className="text-[9px] uppercase tracking-[0.5em] text-black/25">
+                            Est. 2026 · LUXE MEN
+                        </p>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition"
-                    >
-                        {loading ? "Creating account..." : "Register"}
-                    </button>
-                </form>
+                </div>
 
-                <p className="text-center text-sm mt-4 text-gray-600">
-                    Already have an account?{" "}
-                    <Link href="/login" className="text-black font-semibold">
-                        Login
-                    </Link>
-                </p>
             </div>
+
         </div>
     );
 }

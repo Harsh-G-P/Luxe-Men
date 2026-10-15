@@ -23,6 +23,7 @@ export default async function Edit() {
             name: true,
             username: true,
             email : true,
+            role:true,
             image:true,
             createdAt: true
         }

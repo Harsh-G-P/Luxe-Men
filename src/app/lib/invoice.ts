@@ -3,72 +3,64 @@ import path from "path";
 import fs from "fs";
 
 export async function generateInvoice(order: any) {
-    const hidePrices = order.removeInvoice;
+    const hidePrices = Boolean(order.removeInvoice);
 
     const pdfDoc = await PDFDocument.create();
 
     const page = pdfDoc.addPage([595, 842]);
 
+    // =========================
+    // FONTS
+    // =========================
+
     const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const semiBold = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const serif = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    const serifBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
 
-    const BLACK = rgb(0.05, 0.05, 0.05);
-    const GRAY = rgb(0.45, 0.45, 0.45);
-    const LIGHT = rgb(0.93, 0.93, 0.93);
+    // =========================
+    // COLORS
+    // =========================
+
+    const INK = rgb(0.11, 0.10, 0.09);
+    const TEXT = rgb(0.29, 0.27, 0.24);
+    const MUTED = rgb(0.54, 0.52, 0.48);
+    const GOLD = rgb(0.61, 0.51, 0.31);
+
+    const BORDER = rgb(0.85, 0.83, 0.79);
+    const LIGHT_BORDER = rgb(0.88, 0.86, 0.82);
+    const PAPER = rgb(0.98, 0.97, 0.94);
+    const SOFT = rgb(0.95, 0.94, 0.90);
+    const WHITE = rgb(1, 1, 1);
+
+    // =========================
+    // BACKGROUND
+    // =========================
+
+    page.drawRectangle({
+        x: 0,
+        y: 0,
+        width: 595,
+        height: 842,
+        color: PAPER,
+    });
+
+    // =========================
+    // HELPERS
+    // =========================
 
     const sanitize = (value: unknown) =>
         String(value ?? "")
             .replace(/[^\x20-\x7E]/g, "")
             .trim();
 
-
-    // =========================
-    // LOGO
-    // =========================
-
-
-
-    const logoPath = path.join(
-        process.cwd(),
-        "public",
-        "images",
-        "logo.png"
-    );
-
-    const logoBytes = fs.readFileSync(logoPath);
-
-    const logo = await pdfDoc.embedPng(logoBytes);
-
-    const maxWidth = 120;
-    const maxHeight = 85;
-
-    const scale = Math.min(
-        maxWidth / logo.width,
-        maxHeight / logo.height
-    );
-
-    const logoWidth = logo.width * scale;
-    const logoHeight = logo.height * scale;
-
-    page.drawImage(logo, {
-        x: (595 - logoWidth) / 2,
-        y: 735,
-        width: logoWidth,
-        height: logoHeight,
-    });
-
-    // =========================
-    // TEXT HELPER
-    // =========================
-
     const text = (
         value: unknown,
         x: number,
         y: number,
-        size = 11,
+        size = 10,
         font = regular,
-        color = BLACK
+        color = TEXT
     ) => {
         page.drawText(sanitize(value), {
             x,
@@ -79,388 +71,590 @@ export async function generateInvoice(order: any) {
         });
     };
 
+    const centeredText = (
+        value: unknown,
+        y: number,
+        size = 10,
+        font = regular,
+        color = TEXT
+    ) => {
+        const valueString = sanitize(value);
+        const width = font.widthOfTextAtSize(valueString, size);
 
-    const line = (y: number) => {
+        text(
+            valueString,
+            (595 - width) / 2,
+            y,
+            size,
+            font,
+            color
+        );
+    };
+
+    const line = (
+        y: number,
+        x1 = 45,
+        x2 = 550,
+        color = LIGHT_BORDER,
+        thickness = 0.7
+    ) => {
         page.drawLine({
-            start: { x: 50, y },
-            end: { x: 545, y },
-            thickness: 0.8,
-            color: LIGHT
+            start: { x: x1, y },
+            end: { x: x2, y },
+            thickness,
+            color,
         });
     };
 
+    const drawLabel = (
+        value: string,
+        x: number,
+        y: number
+    ) => {
+        text(
+            value,
+            x,
+            y,
+            7,
+            bold,
+            GOLD
+        );
+    };
 
+    // =========================
+    // OUTER BORDER
+    // =========================
 
+    page.drawRectangle({
+        x: 28,
+        y: 28,
+        width: 539,
+        height: 786,
+        borderColor: BORDER,
+        borderWidth: 0.8,
+    });
+
+    // =========================
+    // LOGO
+    // =========================
+
+    const logoPath = path.join(
+        process.cwd(),
+        "public",
+        "images",
+        "logo.png"
+    );
+
+    if (fs.existsSync(logoPath)) {
+        const logoBytes = fs.readFileSync(logoPath);
+        const logo = await pdfDoc.embedPng(logoBytes);
+
+        const maxWidth = 105;
+        const maxHeight = 55;
+
+        const scale = Math.min(
+            maxWidth / logo.width,
+            maxHeight / logo.height
+        );
+
+        const logoWidth = logo.width * scale;
+        const logoHeight = logo.height * scale;
+
+        page.drawImage(logo, {
+            x: (595 - logoWidth) / 2,
+            y: 755,
+            width: logoWidth,
+            height: logoHeight,
+        });
+    }
 
     // =========================
     // BRAND
     // =========================
 
-    const brand = "LUXE MEN";
-
-    const brandSize = 22;
-
-    const brandWidth = bold.widthOfTextAtSize(
-        brand,
-        brandSize
+    centeredText(
+        "LUXE MEN",
+        718,
+        18,
+        serifBold,
+        INK
     );
 
-    text(
-        brand,
-        (595 - brandWidth) / 2,
-        705,
-        brandSize,
-        bold,
-        BLACK
-    );
+    // Decorative brand line
 
+    const brandLineWidth = 38;
 
-    const website = "www.luxemen.com";
-
-    const websiteSize = 10;
-
-    const websiteWidth = regular.widthOfTextAtSize(
-        website,
-        websiteSize
-    );
-
-    text(
-        website,
-        (595 - websiteWidth) / 2,
-        685,
-        websiteSize,
-        regular,
-        GRAY
-    );
-
-
-    line(660);
-
-
-    // =========================
-    // INVOICE INFO 
-    // =========================
-
-    text(
-        `Invoice No: ${order.orderNumber}`,
-        380,
-        625,
-        10,
-        semiBold
-    );
-
-
-    text(
-        `Date: ${new Date(order.createdAt).toLocaleDateString()}`,
-        380,
-        608,
-        9,
-        regular,
-        GRAY
-    );
-
-
-    // =========================
-    // CUSTOMER
-    // =========================
-
-
-    text(
-        "BILL TO",
-        50,
-        625,
-        10,
-        bold,
-        GRAY
-    );
-
-
-    let customerY = 603;
-
-
-    [
-        order.address.fullname,
-        `${order.address.countryCode} ${order.address.phone}`,
-        order.address.addressLine,
-        `${order.address.city}, ${order.address.state}`,
-        order.address.postalCode,
-        order.address.country
-    ].forEach(item => {
-        text(item, 50, customerY, 11);
-        customerY -= 16;
+    page.drawLine({
+        start: {
+            x: 297.5 - 70,
+            y: 705,
+        },
+        end: {
+            x: 297.5 - 70 + brandLineWidth,
+            y: 705,
+        },
+        thickness: 0.7,
+        color: BORDER,
     });
 
+    page.drawLine({
+        start: {
+            x: 297.5 + 70 - brandLineWidth,
+            y: 705,
+        },
+        end: {
+            x: 297.5 + 70,
+            y: 705,
+        },
+        thickness: 0.7,
+        color: BORDER,
+    });
 
-    line(450);
+    centeredText(
+        "INVOICE",
+        701,
+        7,
+        bold,
+        GOLD
+    );
 
+    centeredText(
+        "www.luxemen.com",
+        685,
+        8,
+        regular,
+        MUTED
+    );
 
+    line(666, 45, 550, BORDER);
 
     // =========================
-    // ITEMS HEADER
+    // INVOICE META
     // =========================
 
+    drawLabel(
+        "INVOICE NUMBER",
+        45,
+        642
+    );
 
-    const itemsHeaderY = customerY - 35;
+    text(
+        order.orderNumber,
+        45,
+        625,
+        10,
+        bold,
+        INK
+    );
 
+    drawLabel(
+        "DATE",
+        430,
+        642
+    );
+
+    text(
+        new Date(order.createdAt).toLocaleDateString(),
+        430,
+        625,
+        10,
+        regular,
+        TEXT
+    );
+
+    // =========================
+    // BILL TO
+    // =========================
+
+    line(605, 45, 550, LIGHT_BORDER);
+
+    drawLabel(
+        "BILL TO",
+        45,
+        583
+    );
+
+    let customerY = 563;
+
+    const customerDetails = [
+        order.address?.fullname,
+        `${order.address?.countryCode ?? ""} ${order.address?.phone ?? ""}`.trim(),
+        order.address?.addressLine,
+        `${order.address?.city ?? ""}, ${order.address?.state ?? ""}`.replace(/^,\s*|,\s*$/g, ""),
+        order.address?.postalCode,
+        order.address?.country,
+    ];
+
+    customerDetails.forEach((item, index) => {
+        if (!item) return;
+
+        text(
+            item,
+            45,
+            customerY,
+            index === 0 ? 10 : 8.5,
+            index === 0 ? bold : regular,
+            index === 0 ? INK : TEXT
+        );
+
+        customerY -= index === 0 ? 18 : 14;
+    });
+
+    // =========================
+    // ORDER DETAILS
+    // =========================
+
+    drawLabel(
+        "ORDER DETAILS",
+        380,
+        583
+    );
+
+    text(
+        `Payment: ${sanitize(order.paymentMethod)}`,
+        380,
+        563,
+        8.5,
+        regular,
+        TEXT
+    );
+
+    text(
+        `Status: ${sanitize(order.paymentStatus)}`,
+        380,
+        547,
+        8.5,
+        regular,
+        TEXT
+    );
+
+    if (order.packagingOption) {
+        text(
+            `Packaging: ${sanitize(order.packagingOption)}`,
+            380,
+            531,
+            8.5,
+            regular,
+            TEXT
+        );
+    }
+
+    // =========================
+    // ITEMS
+    // =========================
+
+    const itemsHeaderY = 490;
 
     page.drawRectangle({
-        x: 50,
-        y: itemsHeaderY,
-        width: 495,
+        x: 45,
+        y: itemsHeaderY - 4,
+        width: 505,
         height: 25,
-        color: LIGHT
+        color: SOFT,
     });
 
+    text(
+        "PRODUCT",
+        57,
+        itemsHeaderY + 5,
+        7,
+        bold,
+        GOLD
+    );
 
-    let itemY = itemsHeaderY - 30;
+    text(
+        "QTY",
+        hidePrices ? 475 : 350,
+        itemsHeaderY + 5,
+        7,
+        bold,
+        GOLD
+    );
 
+    if (!hidePrices) {
+        text(
+            "PRICE",
+            410,
+            itemsHeaderY + 5,
+            7,
+            bold,
+            GOLD
+        );
 
-    text("PRODUCT", 60, itemsHeaderY + 9, 9, bold);
+        text(
+            "TOTAL",
+            490,
+            itemsHeaderY + 5,
+            7,
+            bold,
+            GOLD
+        );
+    }
 
-text(
-    "QTY",
-    hidePrices ? 450 : 350,
-    itemsHeaderY + 9,
-    9,
-    bold
-);
+    let itemY = itemsHeaderY - 28;
 
-if (!hidePrices) {
-    text("PRICE", 410, itemsHeaderY + 9, 9, bold);
-    text("TOTAL", 485, itemsHeaderY + 9, 9, bold);
-}
-
-
-    order.items.forEach((item: any) => {
-
-        if (itemY < 180) {
-            return;
+    for (const item of order.items ?? []) {
+        if (itemY < 270) {
+            break;
         }
 
         const title = sanitize(item.title);
 
-        // Product title
         text(
             title,
-            60,
+            57,
             itemY,
-            10,
-            semiBold
+            9,
+            bold,
+            INK
         );
 
+        let rowHeight = 27;
 
-        // Attributes
-        let rowHeight = 20;
+        if (
+            item.attributes &&
+            typeof item.attributes === "object"
+        ) {
+            const attributes = Object.values(item.attributes)
+                .map((value) => sanitize(value))
+                .filter(Boolean)
+                .join(" / ");
 
-        if (item.attributes) {
-            text(
-                Object.values(item.attributes).join(" / "),
-                60,
-                itemY - 14,
-                8,
-                regular,
-                GRAY
-            );
+            if (attributes) {
+                text(
+                    attributes,
+                    57,
+                    itemY - 13,
+                    7.5,
+                    regular,
+                    MUTED
+                );
 
-            rowHeight = 35;
+                rowHeight = 34;
+            }
         }
 
-
-        // Keep values aligned to first line
         text(
-    item.quantity,
-    hidePrices ? 450 : 355,
-    itemY,
-    9
-);
+            item.quantity,
+            hidePrices ? 477 : 355,
+            itemY,
+            8.5,
+            regular,
+            TEXT
+        );
 
-if (!hidePrices) {
-    text(
-        `$${Number(item.price).toFixed(2)}`,
-        405,
-        itemY,
-        9
-    );
+        if (!hidePrices) {
+            text(
+                `$${Number(item.price).toFixed(2)}`,
+                410,
+                itemY,
+                8.5,
+                regular,
+                TEXT
+            );
 
-    text(
-        `$${Number(item.total).toFixed(2)}`,
-        480,
-        itemY,
-        9
-    );
-}
-
+            text(
+                `$${Number(item.total).toFixed(2)}`,
+                490,
+                itemY,
+                8.5,
+                bold,
+                INK
+            );
+        }
 
         itemY -= rowHeight;
 
-        line(itemY + 10);
-
-    });
-
-
+        line(
+            itemY + 8,
+            45,
+            550,
+            LIGHT_BORDER,
+            0.5
+        );
+    }
 
     // =========================
     // SUMMARY
     // =========================
 
-    let summaryY = itemY - 50;
+    let summaryY = itemY - 18;
 
     if (!hidePrices) {
+        const summaryHeight = 92;
 
-    if (summaryY < 260) {
-        summaryY = 260;
-    }
+        page.drawRectangle({
+            x: 330,
+            y: summaryY - summaryHeight + 8,
+            width: 220,
+            height: summaryHeight,
+            borderColor: BORDER,
+            borderWidth: 0.7,
+            color: rgb(0.985, 0.98, 0.96),
+        });
 
+        drawLabel(
+            "ORDER SUMMARY",
+            348,
+            summaryY - 10
+        );
 
-    page.drawRectangle({
-        x: 330,
-        y: summaryY - 65,
-        width: 215,
-        height: 80,
-        borderColor: LIGHT,
-        borderWidth: 1
-    });
-
-
-    const summaryLabelX = 350;
-    const summaryAmountX = 480;
-
-
-    text(
-        "Subtotal",
-        summaryLabelX,
-        summaryY - 5,
-        9,
-        semiBold
-    );
-
-    text(
-        `$${Number(order.subtotal).toFixed(2)}`,
-        summaryAmountX,
-        summaryY - 5,
-        9,
-        regular
-    );
-
-
-    text(
-        "Shipping",
-        summaryLabelX,
-        summaryY - 25,
-        9,
-        semiBold
-    );
-
-    text(
-        `$${Number(order.shipping).toFixed(2)}`,
-        summaryAmountX,
-        summaryY - 25,
-        9,
-        regular
-    );
-
-
-    text(
-        "TOTAL",
-        summaryLabelX,
-        summaryY - 45,
-        9,
-        bold
-    );
-
-    text(
-        `$${Number(order.total).toFixed(2)}`,
-        summaryAmountX,
-        summaryY - 45,
-        10,
-        bold
-    );
-}
-
-    // =========================
-    // PAYMENT DETAILS
-    // =========================
-
-    const paymentY = Math.max(summaryY - 150, 160);
-
-
-    line(paymentY + 25);
-
-
-    text(
-        "PAYMENT DETAILS",
-        50,
-        paymentY,
-        9,
-        bold,
-        GRAY
-    );
-
-
-    text(
-        `Method: ${order.paymentMethod}`,
-        50,
-        paymentY - 20,
-        9
-    );
-
-
-    text(
-        `Status: ${order.paymentStatus}`,
-        50,
-        paymentY - 38,
-        9
-    );
-
-
-    if (order.giftMessage) {
         text(
-            `Gift Message: ${order.giftMessage}`,
-            50,
-            paymentY - 56,
-            9
+            "Subtotal",
+            348,
+            summaryY - 32,
+            8.5,
+            regular,
+            TEXT
+        );
+
+        text(
+            `$${Number(order.subtotal).toFixed(2)}`,
+            482,
+            summaryY - 32,
+            8.5,
+            regular,
+            TEXT
+        );
+
+        text(
+            "Shipping",
+            348,
+            summaryY - 50,
+            8.5,
+            regular,
+            TEXT
+        );
+
+        text(
+            `$${Number(order.shipping).toFixed(2)}`,
+            482,
+            summaryY - 50,
+            8.5,
+            regular,
+            TEXT
+        );
+
+        page.drawLine({
+            start: {
+                x: 348,
+                y: summaryY - 61,
+            },
+            end: {
+                x: 532,
+                y: summaryY - 61,
+            },
+            thickness: 0.5,
+            color: BORDER,
+        });
+
+        text(
+            "TOTAL",
+            348,
+            summaryY - 78,
+            8,
+            bold,
+            GOLD
+        );
+
+        text(
+            `$${Number(order.total).toFixed(2)}`,
+            475,
+            summaryY - 78,
+            10,
+            bold,
+            INK
+        );
+    } else {
+        drawLabel(
+            "INVOICE",
+            348,
+            summaryY - 10
+        );
+
+        text(
+            "Prices have been removed from this invoice.",
+            348,
+            summaryY - 30,
+            8,
+            regular,
+            MUTED
+        );
+
+        text(
+            "Prepared for gifting.",
+            348,
+            summaryY - 47,
+            8,
+            regular,
+            MUTED
         );
     }
 
+    // =========================
+    // GIFT MESSAGE
+    // =========================
 
+    let detailsY = Math.min(summaryY - 120, 190);
+
+    if (order.giftMessage) {
+        line(
+            detailsY + 20,
+            45,
+            550
+        );
+
+        drawLabel(
+            "GIFT MESSAGE",
+            45,
+            detailsY
+        );
+
+        text(
+            order.giftMessage,
+            45,
+            detailsY - 20,
+            8.5,
+            regular,
+            TEXT
+        );
+
+        detailsY -= 50;
+    }
 
     // =========================
     // FOOTER
     // =========================
 
-    line(100);
-
-
-    const footerTitle = "Thank you for choosing LUXE MEN";
-
-    const footerTitleWidth = bold.widthOfTextAtSize(
-        footerTitle,
-        12
+    line(
+        104,
+        45,
+        550,
+        BORDER
     );
 
-    text(
-        footerTitle,
-        (595 - footerTitleWidth) / 2,
-        70,
-        12,
-        bold
+    centeredText(
+        "THANK YOU FOR CHOOSING LUXE MEN",
+        78,
+        10,
+        serif,
+        INK
     );
 
-
-    const footerSub = "Premium fashion • Timeless style";
-
-    const footerSubWidth = regular.widthOfTextAtSize(
-        footerSub,
-        9
-    );
-
-    text(
-        footerSub,
-        (595 - footerSubWidth) / 2,
-        50,
-        9,
+    centeredText(
+        "Premium fashion · Timeless style",
+        58,
+        7,
         regular,
-        GRAY
+        MUTED
+    );
+
+    centeredText(
+        "LUXE MEN · PREMIUM MENSWEAR",
+        42,
+        6,
+        bold,
+        GOLD
     );
 
     return await pdfDoc.save();

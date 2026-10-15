@@ -134,79 +134,107 @@ export default function UserDetailPage({ id }: Props) {
         return () => clearInterval(interval);
     }, [id]);
 
+
     if (loading) {
         return (
-            <section className="w-full px-6 py-20">
+            <section className="min-h-screen bg-[#f5f4ef]">
+                <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+                    <div className="relative mx-auto max-w-2xl border border-[#e2ded4] bg-[#faf9f6] px-8 py-20 text-center md:px-12">
 
-                <div className="mx-auto max-w-2xl border border-slate-200 bg-white px-12 py-20 text-center shadow-sm">
+                        {/* Editorial Accent */}
+                        <div className="absolute left-1/2 top-0 h-px w-16 -translate-x-1/2 bg-[#9a8a74]" />
 
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
+                        {/* Brand */}
+                        <div className="flex items-center justify-center gap-3">
+                            <span className="h-px w-8 bg-[#d1cbc1]" />
 
-                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-slate-950" />
+                            <span className="text-[7px] font-medium uppercase tracking-[0.45em] text-[#9a8a74]">
+                                LUXE MEN
+                            </span>
 
+                            <span className="h-px w-8 bg-[#d1cbc1]" />
+                        </div>
+
+                        {/* Loading Bar */}
+                        <div className="mx-auto mt-7 h-px w-20 overflow-hidden bg-[#ded9d0]">
+                            <div className="h-full w-1/2 animate-[luxuryLoading_1.5s_ease-in-out_infinite] bg-[#9a8a74]" />
+                        </div>
+
+                        {/* Status */}
+                        <p className="mt-6 text-[8px] uppercase tracking-[0.4em] text-[#aaa49b]">
+                            Administration
+                        </p>
+
+                        {/* Heading */}
+                        <h2 className="mt-4 font-serif text-3xl font-normal tracking-[0.01em] text-[#1b1a18] md:text-4xl">
+                            Please Wait
+                        </h2>
+
+                        {/* Description */}
+                        <p className="mx-auto mt-5 max-w-sm text-[11px] leading-6 text-[#817d75]">
+                            We're retrieving the requested user details.
+                        </p>
                     </div>
-
-                    <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
-                        User
-                    </p>
-
-                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em] text-slate-900">
-                        Please Wait
-                    </h2>
-
-                    <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-slate-500">
-                        We're processing your request.
-                        Please wait while we're retrieving
-                        your user details.
-                    </p>
-
                 </div>
-
             </section>
         );
     }
 
     if (!user) {
         return (
-            <section className="w-full px-6 py-20">
+            <section className="min-h-screen bg-[#f5f4ef]">
+                <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+                    <div className="relative mx-auto max-w-2xl overflow-hidden border border-[#e2ded4] bg-[#faf9f6] px-8 py-24 text-center md:px-12 md:py-28">
 
-                <div className="mx-auto max-w-2xl border border-neutral-200 bg-white px-12 py-20 text-center">
+                        {/* Editorial Accent */}
+                        <div className="absolute left-1/2 top-0 h-px w-20 -translate-x-1/2 bg-[#9a8a74]" />
 
-                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-neutral-200 text-3xl">
-                        !
-                    </div>
+                        {/* Brand Monogram */}
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center border border-[#d4cfc5] bg-[#f5f4ef]">
+                            <span className="font-serif text-[21px] font-normal tracking-[-0.08em] text-[#292824]">
+                                LM
+                            </span>
+                        </div>
 
-                    <p className="mt-8 text-xs uppercase tracking-[0.35em] text-neutral-500">
-                        User
-                    </p>
+                        {/* Eyebrow */}
+                        <p className="mt-8 text-[8px] font-medium uppercase tracking-[0.4em] text-[#9a8a74]">
+                            Admin / User Management
+                        </p>
 
-                    <h2 className="mt-4 text-3xl font-light uppercase tracking-[0.16em]">
-                        User Not Found
-                    </h2>
+                        {/* Heading */}
+                        <h2 className="mt-5 font-serif text-3xl font-normal tracking-[0.01em] text-[#1b1a18] md:text-4xl">
+                            User Not Found
+                        </h2>
 
-                    <p className="mx-auto mt-5 max-w-md text-sm text-neutral-500">
-                        The user you're looking for doesn't
-                        exist or you don't have permission
-                        to view it.
-                    </p>
+                        {/* Description */}
+                        <p className="mx-auto mt-5 max-w-md text-[12px] leading-7 text-[#817d75]">
+                            This user could not be found, or you may not have permission to access their administrative details.
+                        </p>
 
-                    <div className="mt-9 flex items-center justify-center">
-
+                        {/* CTA */}
                         <Link
                             href="/admin/user"
-                            className="group inline-flex h-11 items-center justify-center gap-3 border border-black bg-black px-6 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-white hover:text-black"
+                            className="group relative mt-10 inline-flex items-center gap-5 border border-[#1b1a18] bg-[#1b1a18] px-9 py-4 text-[9px] font-medium uppercase tracking-[0.28em] text-[#faf9f6] transition-all duration-500 hover:border-[#6f604e] hover:bg-[#6f604e]"
                         >
-                            <span className="text-lg font-light leading-none transition-transform duration-300 group-hover:rotate-90">
-                                +
-                            </span>
+                            <span>Back to Users</span>
 
-                            Back to Users
+                            <span className="text-sm font-light transition-transform duration-500 ease-out group-hover:-translate-x-1">
+                                ←
+                            </span>
                         </Link>
 
+                        {/* Bottom Detail */}
+                        <div className="mx-auto mt-12 flex items-center justify-center gap-4">
+                            <span className="h-px w-8 bg-[#d6d2ca]" />
+
+                            <span className="text-[7px] uppercase tracking-[0.32em] text-[#aaa69e]">
+                                Administration Portal
+                            </span>
+
+                            <span className="h-px w-8 bg-[#d6d2ca]" />
+                        </div>
                     </div>
-
                 </div>
-
             </section>
         );
     }
@@ -219,234 +247,173 @@ export default function UserDetailPage({ id }: Props) {
     );
 
     return (
-        <section className="w-full px-6">
+        <section className="min-h-screen w-full bg-[#f7f6f2]">
+            <div>
+                {/* Back */}
+                <Link
+                    href="/admin/user"
+                    className="group inline-flex items-center gap-2 border-b border-[#d9d5cd] pb-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#171512] transition-all duration-300 hover:border-[#9a8a74] hover:text-[#6f604e]"
+                >
+                    <span className="text-[13px] leading-none transition-transform duration-300 group-hover:-translate-x-1">
+                        ←
+                    </span>
 
-            {/* Back */}
+                    <span>Back to Users</span>
+                </Link>
 
-            <Link
-                href="/admin/user"
-                className="group mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-950"
-            >
+                {/* User Header */}
+                <div className="mt-8 flex flex-col gap-6 border-b border-[#dedbd4] pb-8 lg:flex-row lg:items-end lg:justify-between">
+                    <div className="min-w-0">
+                        {/* Eyebrow */}
+                        <div className="mb-4 flex items-center gap-3">
+                            <span className="h-px w-7 bg-[#9a8a74]" />
 
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm transition group-hover:-translate-x-0.5 group-hover:border-slate-300">
-                    ←
-                </span>
-
-                Back to Users
-
-            </Link>
-
-            {/* HEADER */}
-
-            <div className="mb-10 flex flex-col gap-6 border-b border-neutral-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
-
-                <div className="min-w-0">
-
-                    {/* Breadcrumb */}
-
-                    <div className="mb-3 flex items-center gap-3">
-
-                        <span className="h-px w-8 bg-slate-950" />
-
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">
-                            Store / Users
-                        </p>
-
-                    </div>
-
-
-                    {/* Profile */}
-
-                    <div className="flex items-center gap-5">
-
-                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-50 shadow-sm">
-
-                            {profile.image ? (
-
-                                <Image
-                                    src={profile.image}
-                                    alt={profile.name}
-                                    width={64}
-                                    height={64}
-                                    className="h-full w-full object-cover"
-                                />
-
-                            ) : (
-
-                                <UserRound className="h-7 w-7 text-slate-400" />
-
-                            )}
-
+                            <p className="text-[8px] uppercase tracking-[0.28em] text-[#aaa69e]">
+                                Admin / User Management
+                            </p>
                         </div>
 
-
-                        <div className="min-w-0">
-
-                            <h1 className="truncate text-2xl font-light uppercase tracking-[0.08em] text-slate-950 sm:text-3xl">
-                                {profile.name}
-                            </h1>
-
-                            <p className="mt-2 text-xs text-slate-500">
-                                @{profile.username}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    {/* Metadata */}
-
-                    <div className="mt-7 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-slate-200 pt-6 sm:grid-cols-4">
-
-                        {/* User ID */}
-
-                        <div className="min-w-0">
-
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                User ID
-                            </p>
-
-                            <p className="mt-2 break-all text-xs text-slate-700">
-                                {profile.id}
-                            </p>
-
-                        </div>
-
-
-                        {/* Email */}
-
-                        <div className="min-w-0">
-
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                Email
-                            </p>
-
-                            <p className="mt-2 break-all text-xs text-slate-700">
-                                {profile.email}
-                            </p>
-
-                        </div>
-
-
-                        {/* Orders */}
-
-                        <div>
-
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                Orders
-                            </p>
-
-                            <p className="mt-2 text-xs text-slate-700">
-                                {statistics.orders} Products
-                            </p>
-
-                        </div>
-
-
-                        {/* Joined */}
-
-                        <div>
-
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                Joined
-                            </p>
-
-                            <p className="mt-2 text-xs text-slate-700">
-                                {formatDate(
-                                    profile.createdAt
+                        {/* Profile */}
+                        <div className="flex items-center gap-4 sm:gap-5">
+                            <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden border border-[#dedbd4] bg-[#eeece5] sm:h-18 sm:w-18">
+                                {profile.image ? (
+                                    <Image
+                                        src={profile.image}
+                                        alt={profile.name}
+                                        width={72}
+                                        height={72}
+                                        className="h-full w-full object-cover"
+                                    />
+                                ) : (
+                                    <UserRound className="h-7 w-7 text-[#aaa49b]" />
                                 )}
-                            </p>
+                            </div>
 
+                            <div className="min-w-0">
+                                <h1 className="wrap-break-word font-serif text-2xl font-normal tracking-[0.02em] text-[#1b1a18] sm:text-3xl">
+                                    {profile.name}
+                                </h1>
+
+                                <p className="mt-2 text-[10px] tracking-[0.06em] text-[#817d75]">
+                                    @{profile.username}
+                                </p>
+                            </div>
                         </div>
 
+                        {/* User Metadata */}
+                        <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-[#dedbd4] pt-6 sm:grid-cols-4 sm:gap-x-8">
+                            {/* User ID */}
+                            <div className="min-w-0">
+                                <p className="text-[8px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                    User ID
+                                </p>
+
+                                <p className="mt-2 break-all text-[10px] leading-5 text-[#57534c]">
+                                    {profile.id}
+                                </p>
+                            </div>
+
+                            {/* Email */}
+                            <div className="min-w-0">
+                                <p className="text-[8px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                    Email Address
+                                </p>
+
+                                <p className="mt-2 break-all text-[10px] leading-5 text-[#57534c]">
+                                    {profile.email}
+                                </p>
+                            </div>
+
+                            {/* Orders */}
+                            <div>
+                                <p className="text-[8px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                    Total Orders
+                                </p>
+
+                                <p className="mt-2 text-[10px] uppercase tracking-[0.08em] text-[#57534c]">
+                                    {statistics.orders}{" "}
+                                    {statistics.orders === 1
+                                        ? "Order"
+                                        : "Orders"}
+                                </p>
+                            </div>
+
+                            {/* Joined */}
+                            <div>
+                                <p className="text-[8px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                    Member Since
+                                </p>
+
+                                <p className="mt-2 text-[10px] leading-5 text-[#57534c]">
+                                    {formatDate(profile.createdAt)}
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
+                    {/* Account Status */}
+                    <div className="flex flex-wrap gap-2 lg:justify-end">
+                        <span
+                            className={`border px-4 py-2 text-[8px] uppercase tracking-[0.16em] ${roleStyles[profile.role]
+                                }`}
+                        >
+                            Role: {profile.role}
+                        </span>
+
+                        <span
+                            className={`border px-4 py-2 text-[8px] uppercase tracking-[0.16em] ${isVerified
+                                    ? verificationStyles.verified
+                                    : verificationStyles.unverified
+                                }`}
+                        >
+                            {isVerified ? "Verified" : "Unverified"}
+                        </span>
+                    </div>
                 </div>
 
+                {/* User Content */}
+                <div className="mt-10 grid gap-8 lg:grid-cols-[1.6fr_0.9fr] lg:gap-10">
+                    {/* Main Column */}
+                    <div className="min-w-0 space-y-6">
+                        {/* Addresses */}
+                        <UserAddresses
+                            addresses={user.addresses}
+                        />
 
-                {/* Status */}
+                        {/* Order History */}
+                        <UserOrders
+                            orders={user.orders}
+                        />
+                    </div>
 
-                <div className="flex flex-wrap gap-3">
+                    {/* Admin Sidebar */}
+                    <div className="min-w-0 space-y-6">
+                        {/* User Information */}
+                        <UserInformation user={profile} />
 
-                    <span
-                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${roleStyles[
-                            profile.role
-                        ]}`}
-                    >
-                        {profile.role}
-                    </span>
+                        {/* Account Statistics */}
+                        <AccountStatistics
+                            totalOrders={statistics.orders}
+                            totalSpent={statistics.totalSpent}
+                        />
 
-                    <span
-                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${isVerified
-                                ? verificationStyles.verified
-                                : verificationStyles.unverified
-                            }`}
-                    >
-                        {isVerified
-                            ? "Verified"
-                            : "Unverified"}
-                    </span>
-
+                        {/* Admin Controls */}
+                        <UserAdminActions
+                            userId={profile.id}
+                            role={profile.role}
+                            accountDeletionStatus={
+                                profile.accountDeletionStatus
+                            }
+                            accountDeletionReason={
+                                profile.accountDeletionReason
+                            }
+                            accountDeletionRequestedAt={
+                                profile.accountDeletionRequestedAt
+                            }
+                        />
+                    </div>
                 </div>
-
             </div>
-
-
-            {/* CONTENT */}
-
-            <div className="mt-12 grid gap-12 lg:grid-cols-[1.6fr_0.9fr]">
-
-                {/* LEFT */}
-
-                <div className="space-y-8">
-
-                    <UserAddresses
-                        addresses={user.addresses}
-                    />
-
-                    <UserOrders
-                        orders={user.orders}
-                    />
-
-                </div>
-
-
-                {/* RIGHT */}
-
-                <div className="space-y-8">
-
-                    <UserInformation
-                        user={profile}
-                    />
-
-                    <AccountStatistics
-                        totalOrders={
-                            statistics.orders
-                        }
-                        totalSpent={
-                            statistics.totalSpent
-                        }
-                    />
-
-                    <UserAdminActions
-                        userId={profile.id}
-                        role={profile.role}
-                        accountDeletionStatus={
-                            profile.accountDeletionStatus
-                        }
-                        accountDeletionReason={
-                            profile.accountDeletionReason
-                        }
-                        accountDeletionRequestedAt={
-                            profile.accountDeletionRequestedAt
-                        }
-                    />
-
-                </div>
-
-            </div>
-
         </section>
     );
 }

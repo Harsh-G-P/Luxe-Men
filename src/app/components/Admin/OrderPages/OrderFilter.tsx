@@ -310,216 +310,134 @@ export default function OrderFilter() {
      */
 
     const selectStyles = {
-
-        control: (
-            base: any,
-            state: any
-        ) => ({
-
+        control: (base: any, state: any) => ({
             ...base,
-
-            minHeight: "50px",
-
-            height: "50px",
-
-            borderRadius: "14px",
-
-            backgroundColor:
-                "#ffffff",
-
-            border:
-                state.isFocused
-                    ? "1px solid #111827"
-                    : "1px solid #e5e7eb",
-
-            boxShadow:
-                state.isFocused
-                    ? "0 0 0 3px rgba(15,23,42,0.06)"
-                    : "0 1px 2px rgba(15,23,42,0.02)",
-
-            transition:
-                "all 150ms ease",
-
-            "&:hover": {
-                borderColor:
-                    "#cbd5e1",
-            },
-
+            minHeight: "44px",
+            height: "44px",
+            borderRadius: 0,
+            border: state.isFocused
+                ? "1px solid #9b8150"
+                : "1px solid #d4cfc5",
+            backgroundColor: "#faf9f6",
+            boxShadow: "none",
             cursor: "pointer",
-        }),
-
-
-        valueContainer: (
-            base: any
-        ) => ({
-
-            ...base,
-
-            padding: "0 15px",
-        }),
-
-
-        placeholder: (
-            base: any
-        ) => ({
-
-            ...base,
-
-            color: "#94a3b8",
-
-            fontSize: "13px",
-        }),
-
-
-        singleValue: (
-            base: any
-        ) => ({
-
-            ...base,
-
-            color: "#334155",
-
-            fontSize: "13px",
-
-            fontWeight: 500,
-        }),
-
-
-        input: (
-            base: any
-        ) => ({
-
-            ...base,
-
-            color: "#0f172a",
-
-            fontSize: "13px",
-        }),
-
-
-        indicatorsContainer: (
-            base: any
-        ) => ({
-
-            ...base,
-
-            paddingRight: "8px",
-        }),
-
-
-        dropdownIndicator: (
-            base: any,
-            state: any
-        ) => ({
-
-            ...base,
-
-            color:
-                state.isFocused
-                    ? "#0f172a"
-                    : "#94a3b8",
-
-            transition:
-                "transform 150ms ease",
-
-            transform:
-                state.selectProps
-                    .menuIsOpen
-                    ? "rotate(180deg)"
-                    : "rotate(0deg)",
+            paddingLeft: "8px",
+            transition: "border-color 300ms ease",
 
             "&:hover": {
-                color: "#0f172a",
+                borderColor: "#9b8150",
             },
         }),
 
+        valueContainer: (base: any) => ({
+            ...base,
+            padding: "0 12px",
+        }),
+
+        placeholder: (base: any) => ({
+            ...base,
+            color: "#aaa49b",
+            fontSize: "9px",
+            textTransform: "uppercase",
+            letterSpacing: "0.25em",
+        }),
+
+        singleValue: (base: any) => ({
+            ...base,
+            color: "#34312c",
+            fontSize: "10px",
+            letterSpacing: "0.08em",
+        }),
 
         indicatorSeparator: () => ({
             display: "none",
         }),
 
-
-        menu: (
-            base: any
-        ) => ({
-
+        dropdownIndicator: (base: any, state: any) => ({
             ...base,
+            color: "#9b8150",
+            paddingRight: "16px",
+            transition: "transform 300ms ease",
 
-            marginTop: "7px",
+            transform: state.selectProps.menuIsOpen
+                ? "rotate(180deg)"
+                : "rotate(0deg)",
 
-            borderRadius: "14px",
+            "&:hover": {
+                color: "#9b8150",
+            },
+        }),
 
+        menu: (base: any) => ({
+            ...base,
+            marginTop: "4px",
+            borderRadius: 0,
+            border: "1px solid #d4cfc5",
+            backgroundColor: "#faf9f6",
+            boxShadow: "0 15px 35px rgba(28, 27, 24, 0.08)",
             overflow: "hidden",
-
-            border:
-                "1px solid #e2e8f0",
-
-            backgroundColor:
-                "#ffffff",
-
-            boxShadow:
-                "0 20px 50px rgba(15,23,42,0.14), 0 4px 12px rgba(15,23,42,0.06)",
-
-            zIndex: 99999,
+            zIndex: 50,
         }),
 
-
-        menuList: (
-            base: any
-        ) => ({
-
+        menuList: (base: any) => ({
             ...base,
 
-            padding: "6px",
+            /*
+             * Four options visible.
+             * Additional options scroll vertically.
+             */
+            maxHeight: "135px",
+            overflowY: "auto",
+            padding: "6px 0",
 
-            maxHeight: "260px",
+            /* Firefox */
+            scrollbarWidth: "thin",
+            scrollbarColor: "#c8b78e transparent",
+
+            /* Chrome / Edge / Safari */
+            "&::-webkit-scrollbar": {
+                width: "4px",
+            },
+
+            "&::-webkit-scrollbar-track": {
+                background: "transparent",
+            },
+
+            "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#c8b78e",
+            },
+
+            "&::-webkit-scrollbar-thumb:hover": {
+                backgroundColor: "#9b8150",
+            },
         }),
 
-
-        option: (
-            base: any,
-            state: any
-        ) => ({
-
+        option: (base: any, state: any) => ({
             ...base,
 
-            borderRadius: "9px",
+            minHeight: "41px",
+            padding: "14px 18px",
 
-            padding:
-                "10px 12px",
+            backgroundColor: state.isSelected
+                ? "#f1eee7"
+                : state.isFocused
+                    ? "#f5f2eb"
+                    : "#faf9f6",
 
-            marginBottom: "2px",
+            color: state.isSelected
+                ? "#9b8150"
+                : "#34312c",
 
-            backgroundColor:
-                state.isSelected
-                    ? "#0f172a"
-                    : state.isFocused
-                        ? "#f8fafc"
-                        : "#ffffff",
-
-            color:
-                state.isSelected
-                    ? "#ffffff"
-                    : "#334155",
-
-            fontSize: "13px",
-
-            fontWeight:
-                state.isSelected
-                    ? 600
-                    : 500,
+            fontSize: "9px",
+            lineHeight: "13px",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
 
             cursor: "pointer",
-
-            transition:
-                "background-color 120ms ease",
+            transition: "all 200ms ease",
 
             "&:active": {
-                backgroundColor:
-                    "#0f172a",
-
-                color:
-                    "#ffffff",
+                backgroundColor: "#eee9df",
             },
         }),
     };
@@ -536,7 +454,7 @@ export default function OrderFilter() {
 
         menuPortalTarget:
             typeof document !==
-            "undefined"
+                "undefined"
                 ? document.body
                 : undefined,
 
@@ -554,376 +472,265 @@ export default function OrderFilter() {
 
 
     return (
+        <section className="mb-8">
 
-        <section className="mb-10">
-
-            {/* MOBILE FILTER BUTTON */}
-
+            {/* Mobile Filter Button */}
             <div className="mb-4 md:hidden">
-
                 <button
                     type="button"
-                    onClick={() =>
-                        setMobileOpen(
-                            (prev) => !prev
-                        )
-                    }
-                    className="group flex h-12 w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 shadow-[0_4px_20px_rgba(15,23,42,0.04)] transition-all duration-200 hover:border-slate-300"
+                    onClick={() => setMobileOpen((prev) => !prev)}
+                    className="group flex min-h-12 w-full items-center justify-between border border-[#e2ded4] bg-[#faf9f6] px-4 transition-all duration-300 hover:border-[#c8bb94]"
                 >
-
                     <div className="flex items-center gap-3">
-
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-950 text-white">
-
-                            <SlidersHorizontal className="h-4 w-4" />
-
+                        <div className="flex h-8 w-8 items-center justify-center border border-[#dedbd4] bg-[#f3f0e9] text-[#9a8a74]">
+                            <SlidersHorizontal className="h-3.5 w-3.5" />
                         </div>
-
 
                         <div className="text-left">
-
-                            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400">
-                                Orders
+                            <p className="text-[7px] uppercase tracking-[0.25em] text-[#aaa69e]">
+                                Admin / Orders
                             </p>
 
-                            <p className="mt-0.5 text-sm font-semibold text-slate-900">
+                            <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#34312c]">
                                 Filter Orders
                             </p>
-
                         </div>
-
                     </div>
 
-
                     <div className="flex items-center gap-3">
-
-                        {activeFilterCount >
-                            0 && (
-
-                            <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-slate-950 px-2 text-[10px] font-bold text-white">
-                                {
-                                    activeFilterCount
-                                }
+                        {activeFilterCount > 0 && (
+                            <span className="flex h-5 min-w-5 items-center justify-center border border-[#c9b99b] bg-[#f0e9df] px-1.5 text-[8px] text-[#765f44]">
+                                {activeFilterCount}
                             </span>
-
                         )}
 
-
                         <span
-                            className={`text-slate-400 transition-transform duration-300 ${
-                                mobileOpen
-                                    ? "rotate-180"
-                                    : ""
-                            }`}
+                            className={`text-[11px] text-[#9a8a74] transition-transform duration-300 ${mobileOpen ? "rotate-180" : ""
+                                }`}
                         >
                             ↓
                         </span>
-
                     </div>
-
                 </button>
-
             </div>
 
-
-            {/* FILTER PANEL */}
-
+            {/* Filter Panel */}
             <div
-                className={`
-                    overflow-visible rounded-3xl border border-slate-200
-                    bg-white shadow-[0_4px_25px_rgba(15,23,42,0.04)]
-                    transition-all duration-300
-                    ${
-                        mobileOpen
-                            ? "block"
-                            : "hidden"
-                    }
-                    md:block
-                `}
+                className={`overflow-visible border border-[#e2ded4] bg-[#faf9f6] transition-all duration-300 ${mobileOpen ? "block" : "hidden"
+                    } md:block`}
             >
-
-                {/* HEADER */}
-
-                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-5 sm:px-6">
-
+                {/* Header */}
+                <div className="flex items-center justify-between gap-4 border-b border-[#e8e4dc] px-5 py-4 sm:px-6">
                     <div>
-
-                        <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-slate-400">
-                            Orders
+                        <p className="text-[7px] uppercase tracking-[0.28em] text-[#aaa69e]">
+                            Order Management
                         </p>
 
-                        <h3 className="mt-1 text-base font-semibold tracking-tight text-slate-900">
+                        <h3 className="mt-1.5 font-serif text-lg font-normal text-[#1b1a18]">
                             Filter Orders
                         </h3>
 
+                        <p className="mt-1 text-[9px] leading-5 text-[#817d75]">
+                            Refine orders by status, payment, and date.
+                        </p>
                     </div>
 
-
-                    <div className="flex items-center gap-2">
-
-                        {/* MOBILE CLOSE */}
-
+                    <div className="flex shrink-0 items-center gap-2">
+                        {/* Mobile Close */}
                         <button
                             type="button"
-                            onClick={() =>
-                                setMobileOpen(
-                                    false
-                                )
-                            }
-                            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:border-slate-900 hover:bg-slate-950 hover:text-white md:hidden"
+                            onClick={() => setMobileOpen(false)}
+                            className="flex h-8 w-8 items-center justify-center border border-[#dedbd4] text-[#817d75] transition-colors duration-300 hover:border-[#9a8a74] hover:text-[#6f604e] md:hidden"
                             aria-label="Close filters"
                         >
-                            <X className="h-4 w-4" />
+                            <X className="h-3.5 w-3.5" />
                         </button>
 
-
-                        {/* DESKTOP CLEAR */}
-
+                        {/* Desktop Clear */}
                         <button
                             type="button"
-                            onClick={
-                                clearFilters
-                            }
-                            className="group hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-slate-900 hover:bg-slate-950 hover:text-white hover:shadow-md sm:inline-flex"
+                            onClick={clearFilters}
+                            className="group hidden h-9 items-center gap-2 border border-[#dedbd4] px-3 text-[8px] uppercase tracking-[0.14em] text-[#817d75] transition-all duration-300 hover:border-[#9a8a74] hover:text-[#6f604e] sm:inline-flex"
                         >
-
-                            <span className="text-sm transition-transform duration-200 group-hover:rotate-90">
+                            <span className="text-sm transition-transform duration-300 group-hover:rotate-90">
                                 ×
                             </span>
 
                             Clear Filters
-
                         </button>
-
                     </div>
-
                 </div>
 
-
-                {/* FILTERS */}
-
+                {/* Filter Controls */}
                 <div className="overflow-visible p-4 sm:p-5">
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
-                        {/* SEARCH */}
-
-                        <div className="relative">
+                        {/* Search */}
+                        <div className="min-w-0">
+                            <label
+                                htmlFor="order-search"
+                                className="mb-2 block text-[7px] uppercase tracking-[0.2em] text-[#aaa69e]"
+                            >
+                                Search
+                            </label>
 
                             <input
+                                id="order-search"
                                 value={search}
                                 onChange={(e) => {
-
-                                    setSearch(
-                                        e.target
-                                            .value
-                                    );
-
-                                    updateFilter(
-                                        "search",
-                                        e.target
-                                            .value
-                                    );
-
+                                    setSearch(e.target.value);
+                                    updateFilter("search", e.target.value);
                                 }}
                                 placeholder="Search orders..."
-                                className="h-12.5 w-full rounded-[14px] border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5"
+                                className="h-10.5 w-full rounded-none border border-[#d4cfc5] bg-[#fdfcf9] px-3 text-[10px] tracking-[0.04em] text-[#34312c] outline-none transition-colors duration-300 placeholder:text-[#aaa49b] hover:border-[#b9ad98] focus:border-[#9a8a74]"
                             />
-
                         </div>
 
+                        {/* Order Status */}
+                        <div className="min-w-0">
+                            <label className="mb-2 block text-[7px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                Order Status
+                            </label>
 
-                        {/* STATUS */}
+                            <Select
+                                {...selectProps}
+                                instanceId="order-status"
+                                options={statusOptions}
+                                placeholder="All Status"
+                                value={
+                                    statusOptions.find(
+                                        (x) =>
+                                            x.value ===
+                                            (searchParams.get("status") ?? "ALL")
+                                    ) ?? null
+                                }
+                                onChange={(option) =>
+                                    updateFilter("status", option?.value ?? "ALL")
+                                }
+                            />
+                        </div>
 
-                        <Select
-                            {...selectProps}
-                            instanceId="order-status"
-                            options={
-                                statusOptions
-                            }
-                            placeholder="All Status"
-                            value={
-                                statusOptions.find(
-                                    (x) =>
-                                        x.value ===
-                                        (
-                                            searchParams.get(
-                                                "status"
-                                            ) ??
-                                            "ALL"
-                                        )
-                                )
-                            }
-                            onChange={(
-                                option
-                            ) =>
-                                updateFilter(
-                                    "status",
-                                    option?.value ??
-                                        "ALL"
-                                )
-                            }
-                        />
+                        {/* Payment Status */}
+                        <div className="min-w-0">
+                            <label className="mb-2 block text-[7px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                Payment Status
+                            </label>
 
+                            <Select
+                                {...selectProps}
+                                instanceId="order-payment"
+                                options={paymentOptions}
+                                placeholder="All Payments"
+                                value={
+                                    paymentOptions.find(
+                                        (x) =>
+                                            x.value ===
+                                            (searchParams.get("payment") ?? "ALL")
+                                    ) ?? null
+                                }
+                                onChange={(option) =>
+                                    updateFilter("payment", option?.value ?? "ALL")
+                                }
+                            />
+                        </div>
 
-                        {/* PAYMENT STATUS */}
+                        {/* Payment Method */}
+                        <div className="min-w-0">
+                            <label className="mb-2 block text-[7px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                Payment Method
+                            </label>
 
-                        <Select
-                            {...selectProps}
-                            instanceId="order-payment"
-                            options={
-                                paymentOptions
-                            }
-                            placeholder="All Payments"
-                            value={
-                                paymentOptions.find(
-                                    (x) =>
-                                        x.value ===
-                                        (
-                                            searchParams.get(
-                                                "payment"
-                                            ) ??
-                                            "ALL"
-                                        )
-                                )
-                            }
-                            onChange={(
-                                option
-                            ) =>
-                                updateFilter(
-                                    "payment",
-                                    option?.value ??
-                                        "ALL"
-                                )
-                            }
-                        />
+                            <Select
+                                {...selectProps}
+                                instanceId="order-method"
+                                options={methodOptions}
+                                placeholder="All Methods"
+                                value={
+                                    methodOptions.find(
+                                        (x) =>
+                                            x.value ===
+                                            (searchParams.get("method") ?? "ALL")
+                                    ) ?? null
+                                }
+                                onChange={(option) =>
+                                    updateFilter("method", option?.value ?? "ALL")
+                                }
+                            />
+                        </div>
 
+                        {/* Date */}
+                        <div className="min-w-0">
+                            <label className="mb-2 block text-[7px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                Order Date
+                            </label>
 
-                        {/* PAYMENT METHOD */}
+                            <Select
+                                {...selectProps}
+                                instanceId="order-date"
+                                options={dateOptions}
+                                placeholder="All Dates"
+                                value={
+                                    dateOptions.find(
+                                        (x) =>
+                                            x.value ===
+                                            (searchParams.get("date") ?? "ALL")
+                                    ) ?? null
+                                }
+                                onChange={(option) =>
+                                    updateFilter("date", option?.value ?? "ALL")
+                                }
+                            />
+                        </div>
 
-                        <Select
-                            {...selectProps}
-                            instanceId="order-method"
-                            options={
-                                methodOptions
-                            }
-                            placeholder="All Methods"
-                            value={
-                                methodOptions.find(
-                                    (x) =>
-                                        x.value ===
-                                        (
-                                            searchParams.get(
-                                                "method"
-                                            ) ??
-                                            "ALL"
-                                        )
-                                )
-                            }
-                            onChange={(
-                                option
-                            ) =>
-                                updateFilter(
-                                    "method",
-                                    option?.value ??
-                                        "ALL"
-                                )
-                            }
-                        />
+                        {/* Sort */}
+                        <div className="min-w-0">
+                            <label className="mb-2 block text-[7px] uppercase tracking-[0.2em] text-[#aaa69e]">
+                                Sort By
+                            </label>
 
-
-                        {/* DATE */}
-
-                        <Select
-                            {...selectProps}
-                            instanceId="order-date"
-                            options={
-                                dateOptions
-                            }
-                            placeholder="All Dates"
-                            value={
-                                dateOptions.find(
-                                    (x) =>
-                                        x.value ===
-                                        (
-                                            searchParams.get(
-                                                "date"
-                                            ) ??
-                                            "ALL"
-                                        )
-                                )
-                            }
-                            onChange={(
-                                option
-                            ) =>
-                                updateFilter(
-                                    "date",
-                                    option?.value ??
-                                        "ALL"
-                                )
-                            }
-                        />
-
-
-                        {/* SORT */}
-
-                        <Select
-                            {...selectProps}
-                            instanceId="order-sort"
-                            options={
-                                sortOptions
-                            }
-                            placeholder="Newest First"
-                            value={
-                                sortOptions.find(
-                                    (x) =>
-                                        x.value ===
-                                        (
-                                            searchParams.get(
-                                                "sort"
-                                            ) ??
-                                            "NEWEST"
-                                        )
-                                )
-                            }
-                            onChange={(
-                                option
-                            ) =>
-                                updateFilter(
-                                    "sort",
-                                    option?.value ??
-                                        "NEWEST"
-                                )
-                            }
-                        />
-
+                            <Select
+                                {...selectProps}
+                                instanceId="order-sort"
+                                options={sortOptions}
+                                placeholder="Newest First"
+                                value={
+                                    sortOptions.find(
+                                        (x) =>
+                                            x.value ===
+                                            (searchParams.get("sort") ?? "NEWEST")
+                                    ) ?? null
+                                }
+                                onChange={(option) =>
+                                    updateFilter("sort", option?.value ?? "NEWEST")
+                                }
+                            />
+                        </div>
                     </div>
 
+                    {/* Footer */}
+                    <div className="mt-5 flex flex-col gap-3 border-t border-[#e8e4dc] pt-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p className="text-[8px] uppercase tracking-[0.18em] text-[#817d75]">
+                                Active Filters
+                            </p>
 
-                    {/* FOOTER */}
-
-                    <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-
-                        <p className="text-[11px] uppercase tracking-[0.18em] text-slate-400">
-                            Refine your orders
-                        </p>
+                            <p className="mt-1 text-[9px] text-[#aaa49b]">
+                                {activeFilterCount > 0
+                                    ? `${activeFilterCount} filter${activeFilterCount === 1 ? "" : "s"} applied`
+                                    : "No additional filters applied"}
+                            </p>
+                        </div>
 
                         <button
                             type="button"
-                            onClick={
-                                clearFilters
-                            }
-                            className="text-left text-xs font-semibold text-slate-500 underline-offset-4 transition hover:text-slate-950 hover:underline sm:text-right"
+                            onClick={clearFilters}
+                            className="self-start text-[8px] uppercase tracking-[0.16em] text-[#817d75] underline decoration-[#d4cfc5] underline-offset-4 transition-colors duration-300 hover:text-[#6f604e] sm:self-auto"
                         >
-                            Reset all filters
+                            Reset All Filters
                         </button>
-
                     </div>
-
                 </div>
-
             </div>
-
         </section>
     );
 }

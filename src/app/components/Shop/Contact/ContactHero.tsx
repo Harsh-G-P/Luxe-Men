@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 const contactMethods = [
@@ -23,110 +22,109 @@ const contactMethods = [
     {
         title: "Store Locator",
         description:
-            "Find your nearest boutique and explore our latest collections in person.",
-        action: "Browse Boutiques",
+            "Discover a boutique near you and experience the world of Luxe Men in person.",
+        action: "Explore Boutiques",
         icon: MapPin,
     },
     {
         title: "Shipping",
         description:
-            "Learn more about delivery options, estimated shipping times, and order tracking.",
+            "Explore delivery options, estimated shipping times, order tracking, and packaging information.",
         action: "Shipping Information",
         icon: Truck,
     },
     {
         title: "Size Guide",
         description:
-            "Find the perfect fit with our detailed size guide for every category and collection.",
-        action: "View Size Guide",
+            "Find your ideal fit with considered sizing guidance across our collections.",
+        action: "Discover Your Size",
         icon: Ruler,
     },
     {
         title: "Care Guide",
         description:
-            "Learn how to properly wash, store, and care for your garments to preserve their quality.",
-        action: "Garment Care",
+            "Learn how to preserve the texture, shape, and character of your Luxe Men pieces.",
+        action: "Explore Garment Care",
         icon: Shirt,
     },
 ];
 
 const drawerContent = {
     Phone: [
-        "Monday–Saturday • 09:00–20:00 (Business Hours)",
-        "Sunday • Closed (Business Hours)",
+        "Monday–Saturday • 09:00–20:00",
+        "Sunday • Closed",
 
-        "+1 (800) 555-0187 (United States)",
-        "+44 20 7946 0832 (United Kingdom)",
-        "+33 1 84 88 4560 (France)",
-        "+39 02 9475 2140 (Italy)",
-        "+81 3 4578 9210 (Japan)",
+        "+1 (800) 555-0187 • United States",
+        "+44 20 7946 0832 • United Kingdom",
+        "+33 1 84 88 4560 • France",
+        "+39 02 9475 2140 • Italy",
+        "+81 3 4578 9210 • Japan",
 
-        "clientservices@luxemen.com (Email)",
+        "clientservices@luxemen.com",
 
-        "Personal Shopping Assistance (Services)",
-        "Order Support (Services)",
-        "Product Recommendations (Services)",
-        "Size Consultation (Services)",
-        "Returns & Exchanges (Services)",
-        "Gift Services (Services)",
+        "Personal Shopping Assistance",
+        "Order Support",
+        "Product Recommendations",
+        "Size Consultation",
+        "Returns & Exchanges",
+        "Gift Services",
     ],
 
     "Store Locator": [
-        "New York • Fifth Avenue (United States)",
-        "London • Bond Street (United Kingdom)",
-        "Paris • Avenue Montaigne (France)",
-        "Milan • Via Montenapoleone (Italy)",
-        "Tokyo • Ginza (Japan)",
-        "Dubai • Dubai Mall (UAE)",
+        "New York • Fifth Avenue",
+        "London • Bond Street",
+        "Paris • Avenue Montaigne",
+        "Milan • Via Montenapoleone",
+        "Tokyo • Ginza",
+        "Dubai • Dubai Mall",
 
-        "Private Shopping Appointments (Services)",
-        "Personal Styling Consultations (Services)",
-        "Luxury Gift Wrapping (Services)",
-        "Exclusive Collection Preview (Services)",
+        "Private Shopping Appointments",
+        "Personal Styling Consultations",
+        "Luxury Gift Wrapping",
+        "Exclusive Collection Preview",
 
-        "Find Your Nearest Boutique (Store Locator)",
-        "Boutique Opening Hours Vary by Location (Store Locator)",
+        "Boutique Opening Hours Vary by Location",
     ],
 
     Shipping: [
-        "Complimentary Standard Delivery (Standard)",
-        "Express Delivery • 1–3 Business Days (Express)",
-        "Worldwide Shipping Available (International)",
+        "Complimentary Standard Delivery",
+        "Express Delivery • 1–3 Business Days",
+        "Worldwide Shipping Available",
 
-        "Real-Time Order Tracking (Tracking)",
-        "Signature Required on Delivery (Tracking)",
+        "Real-Time Order Tracking",
+        "Signature Required on Delivery",
 
-        "Luxury Gift Packaging Available (Packaging)",
-        "Premium Protective Packaging (Packaging)",
+        "Luxury Gift Packaging Available",
+        "Premium Protective Packaging",
 
-        "Customs & Duties Calculated at Checkout (International)",
-        "Import Fees May Apply by Region (International)",
+        "Customs & Duties Calculated at Checkout",
+        "Import Fees May Apply by Region",
 
-        "Orders Processed Monday–Friday (Processing)",
-        "Delivery Times May Vary During Holidays (Processing)",
+        "Orders Processed Monday–Friday",
+        "Delivery Times May Vary During Holidays",
     ],
 
     "Size Guide": [
-        "XS • Chest 34\" (Tops)",
-        "S • Chest 36\" (Tops)",
-        "M • Chest 38\" (Tops)",
-        "L • Chest 40\" (Tops)",
-        "XL • Chest 42\" (Tops)",
-        "XXL • Chest 44\" (Tops)",
+        "XS • Chest 34″",
+        "S • Chest 36″",
+        "M • Chest 38″",
+        "L • Chest 40″",
+        "XL • Chest 42″",
+        "XXL • Chest 44″",
 
-        "28 • Waist 28\" (Bottoms)",
-        "30 • Waist 30\" (Bottoms)",
-        "32 • Waist 32\" (Bottoms)",
-        "34 • Waist 34\" (Bottoms)",
-        "36 • Waist 36\" (Bottoms)",
-        "38 • Waist 38\" (Bottoms)",
+        "28 • Waist 28″",
+        "30 • Waist 30″",
+        "32 • Waist 32″",
+        "34 • Waist 34″",
+        "36 • Waist 36″",
+        "38 • Waist 38″",
 
-        "UK 6 (Footwear)",
-        "UK 7 (Footwear)",
-        "UK 8 (Footwear)",
-        "UK 9 (Footwear)",
-        "UK 10 (Footwear)",
-        "UK 11 (Footwear)",
+        "UK 6 • Footwear",
+        "UK 7 • Footwear",
+        "UK 8 • Footwear",
+        "UK 9 • Footwear",
+        "UK 10 • Footwear",
+        "UK 11 • Footwear",
 
         "Slim Fit",
         "Regular Fit",
@@ -135,26 +133,26 @@ const drawerContent = {
     ],
 
     "Care Guide": [
-        "Read care label before washing (General)",
-        "Wash similar colours together (General)",
-        "Turn garments inside out (General)",
+        "Read care label before washing",
+        "Wash similar colours together",
+        "Turn garments inside out",
 
-        "Machine wash cold 30°C (Washing)",
-        "Use mild detergent (Washing)",
-        "Do not bleach (Washing)",
-        "Avoid fabric softener (Washing)",
+        "Machine wash cold • 30°C",
+        "Use mild detergent",
+        "Do not bleach",
+        "Avoid fabric softener",
 
-        "Hang dry whenever possible (Drying)",
-        "Do not tumble dry (Drying)",
-        "Dry away from direct sunlight (Drying)",
+        "Hang dry whenever possible",
+        "Do not tumble dry",
+        "Dry away from direct sunlight",
 
-        "Iron on low heat (Ironing)",
-        "Steam when necessary (Ironing)",
-        "Do not iron over prints (Ironing)",
+        "Iron on low heat",
+        "Steam when necessary",
+        "Do not iron over prints",
 
-        "Store in a cool, dry place (Storage)",
-        "Use quality hangers (Storage)",
-        "Fold knitwear to maintain shape (Storage)",
+        "Store in a cool, dry place",
+        "Use quality hangers",
+        "Fold knitwear to maintain shape",
     ],
 };
 
@@ -182,7 +180,9 @@ export default function ContactHero() {
 
         if (!title) return;
 
-        const item = contactMethods.find((method) => method.title === title);
+        const item = contactMethods.find(
+            (method) => method.title === title
+        );
 
         if (item) {
             setOpenItem(item);
@@ -190,140 +190,239 @@ export default function ContactHero() {
     }, [searchParams]);
 
     return (
-        <section className=" px-5 py-10 md:px-20">
+        <section className="bg-[#f7f5f1] px-5 py-28">
 
-            {/* Heading */}
-            <div className="relative -mx-5 md:-mx-20 mb-24 h-100 overflow-hidden md:h-130">
-                {/* Background Video */}
-                <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="absolute inset-0 h-full w-full object-cover"
-                >
-                    <source src="/videos/contact1.mp4" type="video/mp4" />
-                </video>
+            {/* Header */}
+            <div className="mx-auto max-w-3xl text-center">
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/40" />
+                <div className="mb-8 flex items-center justify-center gap-4">
+                    <span className="h-px w-12 bg-[#b49a68]/50" />
 
-                {/* Content */}
-                <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
-                    <div className="mb-6 flex items-center gap-2 text-sm text-gray-300">
-                        <Link href="/">Home</Link>
-                        <span>/</span>
-                        <span className="font-medium text-white">Contact</span>
-                    </div>
-                    <p className="mb-4 text-xs uppercase tracking-[0.35em]">
-                        Client Services
-                    </p>
+                    <span className="h-1.5 w-1.5 rotate-45 border border-[#b49a68]" />
 
-                    <h1 className="font-serif text-3xl uppercase tracking-wide md:text-5xl">
-                        Exceptional Service For
-                        <br />
-                        Every Journey
-                    </h1>
-
-                    <p className="mt-5 max-w-xl text-xs uppercase tracking-[0.25em] text-white/90">
-                        Our Client Advisors are available to assist you with personalized
-                        support, product guidance, and worldwide services.
-                    </p>
+                    <span className="h-px w-12 bg-[#b49a68]/50" />
                 </div>
+
+                <p className="text-[9px] font-medium uppercase tracking-[0.55em] text-[#9b8050]">
+                    Client Services
+                </p>
+
+                <h2 className="mt-6 font-serif text-5xl font-light leading-[0.95] tracking-[-0.045em] text-[#191816] md:text-7xl">
+                    Every Detail,
+                    <br />
+                    <span className="italic text-[#77736b]">
+                        Considered.
+                    </span>
+                </h2>
+
+                <p className="mx-auto mt-8 max-w-lg text-[11px] leading-7 tracking-[0.035em] text-[#858078]">
+                    From finding your perfect fit to caring for your
+                    collection, our Client Services are designed around
+                    every detail of the Luxe Men experience.
+                </p>
+
             </div>
 
-            <div className="mx-auto max-w-6xl px-5 md:px-20">
+            {/* Services */}
+            <div className="mx-auto mt-24 grid max-w-6xl grid-cols-1 border-t border-[#d8d4cc] md:grid-cols-2">
 
-                {/* Contact Methods */}
-                <div className="mt-24 grid gap-y-20 gap-x-16 md:grid-cols-2">
+                {contactMethods.map((item, index) => {
+                    const Icon = item.icon;
 
-                    {contactMethods.map((item) => {
-                        const Icon = item.icon;
+                    return (
+                        <motion.div
+                            key={item.title}
+                            initial={{
+                                opacity: 0,
+                                y: 25,
+                            }}
+                            whileInView={{
+                                opacity: 1,
+                                y: 0,
+                            }}
+                            viewport={{
+                                once: true,
+                                margin: "-80px",
+                            }}
+                            transition={{
+                                duration: 0.7,
+                                delay: index * 0.08,
+                                ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className={`group border-b border-[#d8d4cc] py-12 md:px-10 md:py-14 ${index % 2 === 0
+                                    ? "md:border-r"
+                                    : ""
+                                }`}
+                        >
 
-                        return (
-                            <div
-                                key={item.title}
-                                className="text-center"
-                            >
+                            <div className="flex items-start justify-between">
 
-                                <h3 className="text-sm font-semibold uppercase tracking-wide">
-                                    {item.title}
-                                </h3>
+                                <span className="text-[8px] tracking-[0.3em] text-[#b49a68]">
+                                    0{index + 1}
+                                </span>
 
-                                <p className="mx-auto mt-6 max-w-xs text-xs text-gray-600">
-                                    {item.description}
-                                </p>
-
-                                <button
-                                    onClick={() => setOpenItem(item)}
-                                    className="mx-auto mt-8 flex items-center gap-3 border-b border-black pb-1 text-xs font-medium transition hover:opacity-60">
-                                    <Icon size={18} />
-                                    {item.action}
-                                </button>
+                                <Icon
+                                    size={17}
+                                    strokeWidth={1}
+                                    className="text-[#aaa59c] transition-colors duration-300 group-hover:text-[#9b8050]"
+                                />
 
                             </div>
-                        );
-                    })}
 
-                </div>
+                            <h3 className="mt-8 font-serif text-2xl font-light tracking-[-0.02em] text-[#25231f]">
+                                {item.title}
+                            </h3>
+
+                            <p className="mt-4 max-w-sm text-[11px] leading-6 tracking-[0.02em] text-[#858078]">
+                                {item.description}
+                            </p>
+
+                            <button
+                                type="button"
+                                onClick={() => setOpenItem(item)}
+                                className="group/button mt-7 inline-flex items-center gap-4 text-[8px] uppercase tracking-[0.45em] text-[#403d37]"
+                            >
+                                <span className="border-b border-[#b49a68] pb-1 transition-colors duration-300 group-hover/button:text-[#9b8050]">
+                                    {item.action}
+                                </span>
+
+                                <span className="text-sm transition-transform duration-300 group-hover/button:translate-x-1">
+                                    →
+                                </span>
+                            </button>
+
+                        </motion.div>
+                    );
+                })}
 
             </div>
 
+            {/* Closing Detail */}
+            <div className="mt-20 flex items-center justify-center gap-4">
+
+                <span className="h-px w-12 bg-[#d8d4cc]" />
+
+                <span className="text-[8px] uppercase tracking-[0.5em] text-[#aaa59c]">
+                    Luxe Men
+                </span>
+
+                <span className="h-px w-12 bg-[#d8d4cc]" />
+
+            </div>
+
+            {/* Drawer */}
             <AnimatePresence>
                 {openItem && (
                     <>
                         {/* Backdrop */}
                         <motion.div
-                            className="fixed inset-0 z-40 backdrop-blur-sm"
+                            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[3px]"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
+                            transition={{ duration: 0.35 }}
                             onClick={() => setOpenItem(null)}
                         />
 
                         {/* Drawer */}
-                        <motion.div
+                        <motion.aside
                             initial={{ x: "100%" }}
                             animate={{ x: 0 }}
                             exit={{ x: "100%" }}
-                            transition={{ duration: 0.5 }}
-                            className="fixed top-0 right-0 z-50 h-full w-full max-w-137.5 bg-white p-6 md:p-8 shadow-xl overflow-y-auto"
-
+                            transition={{
+                                duration: 0.55,
+                                ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="fixed right-0 top-0 z-50 h-full w-full max-w-xl overflow-y-auto bg-[#f7f5f1] px-7 py-8 shadow-2xl sm:px-12"
                         >
+
+                            {/* Close */}
                             <button
+                                type="button"
                                 onClick={() => setOpenItem(null)}
-                                className="ml-auto block text-gray-500"
+                                aria-label="Close"
+                                className="ml-auto flex h-9 w-9 items-center justify-center rounded-full border border-[#d4cfc5] text-[#77736b] transition duration-300 hover:border-[#9b8050] hover:text-[#9b8050]"
                             >
-                                ✕
+                                <span className="text-lg leading-none">
+                                    ×
+                                </span>
                             </button>
 
-                            <h2 className="mt-8 text-xs font-semibold tracking-[0.3em] uppercase">
-                                {openItem.title}
-                            </h2>
+                            {/* Drawer Header */}
+                            <div className="mt-16">
 
-                            <p className="mt-8 text-sm leading-7 text-gray-600">
-                                {openItem.description}
-                            </p>
+                                <p className="text-[8px] uppercase tracking-[0.5em] text-[#9b8050]">
+                                    Luxe Men
+                                </p>
 
-                            <div
-                                className={`mt-10 border-t ${openItem.title === "Size Guide" || openItem.title === "Care Guide" || openItem.title === "Phone"
-                                    ? "max-h-197.5 overflow-y-auto no-scrollbar"
-                                    : ""
-                                    }`}
-                            >
+                                <h2 className="mt-5 font-serif text-4xl font-light tracking-[-0.03em] text-[#191816]">
+                                    {openItem.title}
+                                </h2>
+
+                                <div className="mt-7 flex items-center gap-3">
+                                    <span className="h-px w-10 bg-[#b49a68]" />
+
+                                    <span className="h-1.5 w-1.5 rotate-45 border border-[#b49a68]" />
+                                </div>
+
+                                <p className="mt-7 max-w-md text-[11px] leading-7 tracking-[0.02em] text-[#858078]">
+                                    {openItem.description}
+                                </p>
+
+                            </div>
+
+                            {/* Details */}
+                            <div className="mt-10 border-t border-[#d8d4cc]">
+
                                 {drawerContent[
                                     openItem.title as keyof typeof drawerContent
                                 ].map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="border-b px-4 py-5 text-sm transition-colors hover:bg-black hover:text-white"
+                                    <motion.div
+                                        key={`${item}-${index}`}
+                                        initial={{
+                                            opacity: 0,
+                                            x: 15,
+                                        }}
+                                        animate={{
+                                            opacity: 1,
+                                            x: 0,
+                                        }}
+                                        transition={{
+                                            delay:
+                                                0.12 + index * 0.035,
+                                            duration: 0.35,
+                                        }}
+                                        className="group flex items-start gap-5 border-b border-[#d8d4cc] py-5"
                                     >
-                                        {item}
-                                    </div>
+
+                                        <span className="pt-1 text-[8px] tracking-[0.2em] text-[#b49a68]">
+                                            {String(index + 1).padStart(
+                                                2,
+                                                "0"
+                                            )}
+                                        </span>
+
+                                        <p className="text-[11px] leading-6 tracking-[0.02em] text-[#68645d] transition-colors group-hover:text-[#25231f]">
+                                            {item}
+                                        </p>
+
+                                    </motion.div>
                                 ))}
+
                             </div>
 
-                        </motion.div>
+                            {/* Drawer Footer */}
+                            <div className="mt-16 flex items-center gap-4">
+
+                                <span className="h-px w-10 bg-[#d0cbc1]" />
+
+                                <span className="text-[7px] uppercase tracking-[0.5em] text-[#aaa59c]">
+                                    Client Services
+                                </span>
+
+                            </div>
+
+                        </motion.aside>
                     </>
                 )}
             </AnimatePresence>

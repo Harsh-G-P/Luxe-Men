@@ -129,73 +129,135 @@ export default function Login() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-            <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
+        <div className="min-h-screen bg-[#f7f6f2] px-5 py-12 text-[#111111] sm:px-8">
 
-                <h2 className="text-2xl font-bold text-center mb-6">
-                    Login to Continue
-                </h2>
+            <div className="flex min-h-[calc(100vh-6rem)] items-center justify-center">
 
-                {error &&
-                    <div className="text-center">
-                        <p className="text-red-500 mb-4">{error}</p>
-                    </div>
-                }
+                <div className="w-full max-w-md">
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Brand */}
+                    <div className="mb-14 text-center">
 
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Email</label>
-                        <input
-                            type="email"
-                            placeholder="you@example.com"
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full border px-3 py-2 rounded-md"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Password</label>
-                        <input
-                            type="password"
-                            placeholder="••••••••"
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full border px-3 py-2 rounded-md"
-                        />
-
-                        <div className="mt-2 text-right">
-                            <Link
-                                href="/forgot-password"
-                                className="text-sm text-black hover:underline"
-                            >
-                                Forgot Password?
-                            </Link>
+                        <p className="text-[10px] uppercase tracking-[0.55em] text-black/40">
+                            LUXE MEN
+                        </p>
+                        <div className="mt-6 flex items-center justify-center gap-4">
+                            <span className="h-px w-10 bg-black/15" />
+                            <span className="text-[8px] uppercase tracking-[0.35em] text-black/30">
+                                Private Access
+                            </span>
+                            <span className="h-px w-10 bg-black/15" />
                         </div>
 
+
+                        <h1 className="mt-7 font-serif text-4xl tracking-tight sm:text-5xl">
+                            Welcome Back
+                        </h1>
+
+                        <p className="mt-4 text-sm text-black/45">
+                            Sign in to continue your journey.
+                        </p>
+
                     </div>
 
-                    <button
-                        type="submit"
-                        className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition"
-                    >{loading ? "Logging in..." : "Login"}
-                    </button>
+                    {/* Error */}
+                    {error && (
+                        <div className="mb-7 border border-red-200 bg-red-50 px-4 py-3 text-center">
+                            <p className="text-sm text-red-600">
+                                {error}
+                            </p>
+                        </div>
+                    )}
 
-                    <button
-                        type="button"
-                        onClick={resendVerification}
-                        className="w-full mt-3 text-sm text-black hover:underline"
-                    >
-                        Resend Verification Email
-                    </button>
-                </form>
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="space-y-8">
 
-                <p className="text-center text-sm mt-4 text-gray-600">
-                    Don't have an account?{" "}
-                    <Link href="/register" className="text-black font-semibold">
-                        Register
-                    </Link>
-                </p>
+                        {/* Email */}
+                        <div>
+                            <label className="mb-3 block text-[10px] uppercase tracking-[0.35em] text-black/45">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                placeholder="you@example.com"
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black outline-none placeholder:text-black/25 transition-colors duration-300 focus:border-black"
+                            />
+                        </div>
+
+                        {/* Password */}
+                        <div>
+
+                            <div className="flex items-center justify-between">
+                                <label className="text-[10px] uppercase tracking-[0.35em] text-black/45">
+                                    Password
+                                </label>
+
+                                <Link
+                                    href="/forgot-password"
+                                    className="text-xs text-black/45 transition-colors duration-300 hover:text-black"
+                                >
+                                    Forgot Password?
+                                </Link>
+                            </div>
+
+                            <input
+                                type="password"
+                                placeholder="••••••••"
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="mt-3 w-full border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black outline-none placeholder:text-black/25 transition-colors duration-300 focus:border-black"
+                            />
+
+                        </div>
+
+                        {/* Login */}
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-[#111111] py-4 text-[10px] font-medium uppercase tracking-[0.35em] text-white transition-all duration-300 hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            {loading ? "Logging in..." : "Sign In"}
+                        </button>
+
+                        {/* Resend */}
+                        <button
+                            type="button"
+                            onClick={resendVerification}
+                            className="w-full text-xs text-black/45 transition-colors duration-300 hover:text-black"
+                        >
+                            Resend Verification Email
+                        </button>
+
+                    </form>
+
+                    {/* Register */}
+                    <div className="mt-12 border-t border-black/10 pt-8 text-center">
+
+                        <p className="text-sm text-black/45">
+                            Don't have an account?
+                        </p>
+
+                        <Link
+                            href="/register"
+                            className="mt-3 inline-block text-sm text-black transition-all duration-300 hover:underline hover:underline-offset-8"
+                        >
+                            Create an Account
+                        </Link>
+
+                    </div>
+
+                    {/* Bottom Brand */}
+                    <div className="mt-16 text-center">
+                        <p className="text-[9px] uppercase tracking-[0.5em] text-black/25">
+                            Est. 2026 · LUXE MEN
+                        </p>
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
     );
 }

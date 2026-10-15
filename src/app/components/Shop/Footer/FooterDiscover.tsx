@@ -5,13 +5,13 @@ export default function FooterDiscover() {
         <div className="space-y-10">
 
             <div>
-                <p className="mb-6 text-xs uppercase tracking-[0.35em] text-gray-400">
+                <p className="mb-7 text-[10px] uppercase tracking-[0.45em] text-white/40">
                     Discover
                 </p>
 
-                <p className="max-w-sm text-md leading-7 text-white/70">
-                    Explore timeless menswear, premium craftsmanship,
-                    and refined essentials designed for the modern gentleman.
+                <p className="max-w-sm text-sm leading-7 text-white/50">
+                    A considered collection of timeless menswear,
+                    refined essentials, and enduring craftsmanship.
                 </p>
             </div>
 

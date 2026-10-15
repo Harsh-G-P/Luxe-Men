@@ -18,71 +18,431 @@ export async function sendVerificationEmail(
   const info = await transporter.sendMail({
     from: `"Luxe Men" <${process.env.BREVO_SENDER}>`,
     to: email,
-    subject: "Verify your email address",
+    subject: "Verify Your Email • LUXE MEN",
+
     html: `
-      <div style="background:#f4f4f5;padding:40px 20px;font-family:Arial,sans-serif;">
-        <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+<!DOCTYPE html>
+<html>
 
-          <div style="background:#111827;padding:32px;text-align:center;">
-            <h1 style="color:#ffffff;margin:0;font-size:28px;">
-              Verify Your Email
-            </h1>
-          </div>
+<head>
+    <meta charset="UTF-8" />
 
-          <div style="padding:40px 32px;">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
 
-            <p style="font-size:16px;color:#374151;">
-              Hello <strong>${name}</strong>,
-            </p>
+    <title>Verify Your Email</title>
+</head>
 
-            <p style="font-size:16px;color:#374151;line-height:1.7;">
-              Thank you for creating an account. Please verify your email address to activate your account.
-            </p>
+<body
+    style="
+        margin:0;
+        padding:0;
+        background:#f0eee9;
+        font-family:Arial, Helvetica, sans-serif;
+        color:#1c1b18;
+    "
+>
 
-            <div style="text-align:center;margin:40px 0;">
-              <a
-                href="${verificationLink}"
+<table
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    border="0"
+    style="
+        background:#f0eee9;
+        padding:45px 15px;
+    "
+>
+<tr>
+<td align="center">
+
+    <!-- MAIN CONTAINER -->
+
+    <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="
+            max-width:650px;
+            background:#faf9f6;
+            border:1px solid #d8d3c9;
+        "
+    >
+
+        <!-- HEADER -->
+
+        <tr>
+            <td
+                align="center"
                 style="
-                  background:#111827;
-                  color:#ffffff;
-                  text-decoration:none;
-                  padding:14px 28px;
-                  border-radius:8px;
-                  display:inline-block;
-                  font-weight:600;
+                    padding:38px 30px 30px;
+                    border-bottom:1px solid #ded9d0;
                 "
-              >
-                Verify Email Address
-              </a>
-            </div>
+            >
 
-            <p style="font-size:14px;color:#6b7280;">
-              This link will expire in 1 hours.
-            </p>
+                <table
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                >
+                    <tr>
 
-            <p style="font-size:14px;color:#6b7280;">
-              If you didn't create this account, you can safely ignore this email.
-            </p>
+                        <td
+                            style="
+                                width:45px;
+                                border-top:1px solid #d1cbc1;
+                            "
+                        ></td>
 
-          </div>
+                        <td
+                            align="center"
+                            style="
+                                padding:0 15px;
+                                font-size:8px;
+                                line-height:12px;
+                                letter-spacing:4px;
+                                color:#9b8150;
+                                text-transform:uppercase;
+                                white-space:nowrap;
+                            "
+                        >
+                            LUXE MEN
+                        </td>
 
-          <div style="
-            background:#f9fafb;
-            padding:20px;
-            text-align:center;
-            border-top:1px solid #e5e7eb;
-          ">
-            <p style="margin:0;color:#6b7280;font-size:13px;">
-              Secure Account Verification
-            </p>
-          </div>
+                        <td
+                            style="
+                                width:45px;
+                                border-top:1px solid #d1cbc1;
+                            "
+                        ></td>
 
-        </div>
-      </div>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+
+
+        <!-- CONTENT -->
+
+        <tr>
+            <td
+                style="
+                    padding:48px 45px;
+                "
+            >
+
+                <!-- STATUS ICON -->
+
+                <table
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                >
+                    <tr>
+                        <td align="center">
+
+                            <div
+                                style="
+                                    width:52px;
+                                    height:52px;
+                                    line-height:52px;
+                                    border:1px solid #9b8150;
+                                    color:#9b8150;
+                                    font-size:17px;
+                                    text-align:center;
+                                "
+                            >
+                                ✦
+                            </div>
+
+                        </td>
+                    </tr>
+                </table>
+
+
+                <!-- EYEBROW -->
+
+                <p
+                    style="
+                        margin:28px 0 0;
+                        text-align:center;
+                        font-size:8px;
+                        line-height:12px;
+                        letter-spacing:4px;
+                        text-transform:uppercase;
+                        color:#9b8150;
+                    "
+                >
+                    Account Verification
+                </p>
+
+
+                <!-- TITLE -->
+
+                <h1
+                    style="
+                        margin:10px 0 0;
+                        text-align:center;
+                        font-family:Georgia, 'Times New Roman', serif;
+                        font-size:32px;
+                        line-height:42px;
+                        font-weight:400;
+                        color:#25231f;
+                    "
+                >
+                    Verify Your Email
+                </h1>
+
+
+                <!-- INTRO -->
+
+                <p
+                    style="
+                        max-width:440px;
+                        margin:18px auto 0;
+                        text-align:center;
+                        font-size:11px;
+                        line-height:20px;
+                        color:#8b867d;
+                    "
+                >
+                    Dear ${name},
+                    <br /><br />
+
+                    Thank you for creating your LUXE MEN account.
+                    Please verify your email address to activate
+                    and secure your account.
+                </p>
+
+
+                <!-- CTA -->
+
+                <table
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                    style="
+                        margin-top:38px;
+                    "
+                >
+                    <tr>
+                        <td align="center">
+
+                            <a
+                                href="${verificationLink}"
+                                style="
+                                    display:inline-block;
+                                    background:#181714;
+                                    color:#ffffff;
+                                    text-decoration:none;
+                                    padding:16px 32px;
+                                    font-size:8px;
+                                    line-height:12px;
+                                    letter-spacing:3px;
+                                    text-transform:uppercase;
+                                "
+                            >
+                                Verify Email Address
+                            </a>
+
+                        </td>
+                    </tr>
+                </table>
+
+
+                <!-- EXPIRATION -->
+
+                <table
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                    style="
+                        margin-top:38px;
+                        border-top:1px solid #ded9d0;
+                        border-bottom:1px solid #ded9d0;
+                    "
+                >
+                    <tr>
+
+                        <td
+                            style="
+                                padding:20px 0;
+                                font-size:8px;
+                                line-height:14px;
+                                letter-spacing:2px;
+                                text-transform:uppercase;
+                                color:#9b8150;
+                            "
+                        >
+                            Link Validity
+                        </td>
+
+                        <td
+                            align="right"
+                            style="
+                                padding:20px 0;
+                                font-size:10px;
+                                color:#4f4b44;
+                            "
+                        >
+                            1 Hour
+                        </td>
+
+                    </tr>
+                </table>
+
+
+                <!-- SECURITY NOTE -->
+
+                <table
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                    style="
+                        margin-top:30px;
+                    "
+                >
+                    <tr>
+
+                        <td
+                            valign="top"
+                            style="
+                                width:8px;
+                                padding-top:5px;
+                            "
+                        >
+                            <div
+                                style="
+                                    width:6px;
+                                    height:6px;
+                                    background:#9b8150;
+                                "
+                            ></div>
+                        </td>
+
+                        <td
+                            style="
+                                padding-left:12px;
+                                font-size:9px;
+                                line-height:18px;
+                                color:#99938a;
+                            "
+                        >
+                            If you did not create this account,
+                            you can safely ignore this email.
+                            No changes will be made to your account.
+                        </td>
+
+                    </tr>
+                </table>
+
+
+                <!-- FALLBACK LINK -->
+
+                <p
+                    style="
+                        margin:35px 0 0;
+                        text-align:center;
+                        font-size:8px;
+                        line-height:16px;
+                        color:#aaa49b;
+                    "
+                >
+                    If the button above does not work, copy and paste
+                    the verification link into your browser.
+                </p>
+
+
+                <p
+                    style="
+                        margin:18px 0 0;
+                        text-align:center;
+                        font-size:9px;
+                        line-height:18px;
+                        color:#99938a;
+                    "
+                >
+                    For your security, never share this verification link
+                    with anyone.
+                </p>
+
+            </td>
+        </tr>
+
+
+        <!-- FOOTER -->
+
+        <tr>
+            <td
+                align="center"
+                style="
+                    padding:25px 30px;
+                    border-top:1px solid #ded9d0;
+                    background:#f4f1e9;
+                "
+            >
+
+                <table
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                >
+                    <tr>
+
+                        <td
+                            style="
+                                width:35px;
+                                border-top:1px solid #d1cbc1;
+                            "
+                        ></td>
+
+                        <td
+                            style="
+                                padding:0 12px;
+                                font-size:7px;
+                                line-height:12px;
+                                letter-spacing:3px;
+                                color:#aaa49a;
+                                text-transform:uppercase;
+                                white-space:nowrap;
+                            "
+                        >
+                            LUXE MEN · ACCOUNT VERIFICATION
+                        </td>
+
+                        <td
+                            style="
+                                width:35px;
+                                border-top:1px solid #d1cbc1;
+                            "
+                        ></td>
+
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+
+    </table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
     `,
   });
 
-  console.log("Email sent:", info.messageId);
+  console.log("Verification email sent:", info.messageId);
 
   return info;
 }

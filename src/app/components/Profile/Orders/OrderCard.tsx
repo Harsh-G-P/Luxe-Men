@@ -25,66 +25,74 @@ type Props = {
 };
 
 export default function OrderCard({ order }: Props) {
-  const statusColor = {
-    PENDING: "bg-yellow-500",
-    CONFIRMED: "bg-indigo-500",
-    PROCESSING: "bg-blue-500",
-    SHIPPED: "bg-orange-500",
-    DELIVERED: "bg-green-500",
-    CANCELLED: "bg-red-500",
+  const statusStyles = {
+    PENDING: "text-[#8a6a32]",
+    CONFIRMED: "text-[#4c5968]",
+    PROCESSING: "text-[#4c5968]",
+    SHIPPED: "text-[#6b5542]",
+    DELIVERED: "text-[#526354]",
+    CANCELLED: "text-[#7b4d4d]",
   } as const;
 
+  const statusStyle =
+    statusStyles[order.status as keyof typeof statusStyles] ??
+    "text-neutral-500";
+
+  const formattedDate = new Date(order.createdAt).toLocaleDateString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
+
+  const formattedTotal = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(order.total);
+
   return (
-    <div className="overflow-hidden border border-neutral-200 bg-white">
+    <div
+      className=" overflow-hidden border border-[#e2ded4] bg-[#f5f4ef] shadow-[0_4px_18px_rgba(45,40,30,0.035)] transition-all duration-500 ease-out hover:border-[#c8bb94] hover:bg-[#faf8f3] hover:shadow-[0_16px_40px_rgba(65,55,38,0.09)]"
+    >
 
       {/* Header */}
-      <div className="flex flex-col gap-5 border-b border-neutral-200 px-5 py-3 md:flex-row md:items-center md:justify-between">
+      <div className="border-b border-[#e4e1db] px-6 py-5 md:px-7">
+        <div className="flex items-start justify-between gap-8">
 
-        <div>
+          <div>
+            <p className="text-[9px] font-medium uppercase tracking-[0.32em] text-[#8b8881]">
+              Order
+            </p>
 
-          <p className="text-xs uppercase tracking-[0.22em] text-neutral-500">
-            Order Number
-          </p>
+            <h2 className="mt-2 font-serif text-[17px] font-normal tracking-[0.03em] text-[#171715]">
+              {order.orderNumber}
+            </h2>
 
-          <h2 className="mt-2 text-sm font-semibold tracking-[0.08em]">
-            {order.orderNumber}
-          </h2>
+            <p className="mt-2 text-[11px] tracking-[0.02em] text-[#898680]">
+              {formattedDate}
+            </p>
+          </div>
 
-          <p className="mt-3 text-xs text-neutral-500">
-            Placed on{" "}
-            {new Date(order.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-
-        </div>
-
-        <div className="text-left md:text-right">
-
-          <div className="inline-flex items-center gap-3">
-
+          {/* Status */}
+          <div className="flex items-center gap-2 pt-1">
             <span
-              className={`h-2.5 w-2.5 rounded-full ${statusColor[
-                order.status as keyof typeof statusColor
-              ] ?? "bg-neutral-400"
-                }`}
+              className={`h-1.25 w-1.25 rounded-full bg-current ${statusStyle}`}
             />
 
-            <span className="text-xs uppercase tracking-[0.12em]">
+            <span
+              className={`text-[9px] font-medium uppercase tracking-[0.22em] ${statusStyle}`}
+            >
               {order.status}
             </span>
-
           </div>
 
         </div>
-
       </div>
 
       {/* Products */}
-
-      <div className="divide-y divide-neutral-100">
+      <div className="divide-y divide-[#eeece7]">
         {order.items.map((item) => (
           <OrderItem
             key={item.id}
@@ -94,29 +102,24 @@ export default function OrderCard({ order }: Props) {
       </div>
 
       {/* Footer */}
-
-      <div className="flex flex-col gap-6 border-t border-neutral-200 px-5 py-3 md:flex-row md:items-center md:justify-between">
+      <div className="flex items-end justify-between border-t border-[#e4e1db] px-6 py-5 md:px-7">
 
         <div>
-
-          <p className="text-xs uppercase tracking-[0.22em] text-neutral-500">
+          <p className="text-[9px] uppercase tracking-[0.32em] text-[#8b8881]">
             Total
           </p>
 
-          <p className="mt-2 text-sm font-semibold">
-            {new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-            }).format(order.total)}
+          <p className="mt-2 font-serif text-[18px] font-normal tracking-[0.01em] text-[#171715]">
+            {formattedTotal}
           </p>
-
         </div>
 
         <Link
           href={`/profile/orders/${order.id}`}
-          className="inline-flex items-center justify-center border border-black px-5 py-2 text-xs uppercase tracking-[0.12em] transition hover:bg-black hover:text-white"
+          className="group/link relative pb-1 text-[9px] font-medium uppercase tracking-[0.24em] text-[#171715]"
         >
-          View Details →
+          View Details
+          <span className="absolute bottom-0 left-0 h-px w-full origin-right bg-[#171715] transition-transform duration-300 group-hover/link:origin-left group-hover/link:scale-x-0" />
         </Link>
 
       </div>
