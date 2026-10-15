@@ -11,6 +11,7 @@ import {
     Geist,
     Geist_Mono,
 } from "next/font/google";
+import LuxuryToaster from "@/LuxuryToaster";
 
 const luxuryFont = Marcellus({
     variable: "--font-luxury",
@@ -58,7 +59,7 @@ export default function RootLayout({
             <body className="min-h-full flex flex-col">
                 <Providers>
                     <ScrollRestoration />
-                    <Toaster />
+                    <LuxuryToaster />
                     <Navbar />
                     <main className="flex-1 mt-12">
                         {children}
