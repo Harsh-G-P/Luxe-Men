@@ -32,6 +32,8 @@ model User {
   cart    Cart?
   orders  Order[]
 
+  review Review[]
+
   accountDeletionStatus AccountDeletionStatus @default(NONE)
   accountDeletionReason String?
   accountDeletionRequestedAt DateTime?
@@ -153,6 +155,8 @@ model Product {
   variants   ProductVariant[]
   cartItems  CartItem[]
   orderItems OrderItem[]
+
+  review Review[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -311,4 +315,22 @@ enum RefundStatus {
   REQUESTED
   REJECTED
   REFUNDED
+}
+
+model Review {
+  id String @id @default(cuid())
+  rating    Int
+  comment   String?
+
+  userId    String
+  productId String
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@index([productId])
 }
