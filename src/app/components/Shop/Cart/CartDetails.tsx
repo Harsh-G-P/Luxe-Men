@@ -331,7 +331,7 @@ export default function CartDetails() {
 
                                             {/* PRODUCT IMAGE */}
                                             <Link
-                                                href={`/products/${item.product.slug}`}
+                                                href={`/product/${item.product.slug}`}
                                                 className="relative flex h-40 items-center justify-center overflow-hidden bg-[#eeece6] sm:h-40 md:h-44"
                                             >
                                                 <Image
@@ -357,7 +357,7 @@ export default function CartDetails() {
                                                     </p>
 
                                                     <Link
-                                                        href={`/products/${item.product.slug}`}
+                                                        href={`/product/${item.product.slug}`}
                                                         className="font-serif text-xl leading-tight text-[#272522] transition-colors duration-300 hover:text-[#9b8150] md:text-[22px]"
                                                     >
                                                         {item.product.title}

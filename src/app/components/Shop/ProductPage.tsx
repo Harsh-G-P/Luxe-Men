@@ -4,6 +4,7 @@ import ProductGallery from "./Product/ProductGallery";
 import Link from "next/link";
 import ProductDetails from "./Product/ProductDetails";
 import ProductSection from "./Product/ProductSection";
+import ProductReview from "./Review/ProductReview";
 
 
 type Props = {
@@ -220,6 +221,8 @@ export default async function ProductPage({ slug }: Props) {
                 </div>
 
             </section>
+
+            <ProductReview productId={product.id} />
 
 
             {/* ================================================= */}
