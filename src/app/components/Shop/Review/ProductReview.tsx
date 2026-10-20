@@ -5,11 +5,15 @@ import { toast } from "sonner";
 
 type ProductReviewProps = {
     productId: string;
+    onReviewSubmitted?: () => void;
 };
 
 type FieldErrors = Record<string, string>;
 
-export default function ProductReview({ productId }: ProductReviewProps) {
+export default function ProductReview({
+    productId,
+    onReviewSubmitted,
+}: ProductReviewProps) {
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
     const [isOpen, setIsOpen] = useState(false);
     const [rating, setRating] = useState(0);
@@ -68,8 +72,9 @@ export default function ProductReview({ productId }: ProductReviewProps) {
                 return
             }
             if (data.success) {
-                toast.success(data.message)
-                resetForm()
+                toast.success(data.message);
+                resetForm();
+                onReviewSubmitted?.();
             }
 
 

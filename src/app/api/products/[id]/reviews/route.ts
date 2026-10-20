@@ -120,3 +120,115 @@ export async function POST(req: NextRequest, { params }: Params) {
         return errorResponse("Internal Server Error");
     }
 }
+
+
+export async function GET(req: NextRequest,{ params }: Params) {
+    try {
+        const routeParams = await params
+        const id_result = idSchema.safeParse(routeParams)
+
+        if (!id_result.success) {
+            console.log(
+                id_result.error.flatten()
+            );
+            return errorResponse("Invalid ID", 400)
+        }
+
+        const { id } = id_result.data
+
+        const product = await prisma.product.findFirst({
+            where: {
+                id,
+                isActive:true,
+            },
+            select:{
+                id:true,
+            }
+        })
+
+        if(!product){
+            return errorResponse("Product not found",404)
+        }
+
+        const { searchParams } = new URL(req.url);
+
+        const page = Math.max(
+            Number(searchParams.get("page")) || 1,
+            1
+        );
+
+        const limit = Math.min(
+            Math.max(
+                Number(searchParams.get("limit")) || 5,
+                1
+            ),
+            100
+        );
+
+        const skip = (page - 1) * limit;
+
+        const [reviews,totalReviews,ratingSummary]=await Promise.all([
+            prisma.review.findMany({
+                where: {
+                    productId:id,
+                },
+                skip,
+                take:limit,
+                orderBy: {
+                    createdAt:"desc"
+                },
+                select:{
+                    id: true,
+                    rating: true,
+                    comment: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true,
+                        },
+                    },
+                }
+            }),
+            prisma.review.count({
+                where:{
+                    productId:id,
+                }
+            }),
+            prisma.review.aggregate({
+                where:{
+                    productId:id,
+                },
+                _avg:{
+                    rating:true,
+                },
+                _count:{
+                    _all:true,
+                }
+            })
+        ])
+
+        return successResponse("Product reviews fetched successfully",
+            {
+                reviews,
+                pagination: {
+                    page,
+                    limit,
+                    totalReviews,
+                    totalPages: Math.ceil(totalReviews / limit),
+                },
+                summary: {
+                    averageRating: ratingSummary._avg.rating ?? 0,
+                    totalReviews: ratingSummary._count._all,
+                },
+            }
+        )
+    }
+    catch (error) {
+
+        console.log("Review GET API:", error)
+        return errorResponse("Internal Server Error");
+    }
+}

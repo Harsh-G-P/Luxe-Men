@@ -5,6 +5,8 @@ import Link from "next/link";
 import ProductDetails from "./Product/ProductDetails";
 import ProductSection from "./Product/ProductSection";
 import ProductReview from "./Review/ProductReview";
+import ProductReviews from "./Review/ProductReviews";
+import ReviewSection from "./Review/ReviewSection";
 
 
 type Props = {
@@ -222,7 +224,7 @@ export default async function ProductPage({ slug }: Props) {
 
             </section>
 
-            <ProductReview productId={product.id} />
+            <ReviewSection productId={product.id} />
 
 
             {/* ================================================= */}
