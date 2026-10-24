@@ -86,13 +86,15 @@ function ProductCard({ product }: { product: Product }) {
     }, [product.id]);
 
     const toggleWishlist = async () => {
-        if (isWishlisted || isWishlistLoading) return;
+        if (isWishlistLoading) return;
 
         setIsWishlistLoading(true);
 
+        const wasWishlisted = isWishlisted;
+
         try {
             const response = await fetch(`/api/wishlist/${product.id}`, {
-                method: "POST",
+                method: wasWishlisted ? "DELETE" : "POST",
             });
 
             const data: {
@@ -100,8 +102,8 @@ function ProductCard({ product }: { product: Product }) {
                 message?: string;
             } = await response.json();
 
-            // The API may report a duplicate if the item already exists.
-            if (response.status === 409) {
+            // If the item already exists, keep the heart filled.
+            if (!wasWishlisted && response.status === 409) {
                 setIsWishlisted(true);
                 toast.success("This item is already in your wishlist");
                 return;
@@ -109,12 +111,21 @@ function ProductCard({ product }: { product: Product }) {
 
             if (!response.ok || data.success === false) {
                 throw new Error(
-                    data.message || "Unable to add product to wishlist"
+                    data.message ||
+                    (wasWishlisted
+                        ? "Unable to remove product from wishlist"
+                        : "Unable to add product to wishlist")
                 );
             }
 
-            setIsWishlisted(true);
-            toast.success(data.message || "Added to wishlist");
+            setIsWishlisted(!wasWishlisted);
+
+            toast.success(
+                data.message ||
+                (wasWishlisted
+                    ? "Removed from wishlist"
+                    : "Added to wishlist")
+            );
         } catch (error) {
             toast.error(
                 error instanceof Error
@@ -186,32 +197,18 @@ function ProductCard({ product }: { product: Product }) {
                 <button
                     type="button"
                     onClick={() => void toggleWishlist()}
-                    disabled={isWishlistLoading || isWishlisted}
+                    disabled={isWishlistLoading}
                     aria-label={
                         isWishlisted
-                            ? `${product.title} is in your wishlist`
+                            ? `Remove ${product.title} from wishlist`
                             : `Add ${product.title} to wishlist`
                     }
                     aria-pressed={isWishlisted}
                     aria-busy={isWishlistLoading}
-                    className={`
-        absolute right-3 top-3 z-20
-        flex h-10 w-10 items-center justify-center
-        border transition-all duration-300
-        sm:right-4 sm:top-4
-        ${isWishlisted
+                    className={` absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center border transition-all duration-300 sm:right-4 sm:top-4 ${isWishlisted
                             ? "border-[#b49a6c] bg-[#f8f6f0] text-[#9b8150] opacity-100"
                             : "border-black/10 bg-[#f8f6f0]/95 text-[#39332c] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
-                        }
-        hover:border-[#b49a6c]
-        hover:bg-[#f8f6f0]
-        hover:text-[#9b8150]
-        disabled:cursor-default
-        active:scale-90
-        focus-visible:outline-2
-        focus-visible:outline-offset-2
-        focus-visible:outline-[#9b8150]
-    `}
+                        } hover:border-[#b49a6c] hover:bg-[#f8f6f0] hover:text-[#9b8150] active:scale-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9b8150]`}
                 >
                     <Heart
                         size={18}

@@ -12,7 +12,7 @@ type Params = {
     }>;
 };
 
-export async function POST(req: NextRequest, { params }: Params) {
+export async function POST(_req: NextRequest, { params }: Params) {
     const session = await getServerSession(authOptions)
     if (!session) {
         return errorResponse("Unauthrozied", 401)
@@ -83,6 +83,59 @@ export async function POST(req: NextRequest, { params }: Params) {
         }
 
         console.log("Wishlist POST API:", error)
+        return errorResponse("Internal Server Error");
+    }
+}
+
+export async function DELETE(_req: NextRequest,{ params }: Params) {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+        return errorResponse("Unauthorized", 401);
+    }
+
+    try {
+        const routeParams = await params;
+        const id_result = idSchema.safeParse(routeParams);
+
+        if (!id_result.success) {
+            console.log(id_result.error.flatten());
+            return errorResponse("Invalid ID", 400);
+        }
+
+        const { id } = id_result.data;
+
+        const existingWishlistItem = await prisma.wishlistItem.findFirst({
+            where: {
+                userId: session.user.id,
+                productId: id,
+            },
+            select: {
+                id: true,
+            },
+        });
+
+        if (!existingWishlistItem) {
+            return errorResponse(
+                "Product not found in your wishlist",
+                404
+            );
+        }
+
+        await prisma.wishlistItem.delete({
+            where: {
+                id: existingWishlistItem.id,
+            },
+        });
+
+        return successResponse(
+            "Product removed from wishlist successfully",
+            {
+                productId: id,
+            }
+        );
+    } catch (error) {
+        console.log("Wishlist DELETE API:", error);
         return errorResponse("Internal Server Error");
     }
 }
