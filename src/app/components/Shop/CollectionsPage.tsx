@@ -131,7 +131,7 @@ export default async function CollectionsPage({
         <div className="bg-[#faf9f7]">
             <Hero />
 
-            <div className="bg-[#faf9f7]">
+            <div className="bg-[#f1eee6]">
                 <div className="mx-auto w-full px-5 py-8 md:px-8 md:py-12">
                     <div className="grid grid-cols-1 gap-10 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[350px_minmax(0,1fr)]">
 

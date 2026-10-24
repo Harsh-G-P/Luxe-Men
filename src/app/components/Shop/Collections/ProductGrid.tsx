@@ -174,7 +174,7 @@ export default function ProductGrid({
 
     if (isPending) {
         return (
-            <section className="flex min-h-140 items-center justify-center bg-[#faf9f7]">
+            <section className="flex min-h-140 items-center justify-center bg-[#f1eee6]">
                 <div className="flex flex-col items-center text-center">
 
                     {/* Small Label */}
@@ -238,7 +238,7 @@ export default function ProductGrid({
 
     if (!products || products.length === 0) {
         return (
-            <section className="bg-[#faf9f7] py-24 md:py-32">
+            <section className="bg-[#f1eee6] py-24 md:py-32">
                 <div className="mx-auto max-w-375 px-5 md:px-8">
                     <div className="mx-auto max-w-xl text-center">
 
@@ -285,7 +285,7 @@ export default function ProductGrid({
     }
 
     return (
-        <section className="bg-[#faf9f7] py-14 md:py-20">
+        <section className="bg-[#f1eee6] py-14 md:py-20">
             <div className="mx-auto max-w-375 px-5 md:px-8">
 
                 {/* Header */}
@@ -425,6 +425,5 @@ export default function ProductGrid({
             </div>
         </section>
     );
-
 
 }

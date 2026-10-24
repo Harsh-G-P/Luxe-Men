@@ -54,6 +54,11 @@ export async function GET(req: NextRequest) {
                             slug: true,
                             price: true,
                             images: true,
+                            brand: {
+                                select: {
+                                    title: true,
+                                },
+                            },
                         },
                     },
                 },
