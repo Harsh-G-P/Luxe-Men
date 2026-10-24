@@ -270,7 +270,7 @@ export default function MiniCart({ open, onClose }: Props) {
 
                                             {/* IMAGE */}
                                             <Link
-                                                href={`/products/${item.product.slug}`}
+                                                href={`/product/${item.product.slug}`}
                                                 onClick={onClose}
                                                 className={` relative h-26.25 w-22 shrink-0 overflow-hidden bg-[#eeece6] ${isUnavailable
                                                         ? "opacity-55"
@@ -305,7 +305,7 @@ export default function MiniCart({ open, onClose }: Props) {
                                                         </p>
 
                                                         <Link
-                                                            href={`/products/${item.product.slug}`}
+                                                            href={`/product/${item.product.slug}`}
                                                             onClick={onClose}
                                                             className={` block truncate font-serif text-[17px] leading-tight transition-colors ${isUnavailable
                                                                     ? "text-[#77736b]"
