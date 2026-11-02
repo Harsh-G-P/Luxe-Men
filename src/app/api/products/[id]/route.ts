@@ -7,6 +7,7 @@ import { productSchema } from "@/app/lib/validations/product";
 import { Prisma } from "@/generated/prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 
 
 type Params = {
@@ -56,6 +57,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
                 id
             }
         })
+
+        revalidatePath("/")
 
         return successResponse("Product deleted successfully", 200)
 
@@ -230,6 +233,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
                 })),
             });
         });
+
+        revalidatePath("/")
 
         return successResponse(
             "Product updated successfully",

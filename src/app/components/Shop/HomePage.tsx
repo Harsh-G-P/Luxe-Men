@@ -6,6 +6,7 @@ import Ourstory from "./Home/Ourstory";
 import LookbookPreview from "./Home/LookbookPreview";
 import PromoBanner from "./Home/PromoBanner";
 
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
 

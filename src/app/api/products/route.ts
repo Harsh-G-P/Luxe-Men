@@ -7,6 +7,8 @@ import { productSchema } from "@/app/lib/validations/product";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 
+import { revalidatePath } from "next/cache";
+
 
 export async function POST(req: NextRequest) {
 
@@ -195,6 +197,8 @@ export async function POST(req: NextRequest) {
                 price: variant.price?.toString() ?? null,
             })),
         };
+
+        revalidatePath("/");
 
         return successResponse("Product created successfully", response, 201)
 
