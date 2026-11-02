@@ -186,7 +186,7 @@ export default function UserProfile({ user }: UserProps) {
 
                 <div className="relative shrink-0">
                   <Image
-                    src={user.image || "/avatar/camel.png"}
+                    src={user.image || "/Avatar/camel.png"}
                     alt="avatar"
                     width={96}
                     height={96}
