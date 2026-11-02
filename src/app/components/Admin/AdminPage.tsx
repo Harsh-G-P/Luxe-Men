@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -407,8 +408,8 @@ export default function AdminPage({ adminName }: Props) {
                                                 fetchSales(value);
                                             }}
                                             className={`flex w-full items-center justify-between px-3 py-2.5 text-left text-[9px] transition-colors duration-200 ${salesPeriod === period.value
-                                                    ? "bg-[#f0ece3] text-[#6f604e]"
-                                                    : "text-[#57534c] hover:bg-[#f3f0e9] hover:text-[#1b1a18]"
+                                                ? "bg-[#f0ece3] text-[#6f604e]"
+                                                : "text-[#57534c] hover:bg-[#f3f0e9] hover:text-[#1b1a18]"
                                                 }`}
                                         >
                                             <span>{period.label}</span>
@@ -677,11 +678,14 @@ export default function AdminPage({ adminName }: Props) {
 
                                     {/* Image */}
                                     {product.images ? (
-                                        <img
-                                            src={product.images}
+                                        <Image
+                                            src={product.images[0]}
                                             alt={product.title}
+                                            width={48}
+                                            height={48}
                                             className="h-11 w-11 shrink-0 border border-[#e2ded4] object-cover sm:h-12 sm:w-12"
                                         />
+
                                     ) : (
                                         <div className="flex h-11 w-11 shrink-0 items-center justify-center border border-[#e2ded4] bg-[#f3f0e9] sm:h-12 sm:w-12">
                                             <span className="font-serif text-sm text-[#b49a6c]">
