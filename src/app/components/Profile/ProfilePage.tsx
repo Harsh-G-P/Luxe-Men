@@ -59,7 +59,7 @@ export default function ProfilePage({ user }: UserProps) {
 
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(
-    user.image || "/avatar/camel.png"
+    user.image || "/Avatar/camel.png"
   );
 
   const handleSave = async () => {
